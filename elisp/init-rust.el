@@ -200,8 +200,8 @@
   (progn
     (add-to-list 'exec-path (expand-file-name  "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin"))
     (add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
-    (setq rustic-analyzer-command '(expand-file-name "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
-    (setq lsp-rust-analyzer-server-command '(expand-file-name "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
+    (setq rustic-analyzer-command (expand-file-name "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
+    (setq lsp-rust-analyzer-server-command (expand-file-name "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
     ))
  ((string-equal system-type "gnu/linux") ; linux
   (progn
@@ -250,5 +250,8 @@
                        (lsp-rust-analyzer-inlay-hints-mode)))
     :ignore-messages nil
     :server-id 'rust-analyzer-remote)))
+
+(setq rustic-lsp-server 'rust-analyzer)
+(setq rustic-analyzer-command '("~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
 
 (provide 'init-rust)

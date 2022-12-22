@@ -18,3 +18,5 @@
 (require 'init-rust)
 
 (require 'init-misc)
+
+(setq user-emacs-directory (file-truename "~/.emacs.d/"))

@@ -27,7 +27,7 @@
 ;;; list the packages you want
 (setq package-list '(indent-guide pangu-spacing spinner undo-tree highlight-thing markdown-mode switch-window
                                   protobuf-mode tide dart-mode dart-server mix csharp-mode omnisharp lua-mode flycheck-rust rust-mode
-                                  swift-mode lsp-mode which-key use-package rustic magit openwith corfu orderless
+                                  swift-mode lsp-mode which-key use-package rustic magit openwith
                                   color-theme-sanityinc-tomorrow olivetti aggressive-indent dap-mode vterm multiple-cursors))
 
 ;; install the missing packages

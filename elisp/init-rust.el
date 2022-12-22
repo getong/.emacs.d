@@ -28,6 +28,8 @@
   ;; (setq lsp-signature-auto-activate nil)
 
   ;; comment to disable rustfmt on save
+  (setq rustic-lsp-server 'rust-analyzer)
+  (setq rustic-lsp-client 'lsp-mode)
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
 (defun rk/rustic-mode-hook ()
@@ -200,8 +202,8 @@
   (progn
     (add-to-list 'exec-path (expand-file-name  "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin"))
     (add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
-    (setq rustic-analyzer-command (expand-file-name "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
-    (setq lsp-rust-analyzer-server-command (expand-file-name "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
+    (setq rustic-analyzer-command '("~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
+    (setq lsp-rust-analyzer-server-command '("~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
     ))
  ((string-equal system-type "gnu/linux") ; linux
   (progn
@@ -226,8 +228,6 @@
   (when buffer-file-name
     (setq-local compilation-ask-about-save nil)))
 (add-hook 'rustic-mode-hook 'rustic-mode-auto-save-hook)
-(setq rustic-lsp-server 'rust-analyzer)
-(setq rustic-lsp-client 'lsp-mode)
 
 (with-eval-after-load "lsp-rust"
   (lsp-register-client
@@ -250,8 +250,5 @@
                        (lsp-rust-analyzer-inlay-hints-mode)))
     :ignore-messages nil
     :server-id 'rust-analyzer-remote)))
-
-(setq rustic-lsp-server 'rust-analyzer)
-(setq rustic-analyzer-command '("~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
 
 (provide 'init-rust)

@@ -11,8 +11,6 @@
 
 (require 'init-config-packages)
 
-(require 'init-emacs)
-
 (require 'init-lua)
 
 (require 'init-rust)

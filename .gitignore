@@ -17,3 +17,9 @@ custom.el
 .lsp-session-v1
 savehist
 bookmarks
+
+.dap-breakpoints
+.extension/
+**/*.bak
+ido.last
+recentf

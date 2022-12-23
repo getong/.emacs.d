@@ -562,4 +562,155 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
         auto-package-update-interval 4)
   (auto-package-update-maybe))
 
+
+;; copy from https://www.patrickdelliott.com/emacs.d/
+(use-package emacs
+  :init
+  (setq user-full-name "Patrick D. Elliott") ;; my details
+  (setq user-mail-address "patrick.d.elliott@gmail.com")
+
+  (defalias 'yes-or-no-p 'y-or-n-p) ;; life is too short
+
+  (setq indent-tabs-mode nil) ;; no tabs
+
+  (setq make-backup-files nil) ;; keep everything under vc 
+  (setq auto-save-default nil)
+
+  ;; keep backup and save files in a dedicated directory
+  (setq backup-directory-alist
+        `((".*" . ,(concat user-emacs-directory "backups")))
+        auto-save-file-name-transforms
+        `((".*" ,(concat user-emacs-directory "backups") t)))
+
+  (setq create-lockfiles nil) ;; no need to create lockfiles
+
+  (set-charset-priority 'unicode) ;; utf8 in every nook and cranny
+  (setq locale-coding-system 'utf-8
+        coding-system-for-read 'utf-8
+        coding-system-for-write 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+  (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; escape quits everything
+
+  ;; Don't persist a custom file
+  (setq custom-file (make-temp-file "")) ; use a temp file as a placeholder
+  (setq custom-safe-themes t)            ; mark all themes as safe, since we can't persist now
+  (setq enable-local-variables :all)     ; fix =defvar= warnings
+
+  (setq delete-by-moving-to-trash t) ;; use trash-cli rather than rm when deleting files.
+
+  ;; less noise when compiling elisp
+  (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
+  (setq native-comp-async-report-warnings-errors nil)
+  (setq load-prefer-newer t)
+
+  ;; FIXME currently using tempel in org-mode triggers this warning
+  ;; (setq warning-suppress-types (append warning-suppress-types '((org-element-cache))))
+
+  (show-paren-mode t)
+
+  ;; Hide commands in M-x which don't work in the current mode
+  (setq read-extended-command-predicate #'command-completion-default-include-p))
+
+
+(use-package general
+  :config
+  (general-evil-setup)
+  ;; integrate general with evil
+
+  ;; set up 'SPC' as the global leader key
+  (general-create-definer patrl/leader-keys
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "SPC" ;; set leader
+    :global-prefix "M-SPC") ;; access leader in insert mode
+
+  ;; set up ',' as the local leader key
+  (general-create-definer patrl/local-leader-keys
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "," ;; set local leader
+    :global-prefix "M-,") ;; access local leader in insert mode
+
+  (general-define-key
+   :states 'insert
+   "C-g" 'evil-normal-state) ;; don't stretch for ESC
+
+  ;; unbind some annoying default bindings
+  (general-unbind
+    "C-x C-r"   ;; unbind find file read only
+    "C-x C-z"   ;; unbind suspend frame
+    "C-x C-d"   ;; unbind list directory
+    "<mouse-2>") ;; pasting with mouse wheel click
+
+
+  (patrl/leader-keys
+    "SPC" '(execute-extended-command :wk "execute command") ;; an alternative to 'M-x'
+    "TAB" '(:keymap tab-prefix-map :wk "tab")) ;; remap tab bindings
+
+  (patrl/leader-keys
+    "c" '(:ignore t :wk "code"))
+
+  ;; help
+  ;; namespace mostly used by 'helpful'
+  (patrl/leader-keys
+    "h" '(:ignore t :wk "help"))
+
+  ;; file
+  (patrl/leader-keys
+    "f" '(:ignore t :wk "file")
+    "ff" '(find-file :wk "find file") ;; gets overridden by consult
+    "fs" '(save-buffer :wk "save file"))
+
+  ;; buffer 
+  ;; see 'bufler' and 'popper'
+  (patrl/leader-keys
+    "b" '(:ignore t :wk "buffer")
+    "bb" '(switch-to-buffer :wk "switch buffer") ;; gets overridden by consult
+    "bk" '(kill-this-buffer :wk "kill this buffer")
+    "br" '(revert-buffer :wk "reload buffer"))
+
+  ;; bookmark
+  (patrl/leader-keys
+    "B" '(:ignore t :wk "bookmark")
+    "Bs" '(bookmark-set :wk "set bookmark")
+    "Bj" '(bookmark-jump :wk "jump to bookmark"))
+
+  ;; universal argument
+  (patrl/leader-keys
+    "u" '(universal-argument :wk "universal prefix"))
+
+  ;; notes
+  ;; see 'citar' and 'org-roam'
+  (patrl/leader-keys
+    "n" '(:ignore t :wk "notes")
+    ;; see org-roam and citar sections
+    "na" '(org-todo-list :wk "agenda todos")) ;; agenda
+
+  ;; code
+  ;; see 'flymake'
+  (patrl/leader-keys
+    "c" '(:ignore t :wk "code"))
+
+  ;; open
+  (patrl/leader-keys
+    "o" '(:ignore t :wk "open")
+    "os" '(speedbar t :wk "speedbar")) ;; TODO this needs some love
+
+  ;; search
+  ;; see 'consult'
+  (patrl/leader-keys
+    "s" '(:ignore t :wk "search"))
+
+  ;; templating
+  ;; see 'tempel'
+  (patrl/leader-keys
+    "t" '(:ignore t :wk "template")))
+
+;; "c" '(org-capture :wk "capture")))
+
 (provide 'init-config-packages)

@@ -11,8 +11,6 @@
 
 (require 'init-config-packages)
 
-(require 'init-lua)
-
 (require 'init-rust)
 
 (require 'init-misc)

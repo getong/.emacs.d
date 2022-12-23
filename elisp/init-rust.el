@@ -94,6 +94,8 @@
 (use-package company
   :ensure
   :config
+
+  (global-company-mode 1)
   (setq company-idle-delay 0.01)
   (setq company-minimum-prefix-length 1)
   :bind

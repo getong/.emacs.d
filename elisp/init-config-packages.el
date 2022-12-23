@@ -573,7 +573,7 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 
   (setq indent-tabs-mode nil) ;; no tabs
 
-  (setq make-backup-files nil) ;; keep everything under vc 
+  (setq make-backup-files nil) ;; keep everything under vc
   (setq auto-save-default nil)
 
   ;; keep backup and save files in a dedicated directory
@@ -666,7 +666,7 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
     "ff" '(find-file :wk "find file") ;; gets overridden by consult
     "fs" '(save-buffer :wk "save file"))
 
-  ;; buffer 
+  ;; buffer
   ;; see 'bufler' and 'popper'
   (patrl/leader-keys
     "b" '(:ignore t :wk "buffer")
@@ -712,5 +712,48 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
     "t" '(:ignore t :wk "template")))
 
 ;; "c" '(org-capture :wk "capture")))
+
+;; copy from https://quant67.com/post/emcas/init-config.html
+;; 默认的 mode-line 不是很好看，用 doom-modeline 好一些。
+(use-package all-the-icons)
+
+(use-package doom-modeline
+  :hook
+  (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-project-detection 'project))
+
+;; copy from https://quant67.com/post/emcas/init-config.html
+;; 让 Emacs 识别文件在项目里
+;;projectile 提供了这个功能。 C-c p 会列举它的快捷键，其中包括在项目中搜索，切换项目等。
+(use-package projectile
+  :config
+  (projectile-mode +1)
+  (setq projectile-enable-caching t)
+  (setq-default projectile-mode-line-prefix " Proj")
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+
+
+;; copy from https://quant67.com/post/emcas/init-config.html
+;; F8 侧边打开项目目录
+(use-package neotree
+  :config
+  ;; f8 to view tree strucure of folder
+  (defun neotree-project-dir ()
+    "Open NeoTree using the git root."
+    (interactive)
+    (let ((project-dir (projectile-project-root))
+          (file-name (buffer-file-name)))
+      (neotree-toggle)
+      (if project-dir
+          (if (neo-global--window-exists-p)
+              (progn
+                (neotree-dir project-dir)
+                (neotree-find file-name)))
+        (message "Could not find git project root."))))
+  (global-set-key [f8] 'neotree-project-dir)
+  ;; switch with projectile
+  (use-package projectile)
+  (setq projectile-switch-project-action 'neotree-projectile-action))
 
 (provide 'init-config-packages)

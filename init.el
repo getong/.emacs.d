@@ -15,4 +15,8 @@
 
 (require 'init-misc)
 
+(require 'init-font)
+
+(require 'init-cpp)
+
 (setq user-emacs-directory (file-truename "~/.emacs.d/"))

@@ -720,8 +720,12 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 (use-package doom-modeline
   :hook
   (after-init . doom-modeline-mode)
+  :custom ((doom-modeline-height 15))
   :config
   (setq doom-modeline-project-detection 'project))
+
+;; M-x all-the-icons-install-fonts
+;; copy from [Why do I have Chinese/Mandarin characters in my mode-line and e-shell out of the blue? How do I fix this?](https://emacs.stackexchange.com/questions/73397/why-do-i-have-chinese-mandarin-characters-in-my-mode-line-and-e-shell-out-of-the)
 
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; 让 Emacs 识别文件在项目里

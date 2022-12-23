@@ -35,36 +35,6 @@
       (hl-line-mode -1)))
   :bind ("<f7>" . prot/display-line-numbers-mode))
 
-(use-package frame
-  :commands prot/cursor-type-mode
-  :config
-  (setq-default cursor-type 'bar)
-  (setq-default cursor-in-non-selected-windows '(bar . 2))
-  (setq-default blink-cursor-blinks 50)
-  (setq-default blink-cursor-interval nil) ; 0.75 would be my choice
-  (setq-default blink-cursor-delay 0.2)
-  (blink-cursor-mode -1)
-  (define-minor-mode prot/cursor-type-mode
-    "Toggle between static block and pulsing bar cursor."
-    :init-value nil
-    :global t
-    (if prot/cursor-type-mode
-        (progn
-          (setq-local blink-cursor-interval 0.75
-                      cursor-type '(bar . 2)
-                      cursor-in-non-selected-windows 'hollow)
-          (blink-cursor-mode 1))
-      (dolist (local '(blink-cursor-interval
-                       cursor-type
-                       cursor-in-non-selected-windows))
-        (kill-local-variable `,local))
-      (blink-cursor-mode -1)))
-  ;; copy from https://emacsredux.com/blog/2020/12/04/maximize-the-emacs-frame-on-startup/
-  ;; start the initial frame maximized
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-  ;; start every frame maximized
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
-  )
 
 (use-package ispell
   :config
@@ -187,6 +157,32 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete)
   :config
+  ;; 默认情况下，Emacs 为每个打开的文件创建一些临时的文件，这会搞乱我们的目录，不需要它。
+  ;; Don't generate backups or lockfiles. While auto-save maintains a copy so long
+  ;; as a buffer is unsaved, backups create copies once, when the file is first
+  ;; written, and never again until it is killed and reopened. This is better
+  ;; suited to version control, and I don't want world-readable copies of
+  ;; potentially sensitive material floating around our filesystem.
+  (setq create-lockfiles nil
+        make-backup-files nil
+        ;; But in case the user does enable it, some sensible defaults:
+        version-control t     ; number each backup file
+        backup-by-copying t   ; instead of renaming current file (clobbers links)
+        delete-old-versions t ; clean up after itself
+        kept-old-versions 5
+        kept-new-versions 5)
+  ;; But turn on auto-save, so we have a fallback in case of crashes or lost data.
+  ;; Use `recover-file' or `recover-session' to recover them.
+  (setq auto-save-default t
+        ;; Don't auto-disable auto-save after deleting big chunks. This defeats
+        ;; the purpose of a failsafe. This adds the risk of losing the data we
+        ;; just deleted, but I believe that's VCS's jurisdiction, not ours.
+        auto-save-include-big-deletions t
+        auto-save-file-name-transforms
+        (list (list "\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'"
+                    ;; Prefix tramp autosaves to prevent conflicts with local ones
+                    (concat auto-save-list-file-prefix "tramp-\\2") t)
+              (list ".*" auto-save-list-file-prefix t)))
   (setq mode-line-percent-position '(-3 "%p"))
   (setq mode-line-defining-kbd-macro
         (propertize " Macro" 'face 'mode-line-emphasis))
@@ -298,6 +294,8 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
    ((string-equal system-type "gnu/linux") ; linux
     (progn
       (message "Linux"))))
+
+
   ;; C-c l is used for `org-store-link'.  The mnemonic for this is to
   ;; focus the Line and also works as a variant of C-l.
   :bind ("C-c L" . prot/scroll-centre-cursor-mode)
@@ -349,24 +347,6 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (shell-command-to-string
    "open keysmith://run-shortcut/796BB627-5433-48E4-BB54-1AA6C54A14E8"))
 (global-set-key (kbd "C-c p o") 'xcode-open-current-file)
-
-;; copy from https://lucidmanager.org/productivity/manage-files-with-emacs/
-;; Open dired folders in same buffer
-;;(put 'dired-find-alternate-file 'disabled nil)
-;; Copy and move files netween dired buffers
-;;(setq dired-dwim-target t)
-;; Only y/n answers
-;;(defalias 'yes-or-no-p 'y-or-n-p)
-;; below will cause dired mode error in macos,
-;; Sort Dired buffers
-;;(setq dired-listing-switches "-agho --group-directories-first")
-(use-package dired
-  :config
-  (progn
-    (put 'dired-find-alternate-file 'disabled nil)
-    (setq dired-dwim-target t)
-    (defalias 'yes-or-no-p 'y-or-n-p)
-    ))
 
 (use-package openwith
   :config
@@ -465,5 +445,121 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
   )
+
+;;  rainbow-delimiters 可以将对称的括号用同一种颜色标记出来。
+;; parens
+(use-package smartparens
+  :diminish nil
+  :config
+  (sp-use-smartparens-bindings))
+(use-package smartparens-config
+  :diminish nil
+  :ensure smartparens
+  :config (progn (show-smartparens-global-mode t)))
+(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+(use-package paren
+  :config
+  (setq show-paren-delay 0.1
+        show-paren-when-point-in-periphery t))
+(use-package rainbow-delimiters
+  :hook ((prog-mode . rainbow-delimiters-mode)))
+
+;;(add-to-list 'default-frame-alist '(foreground-color . "white"))
+;;(add-to-list 'default-frame-alist '(background-color . "black"))
+;;(require 'color-theme-sanityinc-tomorrow)
+;;(load-theme 'sanityinc-tomorrow-blue t)
+;;(color-theme-sanityinc-tomorrow--define-theme blue)
+;;(add-to-list 'default-frame-alist '(cursor-color . "black"))
+;; (add-to-list 'default-frame-alist '(cursor-type . bar))
+;;(blink-cursor-mode -1)
+;;(setq blink-cursor-blinks -1)
+;; theme
+;;(use-package color-theme-sanityinc-tomorrow
+;;  :defer t
+;;  :init (load-theme 'sanityinc-tomorrow-night t))
+
+;; copy from https://protesilaos.com/codelog/2022-08-15-intro-ef-themes-emacs/
+(use-package ef-themes
+  :defer t
+  :init (load-theme 'ef-winter t))
+
+;; 让 .emacs.d 更干净
+;; no littering, keep .emacs.d clean
+(use-package no-littering
+  :config
+  (with-eval-after-load 'recentf
+    (set 'recentf-exclude
+         '(no-littering-var-directory
+           no-littering-etc-directory
+           (expand-file-name "elpa" user-emacs-directory)
+           (expand-file-name "cache" user-emacs-directory))))
+  (setq custom-file (no-littering-expand-etc-file-name "custom.el")))
+
+
+(use-package indent-guide
+  :config
+  (indent-guide-global-mode)
+  )
+
+(use-package switch-window
+  :config
+  (global-set-key (kbd "C-x o") 'switch-window)
+(global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
+(global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
+(global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
+(global-set-key (kbd "C-x 0") 'switch-window-then-delete)
+
+(global-set-key (kbd "C-x 4 d") 'switch-window-then-dired)
+(global-set-key (kbd "C-x 4 f") 'switch-window-then-find-file)
+(global-set-key (kbd "C-x 4 m") 'switch-window-then-compose-mail)
+(global-set-key (kbd "C-x 4 r") 'switch-window-then-find-file-read-only)
+
+(global-set-key (kbd "C-x 4 C-f") 'switch-window-then-find-file)
+(global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
+
+(global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
+
+(setq switch-window-shortcut-style 'qwerty)
+(setq switch-window-qwerty-shortcuts
+      '("a" "s" "d" "f" "j" "k" "l" ";" "w" "e" "i" "o"))
+  )
+
+(use-package aggressive-indent
+  :config
+  (global-aggressive-indent-mode 1)
+  (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+  (add-hook 'css-mode-hook #'aggressive-indent-mode)
+  )
+
+;; enable ob-tmux by see [org-mode + vterm + tmux == ❤️❤️❤️](https://www.reddit.com/r/emacs/comments/xyo2fo/orgmode_vterm_tmux/)
+(use-package ob-tmux
+  ;; Install package automatically (optional)
+  :ensure t
+  :custom
+  (org-babel-default-header-args:tmux
+   '((:results . "silent")	;
+     (:session . "default")	; The default tmux session to send code to
+     (:socket  . nil)))		; The default tmux socket to communicate with
+  ;; The tmux sessions are prefixed with the following string.
+  ;; You can customize this if you like.
+  (org-babel-tmux-session-prefix "ob-")
+  ;; The terminal that will be used.
+  ;; You can also customize the options passed to the terminal.
+  ;; The default terminal is "gnome-terminal" with options "--".
+  (org-babel-tmux-terminal "xterm")
+  (org-babel-tmux-terminal-opts '("-T" "ob-tmux" "-e"))
+  ;; Finally, if your tmux is not in your $PATH for whatever reason, you
+  ;; may set the path to the tmux binary as follows:
+  (org-babel-tmux-location "/usr/bin/tmux"))
+
+;; copy from https://emacs.stackexchange.com/questions/31872/how-to-update-packages-installed-with-use-package
+;; With that setup, packages will be updated every 4 days, and the old packages will be removed.
+(use-package auto-package-update
+  :ensure t
+  :config
+  (setq auto-package-update-delete-old-versions t
+        auto-package-update-interval 4)
+  (auto-package-update-maybe))
 
 (provide 'init-config-packages)

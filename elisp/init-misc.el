@@ -1,16 +1,8 @@
 (setq inhibit-startup-screen t)
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-
-;;(add-to-list 'default-frame-alist '(foreground-color . "white"))
-;;(add-to-list 'default-frame-alist '(background-color . "black"))
-(require 'color-theme-sanityinc-tomorrow)
-(load-theme 'sanityinc-tomorrow-blue t)
-;;(color-theme-sanityinc-tomorrow--define-theme blue)
-;;(add-to-list 'default-frame-alist '(cursor-color . "black"))
-;; (add-to-list 'default-frame-alist '(cursor-type . bar))
-;;(blink-cursor-mode -1)
-;;(setq blink-cursor-blinks -1)
+;; disable menu bar, tool-bar
+(push '(menu-bar-lines . 0)   default-frame-alist)
+(push '(tool-bar-lines . 0)   default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
 
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 4)
@@ -163,7 +155,7 @@
 ;; 高亮选中区域颜色
 (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
 
-(indent-guide-global-mode)
+
 
 (defun switch-to-frame (frame-name)
   (interactive "sFrame name:")
@@ -223,26 +215,26 @@
 (setq savehist-file "~/.emacs.d/savehist")
 
 ;; copy from https://github.com/dimitri/switch-window
-(require 'switch-window)
-(global-set-key (kbd "C-x o") 'switch-window)
-(global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
-(global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
-(global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
-(global-set-key (kbd "C-x 0") 'switch-window-then-delete)
-
-(global-set-key (kbd "C-x 4 d") 'switch-window-then-dired)
-(global-set-key (kbd "C-x 4 f") 'switch-window-then-find-file)
-(global-set-key (kbd "C-x 4 m") 'switch-window-then-compose-mail)
-(global-set-key (kbd "C-x 4 r") 'switch-window-then-find-file-read-only)
-
-(global-set-key (kbd "C-x 4 C-f") 'switch-window-then-find-file)
-(global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
-
-(global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
-
-(setq switch-window-shortcut-style 'qwerty)
-(setq switch-window-qwerty-shortcuts
-      '("a" "s" "d" "f" "j" "k" "l" ";" "w" "e" "i" "o"))
+;;(require 'switch-window)
+;;(global-set-key (kbd "C-x o") 'switch-window)
+;;(global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
+;;(global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
+;;(global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
+;;(global-set-key (kbd "C-x 0") 'switch-window-then-delete)
+;;
+;;(global-set-key (kbd "C-x 4 d") 'switch-window-then-dired)
+;;(global-set-key (kbd "C-x 4 f") 'switch-window-then-find-file)
+;;(global-set-key (kbd "C-x 4 m") 'switch-window-then-compose-mail)
+;;(global-set-key (kbd "C-x 4 r") 'switch-window-then-find-file-read-only)
+;;
+;;(global-set-key (kbd "C-x 4 C-f") 'switch-window-then-find-file)
+;;(global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
+;;
+;;(global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
+;;
+;;(setq switch-window-shortcut-style 'qwerty)
+;;(setq switch-window-qwerty-shortcuts
+;;      '("a" "s" "d" "f" "j" "k" "l" ";" "w" "e" "i" "o"))
 
 ;; formats the buffer before saving
 (add-hook 'before-save-hook 'tide-format-before-save)
@@ -418,5 +410,37 @@ When using Homebrew, install it using \"brew install trash-cli\"."
   (if (bound-and-true-p socks-noproxy)
       (proxy-socks-disable)
     (proxy-socks-enable)))
+
+
+(setq-default cursor-type 'bar)
+(setq-default cursor-in-non-selected-windows '(bar . 2))
+(setq-default blink-cursor-blinks 50)
+(setq-default blink-cursor-interval nil) ; 0.75 would be my choice
+(setq-default blink-cursor-delay 0.2)
+(blink-cursor-mode -1)
+(define-minor-mode prot/cursor-type-mode
+  "Toggle between static block and pulsing bar cursor."
+  :init-value nil
+  :global t
+  (if prot/cursor-type-mode
+      (progn
+        (setq-local blink-cursor-interval 0.75
+                    cursor-type '(bar . 2)
+                    cursor-in-non-selected-windows 'hollow)
+        (blink-cursor-mode 1))
+    (dolist (local '(blink-cursor-interval
+                     cursor-type
+                     cursor-in-non-selected-windows))
+      (kill-local-variable `,local))
+    (blink-cursor-mode -1)))
+;; copy from https://emacsredux.com/blog/2020/12/04/maximize-the-emacs-frame-on-startup/
+;; start the initial frame maximized
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; start every frame maximized
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+(put 'dired-find-alternate-file 'disabled nil)
+    (setq dired-dwim-target t)
+    (defalias 'yes-or-no-p 'y-or-n-p)
 
 (provide 'init-misc)

@@ -25,14 +25,24 @@
 
 ;;; copy from [How to automatically install Emacs packages by specifying a list of package names?](https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name)
 ;;; list the packages you want
-(setq package-list '(indent-guide pangu-spacing spinner undo-tree highlight-thing markdown-mode switch-window
-                                  protobuf-mode tide dart-mode dart-server mix csharp-mode omnisharp lua-mode flycheck-rust rust-mode
-                                  swift-mode lsp-mode which-key use-package rustic magit openwith
-                                  color-theme-sanityinc-tomorrow olivetti aggressive-indent dap-mode vterm multiple-cursors))
+;;(setq package-list '(indent-guide pangu-spacing spinner undo-tree highlight-thing markdown-mode switch-window
+;;                                  protobuf-mode tide dart-mode dart-server mix csharp-mode omnisharp lua-mode flycheck-rust rust-mode
+;;                                  swift-mode lsp-mode which-key use-package rustic magit openwith
+;;                                  color-theme-sanityinc-tomorrow olivetti aggressive-indent dap-mode vterm multiple-cursors))
 
 ;; install the missing packages
-(dolist (package package-list)
-  (unless (package-installed-p package)
-    (package-install package)))
+;;(dolist (package package-list)
+;;  (unless (package-installed-p package)
+;;    (package-install package)))
+
+;; this i only needed once
+(eval-when-compile
+  (require 'use-package))
+
+;; copy from https://ianyepan.github.io/posts/setting-up-use-package/
+;; Setting use-package-always-ensure to t (meaning “true”) saves us the trouble of having to specify :ensure t in any future packages we’d like to declare and install.
+(eval-and-compile
+  (setq use-package-always-ensure t
+        use-package-expand-minimally t))
 
 (provide 'init-package)

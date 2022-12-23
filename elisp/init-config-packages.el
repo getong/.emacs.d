@@ -233,11 +233,167 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
         (setq-local mode-line-format nil)
       (kill-local-variable 'mode-line-format)
       (force-mode-line-update)))
+  ;; copy from [Emacs on Mac OS X - To Alt or Command?](https://apple.stackexchange.com/questions/12087/emacs-on-mac-os-x-to-alt-or-command)
+  ;; copy from [emacs-mac-port的command key能不能改回系统默认的command功能？](https://emacs-china.org/t/emacs-mac-port-command-key-command/8845)
+  ;; check OS type
+  (cond
+   ((string-equal system-type "windows-nt") ; Microsoft Windows
+    (progn
+      (message "Microsoft Windows")))
+   ((string-equal system-type "darwin") ; Mac OS X
+    (progn
+      (setq mac-option-modifier 'meta)
+      (setq mac-command-modifier 'super)
+      (setq ns-option-modifier 'meta)
+      (setq ns-command-modifier 'super)
+      ;; Here are some Nextstep-like bindings for command key sequences.
+      (define-key global-map [?\s-,] 'customize)
+      (define-key global-map [?\s-'] 'next-window-any-frame)
+      (define-key global-map [?\s-`] 'other-frame)
+      (define-key global-map [?\s-~] 'ns-prev-frame)
+      (define-key global-map [?\s--] 'center-line)
+      (define-key global-map [?\s-:] 'ispell)
+      (define-key global-map [?\s-?] 'info)
+      (define-key global-map [?\s-^] 'kill-some-buffers)
+      (define-key global-map [?\s-&] 'kill-current-buffer)
+      (define-key global-map [?\s-C] 'ns-popup-color-panel)
+      (define-key global-map [?\s-D] 'dired)
+      (define-key global-map [?\s-E] 'edit-abbrevs)
+      (define-key global-map [?\s-L] 'shell-command)
+      (define-key global-map [?\s-M] 'manual-entry)
+      (define-key global-map [?\s-S] 'ns-write-file-using-panel)
+      (define-key global-map [?\s-a] 'mark-whole-buffer)
+      (define-key global-map [?\s-c] 'ns-copy-including-secondary)
+      (define-key global-map [?\s-d] 'isearch-repeat-backward)
+      (define-key global-map [?\s-e] 'isearch-yank-kill)
+      (define-key global-map [?\s-f] 'isearch-forward)
+      (define-key global-map [?\s-g] 'isearch-repeat-forward)
+      (define-key global-map [?\s-h] 'ns-do-hide-emacs)
+      (define-key global-map [?\s-H] 'ns-do-hide-others)
+      (define-key global-map [?\M-\s-h] 'ns-do-hide-others)
+      (define-key global-map [?\s-j] 'exchange-point-and-mark)
+      (define-key global-map [?\s-k] 'kill-current-buffer)
+      (define-key global-map [?\s-l] 'goto-line)
+      (define-key global-map [?\s-m] 'iconify-frame)
+      (define-key global-map [?\s-n] 'make-frame)
+      (define-key global-map [?\s-o] 'ns-open-file-using-panel)
+      (define-key global-map [?\s-p] 'ns-print-buffer)
+      (define-key global-map [?\s-q] 'save-buffers-kill-emacs)
+      (define-key global-map [?\s-s] 'save-buffer)
+      (define-key global-map [?\s-t] 'ns-popup-font-panel)
+      (define-key global-map [?\s-u] 'revert-buffer)
+      (define-key global-map [?\s-v] 'yank)
+      (define-key global-map [?\s-w] 'delete-frame)
+      (define-key global-map [?\s-x] 'kill-region)
+      (define-key global-map [?\s-y] 'ns-paste-secondary)
+      (define-key global-map [?\s-z] 'undo)
+      (define-key global-map [?\s-+] 'text-scale-adjust)
+      (define-key global-map [?\s-=] 'text-scale-adjust)
+      (define-key global-map [?\s--] 'text-scale-adjust)
+      (define-key global-map [?\s-0] 'text-scale-adjust)
+      (define-key global-map [?\s-|] 'shell-command-on-region)
+      (define-key global-map [s-kp-bar] 'shell-command-on-region)
+      (define-key global-map [?\C-\s- ] 'ns-do-show-character-palette)
+      (message "Mac OS X")))
+   ((string-equal system-type "gnu/linux") ; linux
+    (progn
+      (message "Linux"))))
   ;; C-c l is used for `org-store-link'.  The mnemonic for this is to
   ;; focus the Line and also works as a variant of C-l.
   :bind ("C-c L" . prot/scroll-centre-cursor-mode)
   )
 
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+
+
+;; copy from https://www.danielde.dev/blog/emacs-for-swift-development
+(defun print-swift-var-under-point()
+  (interactive)
+  (if (string-match-p (string (preceding-char)) "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
+      (backward-sexp)
+    nil)
+  (kill-sexp)
+  (yank)
+  (move-end-of-line nil)
+  (newline)
+  (insert "print(\"")
+  (yank)
+  (insert ": \\(")
+  (yank)
+  (insert ")\")")
+  (indent-for-tab-command))
+(use-package swift-mode
+  :bind (("C-c l" . print-swift-var-under-point)))
+
+(defun xcode-build()
+  (interactive)
+  (shell-command-to-string
+   "osascript -e 'tell application \"Xcode\"' -e 'set targetProject to active workspace document' -e 'build targetProject' -e 'end tell'"))
+(defun xcode-run()
+  (interactive)
+  (shell-command-to-string
+   "osascript -e 'tell application \"Xcode\"' -e 'set targetProject to active workspace document' -e 'stop targetProject' -e 'run targetProject' -e 'end tell'"))
+(defun xcode-test()
+  (interactive)
+  (shell-command-to-string
+   "osascript -e 'tell application \"Xcode\"' -e 'set targetProject to active workspace document' -e 'stop targetProject' -e 'test targetProject' -e 'end tell'"))
+(global-set-key (kbd "C-c p b") 'xcode-build)
+(global-set-key (kbd "C-c p r") 'xcode-run)
+(global-set-key (kbd "C-c p t") 'xcode-test)
+
+(defun xcode-open-current-file()
+  (interactive)
+  (shell-command-to-string
+   (concat "open -a \"/Applications/Xcode.app\" " (buffer-file-name)))
+  (kill-new (car (cdr (split-string (what-line)))))
+  (shell-command-to-string
+   "open keysmith://run-shortcut/796BB627-5433-48E4-BB54-1AA6C54A14E8"))
+(global-set-key (kbd "C-c p o") 'xcode-open-current-file)
+
+;; copy from https://lucidmanager.org/productivity/manage-files-with-emacs/
+;; Open dired folders in same buffer
+;;(put 'dired-find-alternate-file 'disabled nil)
+;; Copy and move files netween dired buffers
+;;(setq dired-dwim-target t)
+;; Only y/n answers
+;;(defalias 'yes-or-no-p 'y-or-n-p)
+;; below will cause dired mode error in macos,
+;; Sort Dired buffers
+;;(setq dired-listing-switches "-agho --group-directories-first")
+(use-package dired
+  :config
+  (progn
+    (put 'dired-find-alternate-file 'disabled nil)
+    (setq dired-dwim-target t)
+    (defalias 'yes-or-no-p 'y-or-n-p)
+    ))
+
+(use-package openwith
+  :config
+  (setq openwith-associations
+        (list
+         (list (openwith-make-extension-regexp
+                '("mpg" "mpeg" "mp3" "mp4" "m4v"
+                  "avi" "wmv" "wav" "mov" "flv"
+                  "ogm" "ogg" "mkv" "webm"))
+               "VLC"
+               '(file))
+         (list (openwith-make-extension-regexp
+                '("xbm" "pbm" "pgm" "ppm" "pnm"
+                  "png" "gif" "bmp" "tif" "jpeg" "jpg" "webp"))
+               "nsxiv -a"
+               '(file))
+         (list (openwith-make-extension-regexp
+                '("pdf"))
+               "zathura"
+               '(file)))))
+
+;;(require 'pangu-spacing)
+;;(global-pangu-spacing-mode 1)
+(use-package pangu-spacing)
+
+;;(require 'highlight-thing)
+;;(global-highlight-thing-mode)
+(use-package highlight-thing)
 
 (provide 'init-config-packages)

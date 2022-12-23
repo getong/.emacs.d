@@ -93,12 +93,15 @@
 
 (use-package company
   :ensure
+  :config
+  (setq company-idle-delay 0.01)
+  (setq company-minimum-prefix-length 1)
   :bind
   (:map company-active-map
-              ("C-n". company-select-next)
-              ("C-p". company-select-previous)
-              ("M-<". company-select-first)
-              ("M->". company-select-last))
+        ("C-n". company-select-next)
+        ("C-p". company-select-previous)
+        ("M-<". company-select-first)
+        ("M->". company-select-last))
   (:map company-mode-map
         ("<tab>". tab-indent-or-complete)
         ("TAB". tab-indent-or-complete)))

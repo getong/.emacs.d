@@ -760,4 +760,10 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (use-package projectile)
   (setq projectile-switch-project-action 'neotree-projectile-action))
 
+;; copy from [Highlight current active window](https://stackoverflow.com/questions/33195122/highlight-current-active-window)
+(use-package auto-dim-other-buffers
+  :config
+  (auto-dim-other-buffers-mode))
+
+
 (provide 'init-config-packages)

@@ -443,19 +443,4 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (setq dired-dwim-target t)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(defface hl-line-inactive
-  '((t nil))
-  "Inactive variant of `hl-line'."
-  :group 'hl-line)
-
-(defun hl-line-update-face (window)
-  "Update the `hl-line' face in WINDOW to indicate whether the window is selected."
-  (with-current-buffer (window-buffer window)
-    (when hl-line-mode
-      (if (eq (current-buffer) (window-buffer (selected-window)))
-          (face-remap-reset-base 'hl-line)
-        (face-remap-set-base 'hl-line (face-all-attributes 'hl-line-inactive))))))
-
-(add-hook 'buffer-list-update-hook (lambda () (walk-windows #'hl-line-update-face nil t)))
-
 (provide 'init-misc)

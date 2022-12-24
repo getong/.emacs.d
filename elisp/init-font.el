@@ -4,10 +4,11 @@
                                                   :size 14))
 
 (when (eq system-type 'darwin)
-  (setq fonts '("SF Mono" "冬青黑体简体中文"))
+  (set-frame-font "EB Garamond 12 Italic 20" nil t)
+  (setq fonts '("EB Garamond 12 Italic"  "SF Mono" "冬青黑体简体中文"))
   (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend)
-  (set-face-attribute 'default nil :font
-                      (format "%s:pixelsize=%d" (car fonts) 14)))
+  (set-face-attribute 'default nil :font  "EB Garamond 12 Italic 20" 
+                      ))
 
 (when (eq system-type 'windows-nt)
   (setq fonts '("Source Code Pro" "思源黑体"))

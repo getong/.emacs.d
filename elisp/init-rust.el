@@ -26,6 +26,10 @@
   ;; (setq lsp-eldoc-hook nil)
   ;; (setq lsp-enable-symbol-highlighting nil)
   ;; (setq lsp-signature-auto-activate nil)
+  (setq rustic-lsp-format t)
+  (setq rustic-format-trigger 'on-compile)
+  (setq compilation-read-command nil) ;; not prompt on minibuffer when do compile.
+  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
 
   ;; comment to disable rustfmt on save
   (setq rustic-lsp-server 'rust-analyzer)
@@ -40,6 +44,15 @@
   (when buffer-file-name
     (setq-local buffer-save-without-query t))
   (add-hook 'before-save-hook 'lsp-format-buffer nil t))
+
+(use-package flycheck-rust :ensure)
+
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
 
 ;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;; for rust-analyzer integration
@@ -193,7 +206,8 @@
 			                (yas-minor-mode)
                             ))
 
-(require 'rust-mode)
+;;(require 'rust-mode)
+(use-package rust-mode :ensure)
 ;;(define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
 ;;(setq company-tooltip-align-annotations t)
 
@@ -218,15 +232,6 @@
     (setq rustic-analyzer-command '("/backup/backup/rust_installation/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"))
     (setq lsp-rust-analyzer-server-command '("/backup/backup/rust_installation/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"))
     )))
-
-(eval-after-load "rust-mode"
-  '(setq-default rust-format-on-save t))
-(add-hook 'rust-mode-hook (lambda ()
-                            (flycheck-rust-setup)
-                            (lsp)
-                            (flycheck-mode)
-			                (yas-minor-mode)
-                            ))
 
 ;; copy from [Rust development environment for Emacs](https://rustrepo.com/repo/brotzeit-rustic-rust-ides)
 (defun rustic-mode-auto-save-hook ()

@@ -451,6 +451,22 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
   )
 
+(reformatter-define lua-format
+  :program "stylua"
+  :args '("-")
+  :group 'lua)
+
+
+(reformatter-define js-format
+  :program "npx"
+  :args '("prettier" "--stdin-filepath" "a.js"))
+
+(with-eval-after-load 'js
+  (evil-leader/set-key-for-mode 'js-mode "d" 'dumb-jump-go)
+  (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
+
+
+
 ;;  rainbow-delimiters 可以将对称的括号用同一种颜色标记出来。
 ;; parens
 (use-package smartparens
@@ -467,7 +483,12 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (setq show-paren-delay 0.1
         show-paren-when-point-in-periphery t))
 (use-package rainbow-delimiters
-  :hook ((prog-mode . rainbow-delimiters-mode)))
+  :ensure t
+  :hook
+  ((css-mode . rainbow-mode)
+   (sass-mode . rainbow-mode)
+   (scss-mode . rainbow-mode))
+  ((prog-mode . rainbow-delimiters-mode)))
 
 ;;(add-to-list 'default-frame-alist '(foreground-color . "white"))
 ;;(add-to-list 'default-frame-alist '(background-color . "black"))
@@ -773,5 +794,77 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 
 (use-package reformatter
   :ensure t)
+
+(use-package unicode-fonts
+  :ensure t
+  :config
+  (unicode-fonts-setup))
+
+
+(use-package all-the-icons-dired
+  :ensure t
+  :defer t
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :config
+  (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle))
+
+;; Share clipoard with OS
+(use-package pbcopy
+  :ensure t)
+
+;; XML formatter
+(reformatter-define xml-format
+  :program "xmlformat"
+  :group 'xml)
+
+(with-eval-after-load 'nxml-mode
+  (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
+
+
+(reformatter-define dart-format
+  :program "dart"
+  :args '("format")
+  :group 'dart)
+
+(defun my/dart-run-file ()
+  "Execute the code of the current file."
+  (interactive)
+  (compile (format "dart %s" (buffer-file-name))))
+
+(use-package dart-mode
+  :ensure t
+  :if (or (executable-find "dart") (executable-find "flutter"))
+  :bind (:map dart-mode-map
+              ("C-c C-f" . dart-format-buffer)
+              ("C-c C-c" . my/dart-run-file))
+  :config
+  (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions))
+
+(defun my/flutter-goto-logs-buffer()
+  "Go to buffer logs buffer."
+  (interactive)
+  (let ((buffer (get-buffer flutter-buffer-name)))
+    (unless buffer
+      (user-error "flutter is not running."))
+    (switch-to-buffer buffer)
+    (goto-line (point-max))))
+
+(use-package flutter
+  :ensure t
+  :after dart-mode
+  :bind (:map dart-mode-map
+              ("C-c C-r" . #'flutter-run-or-hot-reload)
+              ("C-c C-l" . #'my/flutter-goto-logs-buffer))
+  :hook (dart-mode . flutter-test-mode)
+  :custom
+  ;; sdk path will be the parent-parent directory of flutter cli
+  (flutter-sdk-path (directory-file-name
+                     (file-name-directory
+                      (directory-file-name
+                       (file-name-directory (executable-find "flutter")))))))
 
 (provide 'init-config-packages)

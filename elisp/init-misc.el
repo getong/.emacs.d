@@ -490,4 +490,11 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 
 (add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1))) ; 编程模式下让结尾的空白符亮起
 
+;; Show a marker when the line has empty characters at the end
+(setq-default show-trailing-whitespace t)
+
+;; Dark and transparent title bar in macOS
+(when (memq window-system '(mac ns))
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 (provide 'init-misc)

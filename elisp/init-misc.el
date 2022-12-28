@@ -176,9 +176,11 @@
 (setq x-underline-at-descent-line t)
 
 ;;文本解码设置默认为 UTF-8
-(set-language-environment "UTF-8")
+(set-language-environment 'utf-8)
 (set-default-coding-systems 'utf-8)
+(set-file-name-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
 
 ;; Emacs 自动加载外部修改过的文件
 (global-auto-revert-mode 1)
@@ -497,4 +499,5 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (when (memq window-system '(mac ns))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
+
 (provide 'init-misc)

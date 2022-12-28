@@ -9,9 +9,7 @@
          ("C-c C-SPC" . mc/edit-lines)
          ))
 
-(use-package magit-delta
-  :ensure t
-  :hook (magit-mode . magit-delta-mode))
+
 
 ;; copy from [Error when running magit-status: run-hooks: Wrong number of arguments](https://github.com/magit/magit/issues/3837)
 (use-package transient
@@ -866,5 +864,113 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
                      (file-name-directory
                       (directory-file-name
                        (file-name-directory (executable-find "flutter")))))))
+
+;; Incremental code parsing for better syntax highlighting
+(use-package tree-sitter
+  :ensure t
+  :hook
+  (tree-sitter-after-on . tree-sitter-hl-mode)
+  :config
+  (global-tree-sitter-mode))
+
+(use-package tree-sitter-langs
+  :ensure t
+  :defer t)
+
+;; SQL formatter
+(reformatter-define sql-format
+  :program "pg_format")
+
+(defun my/format-sql ()
+  "Format active region otherwise format the entire buffer."
+  (interactive)
+  (if (region-active-p)
+      (sql-format-region (region-beginning) (region-end))
+    (sql-format-buffer)))
+
+(with-eval-after-load 'sql
+  (add-hook 'sql-mode-hook 'flymake-sqlfluff-load)
+  (add-hook 'sql-mode-hook 'flymake-mode)
+  (define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
+
+;; SQL linter using sqlfluff
+(use-package flymake-sqlfluff
+  :ensure t)
+
+;; Org tree slide
+(use-package hide-mode-line
+  :ensure t)
+(defun my/org-tree-slide-setup ()
+  (org-display-inline-images)
+  (hide-mode-line-mode 1))
+
+(defun my/org-tree-slide-end ()
+  (org-display-inline-images)
+  (hide-mode-line-mode 0))
+
+(use-package org-tree-slide
+  :ensure t
+  :defer t
+  :custom
+  (org-image-actual-width nil)
+  (org-tree-slide-activate-message "Presentation started!")
+  (org-tree-slide-deactivate-message "Presentation finished!")
+  :hook ((org-tree-slide-play . my/org-tree-slide-setup)
+         (org-tree-slide-stop . my/org-tree-slide-end))
+  :bind (:map org-tree-slide-mode-map
+              ("C-<" . org-tree-slide-move-previous-tree)
+              ("C->" . org-tree-slide-move-next-tree)))
+
+;; latex
+(use-package auctex
+  :ensure t
+  :defer t)
+
+(use-package latex-preview-pane
+  :ensure t
+  :defer t)
+
+;; git
+(use-package git-link
+  :ensure t
+  :defer t)
+
+(use-package git-modes
+  :defer t
+  :ensure t)
+
+(use-package magit-delta
+  :ensure t
+  :hook (magit-mode . magit-delta-mode))
+
+(use-package diff-hl
+  :ensure t
+  :custom
+  (diff-hl-show-staged-changes nil)
+  ;; for some reason the :hook form doesn't work so we have to use :init
+  :init
+  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+  :config
+  (global-diff-hl-mode))
+
+(use-package gist
+  :ensure t
+  :defer t)
+
+(use-package linkode
+  :ensure t
+  :defer t)
+
+(use-package git-timemachine)
+
+;; Cursor
+(use-package beacon
+  :ensure t
+  :custom
+  (beacon-color "orange")
+  :config
+  (beacon-mode 1))
 
 (provide 'init-config-packages)

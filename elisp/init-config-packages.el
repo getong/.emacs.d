@@ -113,7 +113,12 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
     "Send `C-k' to libvterm, and put content in kill-ring."
     (interactive)
     (kill-ring-save (point) (vterm-end-of-line))
-    (vterm-send-key "k" nil nil t)))
+    (vterm-send-key "k" nil nil t))
+  ;; copy from https://erickgnavar.github.io/emacs-config/
+  :custom
+  (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
+  (vterm-always-compile-module t)
+  )
 
 (use-package vterm-toggle
   :when (memq window-system '(mac ns x pgtk))
@@ -765,5 +770,8 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   :config
   (auto-dim-other-buffers-mode))
 
+
+(use-package reformatter
+  :ensure t)
 
 (provide 'init-config-packages)

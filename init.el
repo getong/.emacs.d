@@ -1,3 +1,5 @@
+;;; init.el -*- lexical-binding: t; -*-
+
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
 (require 'init-package)
@@ -19,4 +21,3 @@
 
 (require 'init-cpp)
 
-(setq user-emacs-directory (file-truename "~/.emacs.d/"))

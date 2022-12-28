@@ -443,4 +443,51 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (setq dired-dwim-target t)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+
+(setq user-emacs-directory (file-truename "~/.emacs.d/"))
+
+
+;; copy from https://blog.ginshio.org/2022/doom_emacs_configuration/#guix
+(setq-default
+ window-combination-resize t        ; 从其他窗口获取新窗口的大小
+ x-stretch-cursor t                 ; 将光标拉伸到字形宽度
+ )
+
+(setq undo-limit 104857600         ; 重置撤销限制到 100 MiB
+      auto-save-default t          ; 没有人喜欢丢失工作，我也是如此
+      truncate-string-ellipsis "…" ; Unicode 省略号相比 ascii 更好
+                                        ; 同时节省 /宝贵的/ 空间
+      password-cache-expiry nil    ; 我能信任我的电脑 ... 或不能?
+                                        ; scroll-preserve-screen-position 'always
+                                        ; 不要让 `点' (光标) 跳来跳去
+      scroll-margin 2              ; 适当保持一点点边距
+      gc-cons-threshold 1073741824
+      read-process-output-max 1048576
+      )
+
+(remove-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'text-mode-hook #'auto-fill-mode)
+(add-hook 'window-setup-hook #'toggle-frame-fullscreen)
+                                        ; 设置最大化启动
+;;(display-time-mode t)             ; 开启时间状态栏
+(require 'battery)
+(when (and battery-status-function
+           (not (string-match-p "N/A"
+                                (battery-format "%B"
+                                                (funcall battery-status-function)))))
+  (display-battery-mode 1))         ; 知道还剩多少 ⚡️ 很重要
+
+(global-subword-mode 1)             ; 识别驼峰，而不是傻瓜前进
+(global-unset-key (kbd "C-z"))      ; 关闭 "C-z" 最小化
+;;(define-key global-map "C-s" #'+default/search-buffer)
+;;(map (:leader (:desc "load a saved workspace" :g "wr" #'+workspace/load))) ;; workspace load keybind
+
+
+(custom-set-variables '(delete-selection-mode t) ;; delete when you select region and modify
+                      '(delete-by-moving-to-trash t) ;; delete && move to transh
+                      '(inhibit-compacting-font-caches t) ;; don’t compact font caches during GC.
+                      '(gc-cons-percentage 1))
+
+(add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1))) ; 编程模式下让结尾的空白符亮起
+
 (provide 'init-misc)

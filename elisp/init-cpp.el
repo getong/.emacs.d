@@ -12,7 +12,9 @@
   :config
   (define-key c-mode-base-map (kbd "M-/") 'ff-find-related-file)
   ;; Open a header file in C++ mode by defaults
-  (add-auto-mode 'c++-mode "\\.h\\'"))
+  ;;(add-auto-mode 'c++-mode "\\.h\\'")
+  )
+
 
 (use-package cmake-mode
   :init

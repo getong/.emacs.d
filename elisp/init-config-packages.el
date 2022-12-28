@@ -449,11 +449,13 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
   )
 
+(use-package reformatter
+  :ensure t)
+
 (reformatter-define lua-format
   :program "stylua"
   :args '("-")
   :group 'lua)
-
 
 (reformatter-define js-format
   :program "npx"
@@ -462,8 +464,6 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 (with-eval-after-load 'js
   (evil-leader/set-key-for-mode 'js-mode "d" 'dumb-jump-go)
   (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
-
-
 
 ;;  rainbow-delimiters 可以将对称的括号用同一种颜色标记出来。
 ;; parens
@@ -788,10 +788,6 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 (use-package auto-dim-other-buffers
   :config
   (auto-dim-other-buffers-mode))
-
-
-(use-package reformatter
-  :ensure t)
 
 (use-package unicode-fonts
   :ensure t

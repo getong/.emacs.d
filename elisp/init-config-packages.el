@@ -970,13 +970,6 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   :config
   (beacon-mode 1))
 
-(use-package dap-mode
-  :ensure t
-  :config
-  (require 'dap-lldb)
-  (require 'dap-gdb-lldb)
-  )
-
 (use-package dash
   :defer t)
 

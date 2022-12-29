@@ -872,7 +872,7 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 
 (use-package tree-sitter-langs
   :ensure t
-  :defer t)
+  :after tree-sitter)
 
 ;; SQL formatter
 (reformatter-define sql-format

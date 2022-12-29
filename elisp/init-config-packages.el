@@ -867,6 +867,7 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   :hook
   (tree-sitter-after-on . tree-sitter-hl-mode)
   :config
+  (require 'tree-sitter-langs)
   (global-tree-sitter-mode))
 
 (use-package tree-sitter-langs
@@ -968,5 +969,21 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (beacon-color "orange")
   :config
   (beacon-mode 1))
+
+(use-package dap-mode
+  :ensure t
+  :config
+  (require 'dap-lldb)
+  (require 'dap-gdb-lldb)
+  )
+
+(use-package dash
+  :defer t)
+
+(use-package lsp-treemacs
+  :commands lsp-treemacs-errors-list
+  :config
+  ;;(lsp-metals-treeview-enable t)
+  (setq lsp-metals-treeview-show-when-views-received t))
 
 (provide 'init-config-packages)

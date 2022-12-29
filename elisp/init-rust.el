@@ -9,6 +9,8 @@
 
 (use-package rustic
   :ensure
+  :init
+  (setq rustic-treesitter-derive t)
   :bind (:map rustic-mode-map
               ("M-j" . lsp-ui-imenu)
               ("M-?" . lsp-find-references)

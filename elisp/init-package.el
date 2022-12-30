@@ -4,13 +4,13 @@
 (package-initialize)
 
 ;; 设置软件源
-(setq package-archives '(("gnu" . "http://mirrors.ustc.edu.cn/elpa/gnu/")
-                         ("gnu-devel" . "http://mirrors.ustc.edu.cn/elpa/gnu-devel/")
-                         ("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
-                         ("nongnu" . "http://mirrors.ustc.edu.cn/elpa/nongnu/")
-                         ("nongnu-devel" . "http://mirrors.ustc.edu.cn/elpa/nongnu-devel/")
+(setq package-archives '(("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
                          ("org" . "http://mirrors.ustc.edu.cn/elpa/org/")
                          ("stable-melpa" . "http://mirrors.ustc.edu.cn/elpa/stable-melpa/")
+                         ("gnu" . "http://mirrors.ustc.edu.cn/elpa/gnu/")
+                         ("gnu-devel" . "http://mirrors.ustc.edu.cn/elpa/gnu-devel/")
+                         ("nongnu" . "http://mirrors.ustc.edu.cn/elpa/nongnu/")
+                         ("nongnu-devel" . "http://mirrors.ustc.edu.cn/elpa/nongnu-devel/")
                          ))
 
 

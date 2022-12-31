@@ -1002,4 +1002,177 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
     (interactive)
     (restart-emacs (cons "--no-desktop" args))))
 
+;; copy from https://emacs-china.org/t/zoom/22957
+;; zoom: 窗口管理插件，自动调整窗口布局
+(use-package zoom
+  :config
+  (custom-set-variables
+   '(zoom-mode t))
+  (defun size-callback ()
+    (cond ((> (frame-pixel-width) 1280) '(90 . 0.75))
+          (t                            '(0.5 . 0.5))))
+  (custom-set-variables
+   '(zoom-size 'size-callback))
+  (custom-set-variables
+   '(zoom-ignored-major-modes '(dired-mode markdown-mode))
+   '(zoom-ignored-buffer-names '("zoom.el" "init.el"))
+   '(zoom-ignored-buffer-name-regexps '("^*calc"))
+   '(zoom-ignore-predicates '((lambda () (> (count-lines (point-min) (point-max)) 20)))))
+  )
+
+;; zoom-window provides window zoom like tmux zoom and unzoom.
+;; C-x C-z 可以把当前窗口最大化
+(use-package zoom-window
+  :config
+  (require 'zoom-window)
+  (global-set-key (kbd "C-x C-z") 'zoom-window-zoom)
+  (custom-set-variables
+   '(zoom-window-mode-line-color "DarkGreen"))
+  )
+
+;; copy from https://emacs-china.org/t/emacs-builtin-mode/11937
+;; winner-mode 是一个全局的 minor mode。它的主要功能是记录窗体的变动。
+;; 例如当前有2 个窗口，然后你关了一个，这时可以通过 winner-undo 来恢复。
+;; 还可以再 winner-redo 来撤销刚才的 undo.
+;; (C-c <Left>) winner-undo
+;; (C-c <Right>) winner-redo
+(use-package winner-mode
+  :ensure nil
+  :hook (after-init . winner-mode))
+;; 它也可以应用在 ediff 上，恢复由 ediff 导致的窗体变动。
+(use-package ediff
+  :ensure nil
+  :hook (ediff-quit . winner-undo))
+
+;;  saveplace 记录了上次打开文件时 cursor 停留在第几行、第几列。
+(use-package saveplace
+  :ensure nil
+  :hook (after-init . save-place-mode))
+
+;; 高亮当前行。
+(use-package hl-line
+  :ensure nil
+  :hook (after-init . global-hl-line-mode))
+
+;; 隐藏、显示结构化数据，如 { } 里的内容。对于单函数较长的情况比较有用。
+(use-package hideshow
+  :ensure nil
+  :diminish hs-minor-mode
+  :bind (:map prog-mode-map
+              ("C-c TAB" . hs-toggle-hiding)
+              ("M-+" . hs-show-all))
+  :hook (prog-mode . hs-minor-mode)
+  :custom
+  (hs-special-modes-alist
+   (mapcar 'purecopy
+           '((c-mode "{" "}" "/[*/]" nil nil)
+             (c++-mode "{" "}" "/[*/]" nil nil)
+             (rust-mode "{" "}" "/[*/]" nil nil)))))
+
+;; 显示空白字符，如 \t \v \v 空格等等。
+;; 可以配置在 prog-mode，markdown-mode 和 conf-mode 下，显示行尾的空白字符。
+(use-package whitespace
+  :ensure nil
+  :hook
+  (after-init . global-whitespace-mode)
+
+  ((prog-mode markdown-mode conf-mode) . whitespace-mode)
+  :config
+  ;; makefile等以tab为标识的文件中也会将tab转换为空格, 排除特定的mode呢
+  (setq whitespace-global-modes '(not makefile-mode))
+  ;; Don't use different background for tabs.
+  (face-spec-set 'whitespace-tab
+                 '((t :background unspecified)))
+  ;; Only use background and underline for long lines, so we can still have
+  ;; syntax highlight.
+
+  ;; For some reason use face-defface-spec as spec-type doesn't work.  My guess
+  ;; is it's due to the variables with the same name as the faces in
+  ;; whitespace.el.  Anyway, we have to manually set some attribute to
+  ;; unspecified here.
+  (face-spec-set 'whitespace-line
+                 '((((background light))
+                    :background "#d8d8d8" :foreground unspecified
+                    :underline t :weight unspecified)
+                   (t
+                    :background "#404040" :foreground unspecified
+                    :underline t :weight unspecified)))
+
+  ;; Use softer visual cue for space before tabs.
+  (face-spec-set 'whitespace-space-before-tab
+                 '((((background light))
+                    :background "#d8d8d8" :foreground "#de4da1")
+                   (t
+                    :inherit warning
+                    :background "#404040" :foreground "#ee6aa7")))
+
+  (setq
+   whitespace-line-column nil
+   whitespace-style
+   '(face             ; visualize things below:
+     empty            ; empty lines at beginning/end of buffer
+     lines-tail       ; lines go beyond `fill-column'
+     space-before-tab ; spaces before tab
+     trailing         ; trailing blanks
+     tabs             ; tabs (show by face)
+     tab-mark         ; tabs (show by symbol)
+     ))
+  )
+
+;; 当打开一个具有长行的文件时，它会自动检测并将一些可能导致严重性能的 mode 关闭， 如 syntax highlight。
+(use-package so-long
+  :ensure nil
+  :config (global-so-long-mode 1))
+
+;; 有时候Emacs里打开的文件可能被外部修改，启用autorevert的话可以自动更新对应的 buffer.
+(use-package autorevert
+  :ensure nil
+  :hook (after-init . global-auto-revert-mode))
+
+;; 来显示如 10/100 这种状态。
+;; 在搜索中删除字符会回退搜索结果，而不是停在当前位置将最后一个搜 索字符删除。这里可以通过remap isearch-delete-char来实现。
+;; 还可以将搜索结果保持在高亮状态以方便肉眼识别。这个是通过设置 lazy-highlight-cleanup为nil实现的。
+;; 去除高亮状态需要人工M-x调用 lazy-highlight-cleanup。
+(use-package isearch
+  :ensure nil
+  :bind (:map isearch-mode-map
+              ([remap isearch-delete-char] . isearch-del-char))
+  :custom
+  (isearch-lazy-count t)
+  (lazy-count-prefix-format "%s/%s ")
+  (lazy-highlight-cleanup nil))
+
+;; 打开这个 mode 以后就能正确地处理驼峰命名中的单词了。
+(use-package subword
+  :hook (after-init . global-subword-mode))
+
+;; 如果你想要一个足够简单的注释与反注释功能，那么自带的newcomment就可以做到。
+;; 当用户选中区间时，在对应区间上注释或者反注释
+;; 如果当前行是空的，那么会插入一个注释并且将它对齐 (偷懒，直接调用了comment-dwim)
+;; 其他情况则对当前行注释或者反注释
+(use-package newcomment
+  :ensure nil
+  :bind ([remap comment-dwim] . #'comment-or-uncomment)
+  :config
+  (defun comment-or-uncomment ()
+    (interactive)
+    (if (region-active-p)
+        (comment-or-uncomment-region (region-beginning) (region-end))
+      (if (save-excursion
+            (beginning-of-line)
+            (looking-at "\\s-*$"))
+          (call-interactively 'comment-dwim)
+        (comment-or-uncomment-region (line-beginning-position) (line-end-position)))))
+  :custom
+  (comment-auto-fill-only-comments t))
+
+
+;; RET 后仅保留一个 dired buffer
+;; For Emacs 28
+(use-package dired
+  :ensure nil
+  :custom
+  (dired-kill-when-opening-new-dired-buffer t))
+
+
 (provide 'init-config-packages)

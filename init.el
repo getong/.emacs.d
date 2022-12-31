@@ -17,7 +17,6 @@
 
 (require 'init-misc)
 
-(require 'init-font)
-
 (require 'init-cpp)
 
+(require 'init-font)

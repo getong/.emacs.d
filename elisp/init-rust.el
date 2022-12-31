@@ -36,7 +36,15 @@
   ;; comment to disable rustfmt on save
   (setq rustic-lsp-server 'rust-analyzer)
   (setq rustic-lsp-client 'lsp-mode)
+  ;;(setq rustic-lsp-client 'eglot)
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+
+;;(use-package eglot
+;;  :ensure t
+;;  :config
+;;  (add-to-list 'eglot-server-programs '(rustic-mode . ("rust-analyzer")))
+;;  (add-hook 'rustic-mode-hook 'eglot-ensure)
+;;  (define-key eglot-mode-map (kbd "C-c r") 'eglot-rename))
 
 (defun rk/rustic-mode-hook ()
   ;; so that run C-c C-c C-r works without having to confirm, but don't try to

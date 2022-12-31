@@ -13,6 +13,15 @@
                          ("nongnu-devel" . "http://mirrors.ustc.edu.cn/elpa/nongnu-devel/")
                          ))
 
+;; 设置软件源优先级
+(setq package-archive-priorities '(("melpa"  . 10)
+                                   ("org"  . 5)
+                                   ("stable-melpa"  . 5)
+                                   ("gnu"  . 3)
+                                   ("gnu-devel"  . 3)
+                                   ("nongnu"    . 1)
+                                   ("nongnu-devel" . 1)))
+
 
 ;; fetch the list of packages available
 (unless package-archive-contents

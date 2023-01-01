@@ -31,6 +31,7 @@
   (setq rustic-lsp-format t)
   (setq rustic-format-trigger 'on-compile)
   (setq compilation-read-command nil) ;; not prompt on minibuffer when do compile.
+  (push 'rustic-clippy flycheck-checkers)
   (setq lsp-rust-analyzer-cargo-watch-command "clippy")
 
   ;; comment to disable rustfmt on save
@@ -129,9 +130,10 @@
         ("C-p". company-select-previous)
         ("M-<". company-select-first)
         ("M->". company-select-last))
-  (:map company-mode-map
-        ("<tab>". tab-indent-or-complete)
-        ("TAB". tab-indent-or-complete)))
+  ;;(:map company-mode-map
+  ;;      ("<tab>". tab-indent-or-complete)
+  ;;      ("TAB". tab-indent-or-complete))
+  )
 
 (defun company-yasnippet-or-completion ()
   (interactive)
@@ -196,15 +198,10 @@
      (list :type "lldb"
            :request "launch"
            :name "LLDB::Run"
-	   :gdbpath "rust-lldb"
+	       :gdbpath "rust-lldb"
            ;; uncomment if lldb-mi is not in PATH
            ;; :lldbmipath "path/to/lldb-mi"
            ))))
-
-;;; custom config
-
-(push 'rustic-clippy flycheck-checkers)
-
 
 ;; Load rust-mode when you open `.rs` files
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))

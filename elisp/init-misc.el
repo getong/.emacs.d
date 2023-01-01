@@ -501,11 +501,13 @@ When using Homebrew, install it using \"brew install trash-cli\"."
   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 
 ;; copy from https://emacs.stackexchange.com/questions/6065/how-to-display-time-in-seconds-in-the-mode-line
-(setq display-time-format "%I:%M:%S")
+(setq display-time-format "%Y-%m-%d %H:%M:%S")
 (setq display-time-interval 1)
 ;; copy from https://codeantenna.com/a/ng3kV0ML9U
 (display-time-mode 1) ;; 常显
 (setq display-time-24hr-format t) ;;格式
 (setq display-time-day-and-date t) ;;显示时间、星期、日期
+;; copy from https://www.reddit.com/r/emacs/comments/kf3tsq/what_is_this_number_after_the_time_in_the_modeline/
+(setq display-time-default-load-average nil)
 
 (provide 'init-misc)

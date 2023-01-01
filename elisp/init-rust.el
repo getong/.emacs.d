@@ -57,6 +57,7 @@
   (add-hook 'before-save-hook 'lsp-format-buffer nil t))
 
 (use-package flycheck-rust :ensure)
+(use-package flycheck :ensure)
 
 (use-package tide
   :ensure t
@@ -90,6 +91,7 @@
   (setq lsp-enable-file-watchers nil)
   (setq lsp-file-watch-threshold 2000)
   (setq lsp-auto-guess-root nil)
+  (setq lsp-rust-analyzer-proc-macro-enable t)
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
 (use-package lsp-ui
@@ -99,12 +101,6 @@
   (lsp-ui-peek-always-show t)
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
-
-
-;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-;; inline errors
-
-(use-package flycheck :ensure)
 
 
 ;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

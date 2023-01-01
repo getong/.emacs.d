@@ -86,6 +86,8 @@
   (lsp-rust-analyzer-display-parameter-hints nil)
   (lsp-rust-analyzer-display-reborrow-hints nil)
   :config
+  (setq lsp-enable-file-watchers nil)
+  (setq lsp-file-watch-threshold 2000)
   (setq lsp-auto-guess-root nil)
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 

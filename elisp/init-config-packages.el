@@ -674,7 +674,8 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 
   (patrl/leader-keys
     "SPC" '(execute-extended-command :wk "execute command") ;; an alternative to 'M-x'
-    "TAB" '(:keymap tab-prefix-map :wk "tab")) ;; remap tab bindings
+    ;;"TAB" '(:keymap tab-prefix-map :wk "tab") ;; remap tab bindings
+    )
 
   (patrl/leader-keys
     "c" '(:ignore t :wk "code"))

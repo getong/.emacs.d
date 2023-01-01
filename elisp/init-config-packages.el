@@ -806,8 +806,9 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 (use-package dired-subtree
   :ensure t
   :after dired
-  :config
-  (define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle))
+  ;;:config
+  ;;(define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
+  )
 
 ;; Share clipoard with OS
 (use-package pbcopy

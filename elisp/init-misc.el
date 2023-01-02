@@ -25,10 +25,6 @@
   (setq global-hl-line-sticky-flag t)
   (global-hl-line-mode 1))
 
-(global-linum-mode 1)
-(setq linum-format "%3d ")
-(add-hook 'prog-mode-hook 'linum-mode)
-
 ;;(setq-default indent-tabs-mode nil)
 (ido-mode 1)
 (setq column-number-mode t)

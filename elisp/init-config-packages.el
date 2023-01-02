@@ -1218,4 +1218,16 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 (add-hook 'typescript-mode-hook 'lsp-deferred)
 (add-hook 'javascript-mode-hook 'lsp-deferred)
 
+
+;; (global-linum-mode 1)
+;; (setq linum-format "%3d ")
+;; (add-hook 'prog-mode-hook 'linum-mode)
+(use-package linum
+  :init
+  (progn
+    (global-linum-mode t)
+    (setq linum-format "%4d  ")
+    (set-face-background 'linum nil)
+    ))
+
 (provide 'init-config-packages)

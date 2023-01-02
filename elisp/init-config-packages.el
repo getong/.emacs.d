@@ -304,9 +304,6 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   :bind ("C-c L" . prot/scroll-centre-cursor-mode)
   )
 
-(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-
-
 ;; copy from https://www.danielde.dev/blog/emacs-for-swift-development
 (defun print-swift-var-under-point()
   (interactive)
@@ -445,7 +442,6 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
               (make-variable-buffer-local 'completion-at-point-functions)
               (add-to-list 'completion-at-point-functions 'pnh-lua-complete)))
   :config
-  (add-hook 'lua-mode-hook 'lsp)
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
   )
@@ -1213,11 +1209,6 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   :ensure t
   :config
   (apheleia-global-mode +1))
-
-;; copy from https://sagot.dev/en/articles/emacs-typescript/
-(add-hook 'typescript-mode-hook 'lsp-deferred)
-(add-hook 'javascript-mode-hook 'lsp-deferred)
-
 
 ;; (global-linum-mode 1)
 ;; (setq linum-format "%3d ")

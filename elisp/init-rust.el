@@ -93,26 +93,31 @@
   (lsp-rust-analyzer-display-parameter-hints nil)
   (lsp-rust-analyzer-display-reborrow-hints nil)
   :config
+  ;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
   (add-hook 'go-mode-hook #'lsp)
   (add-hook 'python-mode-hook #'lsp)
   (add-hook 'c++-mode-hook #'lsp)
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'rust-mode-hook #'lsp)
   (add-hook 'html-mode-hook #'lsp)
-  (add-hook 'js-mode-hook #'lsp)
-  (add-hook 'typescript-mode-hook #'lsp)
+  ;;(add-hook 'js-mode-hook #'lsp)
+  ;;(add-hook 'typescript-mode-hook #'lsp)
   (add-hook 'json-mode-hook #'lsp)
   (add-hook 'yaml-mode-hook #'lsp)
   (add-hook 'dockerfile-mode-hook #'lsp)
   (add-hook 'shell-mode-hook #'lsp)
   (add-hook 'css-mode-hook #'lsp)
+  (add-hook 'lua-mode-hook 'lsp)
+  ;; copy from https://sagot.dev/en/articles/emacs-typescript/
+  (add-hook 'typescript-mode-hook 'lsp-deferred)
+  (add-hook 'javascript-mode-hook 'lsp-deferred)
 
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
                     :major-modes '(python-mode)
                     :server-id 'pyls))
   (setq company-minimum-prefix-length 1
-	company-idle-delay 0.500) ;; default is 0.2
+	    company-idle-delay 0.500) ;; default is 0.2
   ;;(require 'lsp-clients)
 
   (setq lsp-enable-file-watchers nil)
@@ -126,15 +131,16 @@
   ;; lua
   ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
   (setq lsp-clients-lua-language-server-install-dir "/usr/local/Cellar/lua-language-server/3.6.4/"
-	lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
-	lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
-	lsp-lua-workspace-max-preload 8192
-	lsp-lua-workspace-preload-file-size 1024
-	)
+	    lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
+	    lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
+	    lsp-lua-workspace-max-preload 8192
+	    lsp-lua-workspace-preload-file-size 1024
+	    )
   )
 
 (use-package lsp-ui
   :ensure t
+  ;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
   :custom-face
   (lsp-ui-doc-background ((t (:background nil))))
   :commands lsp-ui-mode

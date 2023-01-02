@@ -445,6 +445,7 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
               (make-variable-buffer-local 'completion-at-point-functions)
               (add-to-list 'completion-at-point-functions 'pnh-lua-complete)))
   :config
+  (add-hook 'lua-mode-hook 'lsp)
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
   )

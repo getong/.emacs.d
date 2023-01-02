@@ -90,9 +90,21 @@
   :config
   (setq lsp-enable-file-watchers nil)
   (setq lsp-file-watch-threshold 2000)
-  (setq lsp-auto-guess-root nil)
+  (setq lsp-log-io nil) ; if set to true can cause a performance hit
+  (setq lsp-print-performance t)
+  (setq lsp-auto-guess-root t) ; auto detect workspace and start lang server
   (setq lsp-rust-analyzer-proc-macro-enable t)
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  ;; copy from https://emacs-china.org/t/doom-emacs-lsp-lua-mode/16432/7
+  ;; lua
+  ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
+  (setq lsp-clients-lua-language-server-install-dir "/usr/local/Cellar/lua-language-server/3.6.4/"
+        lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
+        lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
+        lsp-lua-workspace-max-preload 8192
+        lsp-lua-workspace-preload-file-size 1024
+        )
+  )
 
 (use-package lsp-ui
   :ensure

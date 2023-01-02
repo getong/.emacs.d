@@ -1230,4 +1230,14 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
     (set-face-background 'linum nil)
     ))
 
+;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
+;; Json
+(use-package json-mode)
+;; Yaml
+(use-package yaml-mode)
+;; Dockfile
+(use-package dockerfile-mode)
+;; Protobuf
+(use-package protobuf-mode)
+
 (provide 'init-config-packages)

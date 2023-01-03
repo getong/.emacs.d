@@ -13,7 +13,6 @@
 
 (require 'init-config-packages)
 
-(require 'init-rust)
 
 (require 'init-misc)
 

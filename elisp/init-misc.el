@@ -506,4 +506,16 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 ;; copy from https://www.reddit.com/r/emacs/comments/kf3tsq/what_is_this_number_after_the_time_in_the_modeline/
 (setq display-time-default-load-average nil)
 
+
+;; copy from [launch love2d app from Emacs](https://gist.github.com/legumbre/38ef323645f17a3c8033)
+(defvar love2d-program "/usr/local/bin/love")
+
+(defun love2d-launch-current ()
+  (interactive)
+  (let ((app-root (locate-dominating-file (buffer-file-name) "main.lua")))
+    (if app-root
+        (shell-command (format "%s %s &" love2d-program app-root))
+      (error "main.lua not found"))))
+
+
 (provide 'init-misc)

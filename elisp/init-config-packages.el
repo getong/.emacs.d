@@ -74,24 +74,62 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   :bind ("C-c o" . prot/olivetti-mode))
 
 ;; copy from [Saving persistent undo to a single directory, alist format](https://emacs.stackexchange.com/questions/26993/saving-persistent-undo-to-a-single-directory-alist-format)
-(use-package undo-tree
-  :defer t
-  :diminish undo-tree-mode
-  :init (global-undo-tree-mode)
-  :custom
-  (undo-tree-visualizer-diff t)
-  (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-  (undo-tree-visualizer-timestamps t))
+;;(use-package undo-tree
+;;  :defer t
+;;  :diminish undo-tree-mode
+;;  :init (global-undo-tree-mode)
+;;  :custom
+;;  (undo-tree-visualizer-diff t)
+;;  (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+;;  (undo-tree-visualizer-timestamps t))
+;;
+;;;; copy from [Playing nicely with linum](https://www.emacswiki.org/emacs/UndoTree)
+;;(defun undo-tree-visualizer-update-linum (&rest args)
+;;  (linum-update undo-tree-visualizer-parent-buffer))
+;;(advice-add 'undo-tree-visualize-undo :after #'undo-tree-visualizer-update-linum)
+;;(advice-add 'undo-tree-visualize-redo :after #'undo-tree-visualizer-update-linum)
+;;(advice-add 'undo-tree-visualize-undo-to-x :after #'undo-tree-visualizer-update-linum)
+;;(advice-add 'undo-tree-visualize-redo-to-x :after #'undo-tree-visualizer-update-linum)
+;;(advice-add 'undo-tree-visualizer-mouse-set :after #'undo-tree-visualizer-update-linum)
+;;(advice-add 'undo-tree-visualizer-set :after #'undo-tree-visualizer-update-linum)
 
-;; copy from [Playing nicely with linum](https://www.emacswiki.org/emacs/UndoTree)
-(defun undo-tree-visualizer-update-linum (&rest args)
-  (linum-update undo-tree-visualizer-parent-buffer))
-(advice-add 'undo-tree-visualize-undo :after #'undo-tree-visualizer-update-linum)
-(advice-add 'undo-tree-visualize-redo :after #'undo-tree-visualizer-update-linum)
-(advice-add 'undo-tree-visualize-undo-to-x :after #'undo-tree-visualizer-update-linum)
-(advice-add 'undo-tree-visualize-redo-to-x :after #'undo-tree-visualizer-update-linum)
-(advice-add 'undo-tree-visualizer-mouse-set :after #'undo-tree-visualizer-update-linum)
-(advice-add 'undo-tree-visualizer-set :after #'undo-tree-visualizer-update-linum)
+(use-package vundo
+  :bind ("C-x u" . vundo)
+  :commands (vundo)
+  :hook ((vundo-mode . my/vundo-setup))
+  :init
+  (progn
+    (setq vundo-window-max-height 5))
+  :config
+  (progn
+    (setq vundo-glyph-alist vundo-unicode-symbols)
+    ;; Take less on-screen space.
+    (setq vundo-compact-display t)
+    ;; Better contrasting highlight.
+    (custom-set-faces
+     '(vundo-node ((t (:foreground "#808080"))))
+     '(vundo-stem ((t (:foreground "#808080"))))
+     '(vundo-highlight ((t (:foreground "#FFFF00")))))
+
+    ;; Use `HJKL` VIM-like motion, also Home/End to jump around.
+    (define-key vundo-mode-map (kbd "l") #'vundo-forward)
+    (define-key vundo-mode-map (kbd "<right>") #'vundo-forward)
+    (define-key vundo-mode-map (kbd "h") #'vundo-backward)
+    (define-key vundo-mode-map (kbd "<left>") #'vundo-backward)
+    (define-key vundo-mode-map (kbd "j") #'vundo-next)
+    (define-key vundo-mode-map (kbd "<down>") #'vundo-next)
+    (define-key vundo-mode-map (kbd "k") #'vundo-previous)
+    (define-key vundo-mode-map (kbd "<up>") #'vundo-previous)
+    (define-key vundo-mode-map (kbd "<home>") #'vundo-stem-root)
+    (define-key vundo-mode-map (kbd "<end>") #'vundo-stem-end)
+    (define-key vundo-mode-map (kbd "q") #'vundo-quit)
+    (define-key vundo-mode-map (kbd "C-g") #'vundo-quit)
+    (define-key vundo-mode-map (kbd "RET") #'vundo-confirm)
+    (defun my/vundo-setup ()
+      "Remove mode-line and header-line."
+      (setq mode-line-format nil)
+      (setq header-line-format nil))
+    ))
 
 ;; copy from https://emacs-china.org/t/vterm-zsh/20497
 ;;; Terminal

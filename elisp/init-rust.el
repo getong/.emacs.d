@@ -110,7 +110,7 @@
   (add-hook 'lua-mode-hook 'lsp)
   ;; copy from https://sagot.dev/en/articles/emacs-typescript/
   (add-hook 'typescript-mode-hook 'lsp-deferred)
-  (add-hook 'javascript-mode-hook 'lsp-deferred)
+  ;;(add-hook 'javascript-mode-hook 'lsp-deferred)
 
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
@@ -139,40 +139,12 @@
   )
 
 (use-package lsp-ui
-  :ensure t
-  ;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
-  :custom-face
-  (lsp-ui-doc-background ((t (:background nil))))
+  :ensure
   :commands lsp-ui-mode
-  :init (setq lsp-ui-doc-enable t
-              lsp-ui-doc-include-signature t
-
-              lsp-enable-snippet nil
-              lsp-ui-sideline-enable nil
-              lsp-ui-peek-enable nil
-
-              lsp-ui-doc-position              'at-point
-              lsp-ui-doc-header                nil
-              lsp-ui-doc-border                "white"
-              lsp-ui-doc-include-signature     t
-              lsp-ui-sideline-update-mode      'point
-              lsp-ui-sideline-delay            1
-              lsp-ui-sideline-ignore-duplicate t
-              lsp-ui-peek-always-show          t
-              lsp-ui-flycheck-enable           nil
-              )
-  :bind (:map lsp-ui-mode-map
-              ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-              ([remap xref-find-references] . lsp-ui-peek-find-references)
-              ("C-c u" . lsp-ui-imenu))
   :custom
   (lsp-ui-peek-always-show t)
   (lsp-ui-sideline-show-hover t)
-  (lsp-ui-doc-enable nil)
-  :config
-  (setq lsp-ui-sideline-ignore-duplicate t)
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-  )
+  (lsp-ui-doc-enable nil))
 
 
 ;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

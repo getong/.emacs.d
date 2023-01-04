@@ -111,20 +111,6 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
      '(vundo-stem ((t (:foreground "#808080"))))
      '(vundo-highlight ((t (:foreground "#FFFF00")))))
 
-    ;; Use `HJKL` VIM-like motion, also Home/End to jump around.
-    (define-key vundo-mode-map (kbd "l") #'vundo-forward)
-    (define-key vundo-mode-map (kbd "<right>") #'vundo-forward)
-    (define-key vundo-mode-map (kbd "h") #'vundo-backward)
-    (define-key vundo-mode-map (kbd "<left>") #'vundo-backward)
-    (define-key vundo-mode-map (kbd "j") #'vundo-next)
-    (define-key vundo-mode-map (kbd "<down>") #'vundo-next)
-    (define-key vundo-mode-map (kbd "k") #'vundo-previous)
-    (define-key vundo-mode-map (kbd "<up>") #'vundo-previous)
-    (define-key vundo-mode-map (kbd "<home>") #'vundo-stem-root)
-    (define-key vundo-mode-map (kbd "<end>") #'vundo-stem-end)
-    (define-key vundo-mode-map (kbd "q") #'vundo-quit)
-    (define-key vundo-mode-map (kbd "C-g") #'vundo-quit)
-    (define-key vundo-mode-map (kbd "RET") #'vundo-confirm)
     (defun my/vundo-setup ()
       "Remove mode-line and header-line."
       (setq mode-line-format nil)

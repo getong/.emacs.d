@@ -1255,6 +1255,8 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 ;; Protobuf
 (use-package protobuf-mode)
 
+(use-package flycheck-rust)
+(use-package flycheck)
 
 (use-package rustic
   :ensure
@@ -1306,8 +1308,7 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (add-hook 'before-save-hook 'lsp-format-buffer nil t))
 
 
-(use-package flycheck-rust :ensure)
-(use-package flycheck :ensure)
+
 
 (use-package tide
   :ensure t

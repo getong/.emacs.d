@@ -1,5 +1,5 @@
 ;;; init.el -*- lexical-binding: t; -*-
-
+(setq use-package-compute-statistics t)
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
 (require 'init-package)
@@ -19,3 +19,5 @@
 (require 'init-cpp)
 
 (require 'init-font)
+
+(message (emacs-init-time))

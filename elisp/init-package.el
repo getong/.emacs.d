@@ -54,4 +54,9 @@
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
 
+(use-package esup
+  :ensure t
+  ;; To use MELPA Stable use ":pin melpa-stable",
+  :pin melpa)
+
 (provide 'init-package)

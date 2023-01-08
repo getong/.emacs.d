@@ -1554,5 +1554,11 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
     :ignore-messages nil
     :server-id 'rust-analyzer-remote)))
 
+;; https://www.emacswiki.org/emacs/KeyCast
+;;modeline上显示我的所有的按键和执行的命令
+(use-package keycast
+  :init
+  (add-to-list 'global-mode-string '("" mode-line-keycast))
+  (keycast-mode))
 
 (provide 'init-config-packages)

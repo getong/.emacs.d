@@ -763,6 +763,15 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 ;; 默认的 mode-line 不是很好看，用 doom-modeline 好一些。
 (use-package all-the-icons)
 
+;; https://www.emacswiki.org/emacs/KeyCast
+;; copy from https://book.emacs-china.org/#org737719a
+;; ;;modeline上显示我的所有的按键和执行的命令
+(use-package keycast
+  :init
+  (add-to-list 'global-mode-string '("" keycast-mode-line))
+  (keycast-mode t))
+
+;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
 (use-package doom-modeline
   :hook
   (after-init . doom-modeline-mode)
@@ -1553,12 +1562,5 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
                        (lsp-rust-analyzer-inlay-hints-mode)))
     :ignore-messages nil
     :server-id 'rust-analyzer-remote)))
-
-;; https://www.emacswiki.org/emacs/KeyCast
-;;modeline上显示我的所有的按键和执行的命令
-(use-package keycast
-  :init
-  (add-to-list 'global-mode-string '("" mode-line-keycast))
-  (keycast-mode))
 
 (provide 'init-config-packages)

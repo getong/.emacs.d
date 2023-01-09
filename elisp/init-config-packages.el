@@ -1506,8 +1506,13 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 			                (yas-minor-mode)
                             ))
 
-;;(require 'rust-mode)
-(use-package rust-mode :ensure)
+;; copy from https://blog.sumtypeofway.com/posts/emacs-config.html
+(use-package rust-mode
+  :ensure t
+  :custom
+  (rust-format-on-save t)
+  (lsp-rust-server 'rust-analyzer)
+  )
 
 ;; copy from https://zenn.dev/yukit/articles/25a88b33a35633
 (cond
@@ -1847,5 +1852,12 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (progn
     (setq column-number-mode t)
     ))
+
+;; copy from https://blog.sumtypeofway.com/posts/emacs-config.html
+(use-package recentf
+  :config
+  (add-to-list 'recentf-exclude "\\elpa")
+  (add-to-list 'recentf-exclude "private/tmp")
+  (recentf-mode))
 
 (provide 'init-config-packages)

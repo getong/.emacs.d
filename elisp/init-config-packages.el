@@ -1821,5 +1821,32 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   :after treemacs projectile
   :ensure t)
 
+;; 保存光标历史，记住上个命令
+;; copy from https://book.emacs-china.org/#orga142e60
+(use-package savehist
+  :ensure nil
+  :hook (after-init . savehist-mode)
+  :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
+	          history-length 1000
+	          savehist-additional-variables '(mark-ring
+					                          global-mark-ring
+					                          search-ring
+					                          regexp-search-ring
+					                          extended-command-history)
+	          savehist-autosave-interval 300)
+  )
+
+(use-package saveplace
+  :ensure nil
+  :hook (after-init . save-place-mode))
+
+;; 显示文件列
+(use-package simple
+  :ensure nil
+  :hook (after-init . size-indication-mode)
+  :init
+  (progn
+    (setq column-number-mode t)
+    ))
 
 (provide 'init-config-packages)

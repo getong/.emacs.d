@@ -1422,9 +1422,8 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
         ("M-<". company-select-first)
         ("M->". company-select-last))
   ;;(:map company-mode-map
-  ;;      ("<tab>". tab-indent-or-complete)
-  ;;      ("TAB". tab-indent-or-complete))
-  )
+  ("<tab>". tab-indent-or-complete)
+  ("TAB". tab-indent-or-complete))
 
 (defun company-yasnippet-or-completion ()
   (interactive)

@@ -767,9 +767,9 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 ;; copy from https://book.emacs-china.org/#org737719a
 ;; ;;modeline上显示我的所有的按键和执行的命令
 (use-package keycast
-  :init
+  :config
   (add-to-list 'global-mode-string '("" keycast-mode-line))
-  (keycast-mode t))
+  (keycast-mode))
 
 ;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
 (use-package doom-modeline

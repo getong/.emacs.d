@@ -1,3 +1,10 @@
+;; -*- coding: utf-8; lexical-binding: t -*-
+
+(use-package esup
+  :ensure t
+  ;; To use MELPA Stable use ":pin melpa-stable",
+  :pin melpa)
+
 ;; copy from https://www.reddit.com/r/emacs/comments/iu0euj/getting_modern_multiple_cursors_in_emacs/
 (use-package multiple-cursors
   :ensure   t
@@ -1003,6 +1010,7 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   :config
   (beacon-mode 1))
 
+(use-package s)
 (use-package dash
   :defer t)
 

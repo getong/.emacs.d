@@ -1,3 +1,5 @@
+;; -*- coding: utf-8; lexical-binding: t -*-
+
 ;; 这两段一定要在 init.el 的最上方
 (require 'package)
 ;; 初始化包管理器
@@ -53,11 +55,6 @@
 (eval-and-compile
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
-
-(use-package esup
-  :ensure t
-  ;; To use MELPA Stable use ":pin melpa-stable",
-  :pin melpa)
 
 ;; copy from https://www.reddit.com/r/emacs/comments/siuvpu/isnt_there_a_better_way_to_set_utf8/
 (set-locale-environment "zh_CN.UTF-8")

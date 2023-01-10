@@ -1,3 +1,5 @@
+;; -*- coding: utf-8; lexical-binding: t -*-
+
 (setq inhibit-startup-screen t)
 ;; disable menu bar, tool-bar
 (push '(menu-bar-lines . 0)   default-frame-alist)

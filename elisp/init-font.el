@@ -1,3 +1,5 @@
+;; -*- coding: utf-8; lexical-binding: t -*-
+
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; default
 ;;(set-face-attribute 'default nil :font (font-spec :family "Source Code Pro"

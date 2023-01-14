@@ -2034,4 +2034,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :bind
   ("C-;" . tiny-expand))
 
+(use-package company-tabnine :ensure t)
+
 (provide 'init-config-packages)

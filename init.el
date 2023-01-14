@@ -3,6 +3,8 @@
 (setq use-package-compute-statistics t)
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
+(require 'cl-lib)
+
 (require 'init-package)
 
 ;;; move customize-set-variable out of init.el

@@ -1391,6 +1391,8 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (setq company-minimum-prefix-length 1
 	    company-idle-delay 0.500) ;; default is 0.2
   ;;(require 'lsp-clients)
+  (setq lsp-completion-provider :none) ;; 阻止 lsp 重新设置 company-backend 而覆盖我们 yasnippet 的设置
+  (setq lsp-headerline-breadcrumb-enable t)
 
   (setq lsp-enable-file-watchers nil)
   (setq lsp-file-watch-threshold 2000)
@@ -1426,12 +1428,19 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (add-hook 'text-mode-hook 'yas-minor-mode))
 
 (use-package company
-  :ensure
+  :ensure t
+  :init (global-company-mode)
   :config
 
-  (global-company-mode 1)
-  (setq company-idle-delay 0.01)
+  (setq company-idle-delay 0.0)
+  ;;; 给选项编号 (按快捷键 M-1、M-2 等等来进行选择).
+  (setq company-show-numbers t)
+  (setq company-selection-wrap-around t)
+  ;; 只需敲 1 个字母就开始进行自动补全
   (setq company-minimum-prefix-length 1)
+  ;; 根据选择的频率进行排序，读者如果不喜欢可以去掉
+  (setq company-transformers '(company-sort-by-occurrence))
+  (setq company-tooltip-align-annotations t)
   :bind
   (:map company-active-map
         ("C-n". company-select-next)
@@ -1441,6 +1450,15 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   ;;(:map company-mode-map
   ("<tab>". tab-indent-or-complete)
   ("TAB". tab-indent-or-complete))
+
+(use-package company-box
+  :ensure t
+  :if window-system
+  :hook (company-mode . company-box-mode))
+
+(use-package company-tabnine
+  :ensure t
+  :init (add-to-list 'company-backends #'company-tabnine))
 
 (defun company-yasnippet-or-completion ()
   (interactive)

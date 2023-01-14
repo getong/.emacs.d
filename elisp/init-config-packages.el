@@ -1877,4 +1877,60 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (add-to-list 'recentf-exclude "private/tmp")
   (recentf-mode))
 
+(use-package yasnippet-snippets
+  :disabled
+  )
+
+(use-package counsel-projectile
+  :after (counsel projectile)
+  )
+
+(use-package expand-region
+  :commands (er/expand-region)
+  :init
+  (general-nmap "+" 'er/expand-region))
+
+(use-package visual-fill-column
+  :commands (visual-fill-column-mode)
+  :config
+  (add-hook 'visual-fill-column-mode-hook
+	        (lambda () (setq visual-fill-column-center-text t))))
+
+(defun my/deadgrep-fix-buffer-advice (fun &rest args)
+  (let ((buf (apply fun args)))
+    (with-current-buffer buf
+      (toggle-truncate-lines 1))
+    buf))
+
+(use-package deadgrep
+  :commands (deadgrep)
+  :config
+  (advice-add #'deadgrep--buffer :around #'my/deadgrep-fix-buffer-advice))
+
+(use-package perspective
+  :init
+  ;; (setq persp-show-modestring 'header)
+  (setq persp-sort 'created)
+  (setq persp-suppress-no-prefix-key-warning t)
+  :config
+  (persp-mode)
+  ;;(my-leader-def "x" '(:keymap perspective-map :which-key "perspective"))
+  (general-define-key
+   :keymaps 'override
+   :states '(normal emacs)
+   "gt" 'persp-next
+   "gT" 'persp-prev
+   "gn" 'persp-switch
+   "gN" 'persp-kill)
+  (general-define-key
+   :keymaps 'perspective-map
+   "b" 'persp-ivy-switch-buffer
+   "x" 'persp-ivy-switch-buffer
+   "u" 'persp-ibuffer))
+
+(use-package flycheck-package
+  :after flycheck
+  :config
+  (flycheck-package-setup))
+
 (provide 'init-config-packages)

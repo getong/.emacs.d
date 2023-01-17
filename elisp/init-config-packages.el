@@ -2036,4 +2036,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 (use-package company-tabnine :ensure t)
 
+(use-package lsp-docker
+  :ensure t
+  )
+
 (provide 'init-config-packages)

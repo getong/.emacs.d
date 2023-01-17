@@ -1404,7 +1404,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :commands lsp
   :custom
   ;; what to use when checking on-save. "check" is default, I prefer clippy
-  (lsp-eldoc-render-all t)
+  ;;(lsp-eldoc-render-all t)
   (lsp-idle-delay 0.6)
   (lsp-enable-snippet t)
   (lsp-keep-workspace-alive t)
@@ -1475,7 +1475,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :custom
   (lsp-ui-peek-always-show t)
   (lsp-ui-sideline-show-hover t)
-  (lsp-ui-doc-enable nil))
+  ;; copy from [A guide on disabling/enabling lsp-mode features](https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/)
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-show-with-cursor t)
+  )
 
 (use-package yasnippet
   :ensure

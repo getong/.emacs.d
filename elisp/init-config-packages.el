@@ -1363,6 +1363,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq compilation-read-command nil) ;; not prompt on minibuffer when do compile.
   (push 'rustic-clippy flycheck-checkers)
   (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+  ;; (setq lsp-rust-analyzer-cargo-watch-enable nil)
+  (setq rustic-format-on-save nil)
+  (setq rustic-lsp-format nil)
 
   ;; comment to disable rustfmt on save
   (setq rustic-lsp-server 'rust-analyzer)
@@ -1401,14 +1404,13 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :commands lsp
   :custom
   ;; what to use when checking on-save. "check" is default, I prefer clippy
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-eldoc-render-all t)
   (lsp-idle-delay 0.6)
   (lsp-enable-snippet t)
   (lsp-keep-workspace-alive t)
   (lsp-enable-xref t)
   (lsp-enable-imenu t)
-  (lsp-enable-completion-at-point nil)
+  (lsp-enable-completion-at-point t)
   ;; This controls the overlays that display type and other hints inline. Enable
   ;; / disable as you prefer. Well require a `lsp-workspace-restart' to have an
   ;; effect on open projects.

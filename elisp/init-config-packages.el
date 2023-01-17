@@ -1459,7 +1459,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; copy from https://emacs-china.org/t/doom-emacs-lsp-lua-mode/16432/7
   ;; lua
   ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
-  (setq lsp-clients-lua-language-server-install-dir "/usr/local/Cellar/lua-language-server/3.6.4/"
+  (setq lsp-clients-lua-language-server-install-dir "/usr/local/Cellar/lua-language-server/3.6.5/"
 	    lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
 	    lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
 	    lsp-lua-workspace-max-preload 8192

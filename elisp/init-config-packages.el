@@ -568,6 +568,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq show-paren-delay 0.1
         show-paren-when-point-in-periphery t))
 
+(defun alexm/set-faces-by-spec (&rest specs)
+  "Maps SPECS through face-spec-set."
+  (mapc #'(lambda (f) (apply #'face-spec-set f)) specs))
 ;; copy from https://se30.xyz/conf.html
 (use-package rainbow-delimiters
   :ensure rainbow-delimiters

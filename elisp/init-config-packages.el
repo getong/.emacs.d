@@ -567,8 +567,23 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :config
   (setq show-paren-delay 0.1
         show-paren-when-point-in-periphery t))
+
+;; copy from https://se30.xyz/conf.html
 (use-package rainbow-delimiters
-  :ensure t
+  :ensure rainbow-delimiters
+  :commands (rainbow-delimiters-mode rainbow-delimiters-mode-enable)
+  :config
+  (alexm/set-faces-by-spec
+   '(rainbow-delimiters-depth-1-face ((t (:foreground "green" :weight extra-bold))))
+   '(rainbow-delimiters-depth-2-face ((t (:foreground "forestgreen" :weight bold))))
+   '(rainbow-delimiters-depth-3-face ((t (:foreground "lightseagreen" :weight bold))))
+   '(rainbow-delimiters-depth-4-face ((t (:foreground "lightskyblue" :weight bold))))
+   '(rainbow-delimiters-depth-5-face ((t (:foreground "cyan" :weight bold))))
+   '(rainbow-delimiters-depth-6-face ((t (:foreground "steelblue" :weight bold))))
+   '(rainbow-delimiters-depth-7-face ((t (:foreground "orchid" :weight bold))))
+   '(rainbow-delimiters-depth-8-face ((t (:foreground "purple" :weight bold))))
+   '(rainbow-delimiters-depth-9-face ((t (:foreground "hotpink" :weight bold))))
+   '(rainbow-delimiters-unmatched-face ((t (:background "red" :foreground "green" :weight bold)))))
   :hook
   ((css-mode . rainbow-mode)
    (sass-mode . rainbow-mode)
@@ -590,9 +605,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;  :init (load-theme 'sanityinc-tomorrow-night t))
 
 ;; copy from https://protesilaos.com/codelog/2022-08-15-intro-ef-themes-emacs/
-(use-package ef-themes
-  :defer t
-  :init (load-theme 'ef-winter t))
+;; (use-package ef-themes
+;;   :defer t
+;;   :init (load-theme 'ef-winter t))
 
 ;; 让 .emacs.d 更干净
 ;; no littering, keep .emacs.d clean
@@ -1975,16 +1990,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :after (counsel projectile)
   )
 
+;; Hit M-m, expand up to the next largest region based on mode-context sensitive scope.
 (use-package expand-region
-  :commands (er/expand-region)
-  :init
-  (general-nmap "+" 'er/expand-region))
-
-(use-package visual-fill-column
-  :commands (visual-fill-column-mode)
-  :config
-  (add-hook 'visual-fill-column-mode-hook
-	        (lambda () (setq visual-fill-column-center-text t))))
+  :ensure expand-region
+  :bind (("M-#" . er/mark-symbol)
+         ("M-m" . er/expand-region))
+  :commands (er/expand-region er/enable-mode-expansions))
 
 (defun my/deadgrep-fix-buffer-advice (fun &rest args)
   (let ((buf (apply fun args)))
@@ -2057,5 +2068,42 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package lsp-docker
   :ensure t
   )
+
+;; Make rectangular region marking easier.
+(use-package rect-mark
+  :ensure nil
+  :bind (("C-x r C-SPC" . rm-set-mark)
+         ("C-x r C-x" . rm-exchange-point-and-mark)
+         ("C-x r C-k" . rm-kill-region)
+         ("C-x r M-w" . rm-kill-ring-save)))
+
+;; Tramp should default to the sshx mode.
+(use-package tramp
+  :commands tramp
+  :config
+  (setq tramp-default-method "sshx"))
+
+;; copy from https://github.com/jwiegley/use-package/issues/320
+;; Make buffer names unique, handy when opening files with similar names
+(use-package uniquify
+  :ensure nil
+  :config
+  (progn
+    (setq uniquify-buffer-name-style 'post-forward-angle-brackets
+          uniquify-after-kill-buffer-p t
+          uniquify-ignore-buffers-re "^\\*")))
+
+;; copy from https://se30.xyz/conf.html
+;; Turn on ansi in shells
+(use-package ansi-color
+  :ensure ansi-color
+  :commands shell
+  :config
+  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
+
+;; theme
+(use-package spacemacs-theme
+  :defer t
+  :init (load-theme 'spacemacs-dark t))
 
 (provide 'init-config-packages)

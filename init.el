@@ -23,4 +23,6 @@
 
 (require 'init-font)
 
+(require 'init-macro)
+
 (message (emacs-init-time))

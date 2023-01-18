@@ -1461,7 +1461,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; copy from https://emacs-china.org/t/doom-emacs-lsp-lua-mode/16432/7
   ;; lua
   ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
-  (setq lsp-clients-lua-language-server-install-dir "/usr/local/Cellar/lua-language-server/3.6.5/"
+  (setq lsp-clients-lua-language-server-install-dir "/usr/local/Cellar/lua-language-server/3.6.6/"
 	    lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
 	    lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
 	    lsp-lua-workspace-max-preload 8192
@@ -1474,10 +1474,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :commands lsp-ui-mode
   :custom
   (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-show-hover t)
   ;; copy from [A guide on disabling/enabling lsp-mode features](https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/)
   (lsp-ui-doc-enable t)
   (lsp-ui-doc-show-with-cursor t)
+  (lsp-ui-doc-show-with-mouse nil)
+  (lsp-ui-sideline-enable t)
+  (lsp-ui-sideline-show-hover nil)
   )
 
 (use-package yasnippet
@@ -2025,7 +2027,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package highlight-symbol
   :ensure t
   :init (highlight-symbol-mode)
-  :bind ("<f3>" . highlight-symbol)) ;; 按下 F3 键就可高亮当前符号
+  ;; :bind ("<f5>" . highlight-symbol)  ;; 按下 F3 键就可高亮当前符号
+  )
 
 ;; C-c / t 触发 google-this，
 (use-package google-this

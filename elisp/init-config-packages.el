@@ -264,6 +264,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
         kept-new-versions 5)
   ;; But turn on auto-save, so we have a fallback in case of crashes or lost data.
   ;; Use `recover-file' or `recover-session' to recover them.
+  ;; copy from https://stackoverflow.com/questions/15302973/emacs-auto-save-why-are-files-not-stored-in-the-correct-folder
+  (defvar my-auto-save-folder "~/.emacs.d/var/auto-save/"); folder for auto-saves
   (setq auto-save-default t
         ;; Don't auto-disable auto-save after deleting big chunks. This defeats
         ;; the purpose of a failsafe. This adds the risk of losing the data we
@@ -683,7 +685,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq indent-tabs-mode nil) ;; no tabs
 
   (setq make-backup-files nil) ;; keep everything under vc
-  (setq auto-save-default nil)
+  ;;(setq auto-save-default nil)
 
   ;; keep backup and save files in a dedicated directory
   (setq backup-directory-alist
@@ -1939,6 +1941,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 					                          regexp-search-ring
 					                          extended-command-history)
 	          savehist-autosave-interval 300)
+  :config
+  (setq savehist-file (concat user-emacs-directory "var/savehist")
+        savehist-save-minibuffer-history 1
+        )
   )
 
 (use-package saveplace

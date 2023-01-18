@@ -212,7 +212,7 @@
 
 (savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-(setq savehist-file "~/.emacs.d/savehist")
+(setq savehist-file "~/.emacs.d/var/savehist")
 
 ;; copy from https://github.com/dimitri/switch-window
 ;;(require 'switch-window)

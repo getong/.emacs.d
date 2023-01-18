@@ -533,4 +533,32 @@ When using Homebrew, install it using \"brew install trash-cli\"."
       (error "main.lua not found"))))
 
 
+;; copy from [Emacs + Company-Mode 配置多个补全后端](https://manateelazycat.github.io/emacs/2021/06/30/company-multiple-backends.html)
+;; Customize company backends.
+(setq company-backends
+      '(
+        (company-tabnine company-dabbrev company-keywords company-files company-capf)
+        ))
+
+;; Add yasnippet support for all company backends.
+(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
+
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+      backend
+    (append (if (consp backend) backend (list backend))
+            '(:with company-yasnippet))))
+
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+;; Add `company-elisp' backend for elisp.
+(add-hook 'emacs-lisp-mode-hook
+          #'(lambda ()
+              (require 'company-elisp)
+              (push 'company-elisp company-backends)))
+
+;; Remove duplicate candidate.
+(add-to-list 'company-transformers #'delete-dups)
+
 (provide 'init-misc)

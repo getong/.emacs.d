@@ -134,6 +134,10 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   :init (global-undo-tree-mode)
   :after hydra
   :bind ("C-x C-h u" . hydra-undo-tree/body)
+  :custom
+  (undo-tree-visualizer-diff t)
+  (undo-tree-history-directory-alist '(("." . "~/.emacs.d/var/undo")))
+  (undo-tree-visualizer-timestamps t)
   :hydra (hydra-undo-tree (:hint nil)
                           "
   _p_: undo  _n_: redo _s_: save _l_: load   "

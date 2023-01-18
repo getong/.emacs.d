@@ -1994,11 +1994,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   )
 
 ;; Hit M-m, expand up to the next largest region based on mode-context sensitive scope.
-(use-package expand-region
-  :ensure expand-region
-  :bind (("M-#" . er/mark-symbol)
-         ("M-m" . er/expand-region))
-  :commands (er/expand-region er/enable-mode-expansions))
+;; (use-package expand-region
+;;   :ensure expand-region
+;;   :bind (("M-#" . er/mark-symbol)
+;;          ("M-m" . er/expand-region))
+;;   :commands (er/expand-region er/enable-mode-expansions))
 
 (defun my/deadgrep-fix-buffer-advice (fun &rest args)
   (let ((buf (apply fun args)))

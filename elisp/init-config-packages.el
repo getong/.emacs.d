@@ -265,17 +265,17 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; But turn on auto-save, so we have a fallback in case of crashes or lost data.
   ;; Use `recover-file' or `recover-session' to recover them.
   ;; copy from https://stackoverflow.com/questions/15302973/emacs-auto-save-why-are-files-not-stored-in-the-correct-folder
-  (defvar my-auto-save-folder "~/.emacs.d/var/auto-save/"); folder for auto-saves
-  (setq auto-save-default t
-        ;; Don't auto-disable auto-save after deleting big chunks. This defeats
-        ;; the purpose of a failsafe. This adds the risk of losing the data we
-        ;; just deleted, but I believe that's VCS's jurisdiction, not ours.
-        auto-save-include-big-deletions t
-        auto-save-file-name-transforms
-        (list (list "\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'"
-                    ;; Prefix tramp autosaves to prevent conflicts with local ones
-                    (concat auto-save-list-file-prefix "tramp-\\2") t)
-              (list ".*" auto-save-list-file-prefix t)))
+  ;; (defvar my-auto-save-folder "~/.emacs.d/var/auto-save/"); folder for auto-saves
+  ;; (setq auto-save-default t
+  ;;       ;; Don't auto-disable auto-save after deleting big chunks. This defeats
+  ;;       ;; the purpose of a failsafe. This adds the risk of losing the data we
+  ;;       ;; just deleted, but I believe that's VCS's jurisdiction, not ours.
+  ;;       auto-save-include-big-deletions t
+  ;;       auto-save-file-name-transforms
+  ;;       (list (list "\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'"
+  ;;                   ;; Prefix tramp autosaves to prevent conflicts with local ones
+  ;;                   (concat auto-save-list-file-prefix "tramp-\\2") t)
+  ;;             (list ".*" auto-save-list-file-prefix t)))
   (setq mode-line-percent-position '(-3 "%p"))
   (setq mode-line-defining-kbd-macro
         (propertize " Macro" 'face 'mode-line-emphasis))
@@ -706,10 +706,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;;(setq auto-save-default nil)
 
   ;; keep backup and save files in a dedicated directory
-  (setq backup-directory-alist
-        `((".*" . ,(concat user-emacs-directory "backups")))
-        auto-save-file-name-transforms
-        `((".*" ,(concat user-emacs-directory "backups") t)))
+  ;; (setq backup-directory-alist
+  ;;       `((".*" . ,(concat user-emacs-directory "backups")))
+  ;;       auto-save-file-name-transforms
+  ;;       `((".*" ,(concat user-emacs-directory "backups") t)))
 
   (setq create-lockfiles nil) ;; no need to create lockfiles
 
@@ -2108,5 +2108,14 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package spacemacs-theme
   :defer t
   :init (load-theme 'spacemacs-dark t))
+
+
+;; 自动保存
+(use-package super-save
+  :defer 1
+  :diminish super-save-mode
+  :config
+  (super-save-mode +1)
+  (setq super-save-auto-save-when-idle t))
 
 (provide 'init-config-packages)

@@ -2195,4 +2195,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
+(use-package dsvn)
+
 (provide 'init-config-packages)

@@ -5,6 +5,10 @@
   ;; To use MELPA Stable use ":pin melpa-stable",
   :pin melpa)
 
+(use-package exec-path-from-shell
+  :ensure
+  :init (exec-path-from-shell-initialize))
+
 ;; copy from https://www.reddit.com/r/emacs/comments/iu0euj/getting_modern_multiple_cursors_in_emacs/
 ;;(use-package multiple-cursors
 ;;  :ensure   t
@@ -946,6 +950,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (with-eval-after-load 'nxml-mode
   (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
 
+;; copy fromhttps://devbins.github.io/post/emacs_flutter/
+(use-package lsp-dart
+  :init (setq lsp-dart-sdk-dir (concat (file-name-directory (file-truename (executable-find "flutter"))) "cache/dart-sdk"))
+  :hook (dart-mode . lsp))
 
 (reformatter-define dart-format
   :program "dart"
@@ -987,7 +995,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (flutter-sdk-path (directory-file-name
                      (file-name-directory
                       (directory-file-name
-                       (file-name-directory (executable-find "flutter")))))))
+                       (file-name-directory (file-truename (executable-find "flutter"))))))))
 
 ;; Incremental code parsing for better syntax highlighting
 (use-package tree-sitter
@@ -1485,12 +1493,14 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; copy from https://emacs-china.org/t/doom-emacs-lsp-lua-mode/16432/7
   ;; lua
   ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
-  (setq lsp-clients-lua-language-server-install-dir "/usr/local/Cellar/lua-language-server/3.6.6/"
-	    lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
-	    lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
-	    lsp-lua-workspace-max-preload 8192
-	    lsp-lua-workspace-preload-file-size 1024
-	    )
+  (setq
+   ;; "/usr/local/Cellar/lua-language-server/3.6.6/"
+   lsp-clients-lua-language-server-install-dir (substring (file-name-directory (file-truename (executable-find "lua-language-server"))) 0 -4)
+   lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
+   lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
+   lsp-lua-workspace-max-preload 8192
+   lsp-lua-workspace-preload-file-size 1024
+   )
   )
 
 (use-package lsp-ui
@@ -1588,11 +1598,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;; setting up debugging support with dap-mode
-
-(use-package exec-path-from-shell
-  :ensure
-  :init (exec-path-from-shell-initialize))
-
 (when (executable-find "lldb-mi")
   (use-package dap-mode
     :ensure

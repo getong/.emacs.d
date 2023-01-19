@@ -204,6 +204,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
     (interactive)
     (kill-ring-save (point) (vterm-end-of-line))
     (vterm-send-key "k" nil nil t))
+  (defun turn-off-chrome ()
+    (hl-line-mode -1)
+    (display-line-numbers-mode -1))
+  :hook
+  (vterm-mode . turn-off-chrome)
   ;; copy from https://erickgnavar.github.io/emacs-config/
   :custom
   (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
@@ -212,11 +217,18 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 (use-package vterm-toggle
   :when (memq window-system '(mac ns x pgtk))
-  :bind (([f8] . vterm-toggle)
+  :custom
+  (vterm-toggle-fullscreen-p nil "Open a vterm in another window.")
+  (vterm-toggle-scope 'project)
+  :bind (
          ([f9] . vterm-compile)
          :map vterm-mode-map
-         ([f8] . vterm-toggle)
-         ([(control return)] . vterm-toggle-insert-cd))
+         ([(control return)] . vterm-toggle-insert-cd)
+         ("C-c t" . #'vterm-toggle)
+         ("C-\\" . #'popper-cycle)
+         ("s-t" . #'vterm) ; Open up new tabs quickly
+         ("s-v" . #'vterm-yank)
+         )
   :config
   (setq vterm-toggle-cd-auto-create-buffer nil)
   (setq vterm-toggle-fullscreen-p t)
@@ -874,7 +886,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (after-init . doom-modeline-mode)
   :custom ((doom-modeline-height 15))
   :config
-  (setq doom-modeline-project-detection 'project))
+  (setq
+   doom-modeline-project-detection 'project
+   doom-modeline-battery nil
+   ))
 
 ;; M-x all-the-icons-install-fonts
 ;; copy from [Why do I have Chinese/Mandarin characters in my mode-line and e-shell out of the blue? How do I fix this?](https://emacs.stackexchange.com/questions/73397/why-do-i-have-chinese-mandarin-characters-in-my-mode-line-and-e-shell-out-of-the)
@@ -1072,9 +1087,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :defer t
   :ensure t)
 
-(use-package magit-delta
-  :ensure t
-  :hook (magit-mode . magit-delta-mode))
 
 (use-package diff-hl
   :ensure t
@@ -2114,9 +2126,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 
 ;; theme
-(use-package spacemacs-theme
-  :defer t
-  :init (load-theme 'spacemacs-dark t))
+;; (use-package spacemacs-theme
+;;   :defer t
+;;   :init (load-theme 'spacemacs-dark t))
 
 
 ;; 自动保存
@@ -2126,5 +2138,61 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :config
   (super-save-mode +1)
   (setq super-save-auto-save-when-idle t))
+
+(use-package magit
+  :general
+  (lc/leader-keys
+   "g b" 'magit-blame
+   "g g" 'magit-status
+   "g G" 'magit-status-here
+   "g l" 'magit-log)
+  (general-nmap
+    :keymaps '(magit-status-mode-map
+               magit-stash-mode-map
+               magit-revision-mode-map
+               magit-process-mode-map
+               magit-diff-mode-map)
+    "TAB" #'magit-section-toggle
+    "<escape>" #'transient-quit-one)
+  :init
+  (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+  (setq magit-log-arguments '("--graph" "--decorate" "--color"))
+  (setq git-commit-fill-column 72)
+  ;; (setq magit-log-margin (t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
+  ;; (when lc/is-ipad (require 'sendmail))
+  :config
+  (setq magit-buffer-name-format (concat "*" magit-buffer-name-format "*"))
+
+  )
+
+;; (use-package unobtrusive-magit-theme
+;;   :defer t
+;;   :init
+;;   (defun change-new-theme ()
+;;     (load-theme 'manoj-dark)
+;;     (load-theme 'unobtrusive-magit)
+;;     )
+;;   :hook
+;;   (magit-mode . change-new-theme)
+;;   )
+
+
+(use-package doom-themes
+  :ensure t
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-one t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
 
 (provide 'init-config-packages)

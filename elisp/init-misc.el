@@ -483,12 +483,12 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (add-hook 'window-setup-hook #'toggle-frame-fullscreen)
                                         ; 设置最大化启动
 ;;(display-time-mode t)             ; 开启时间状态栏
-(require 'battery)
-(when (and battery-status-function
-           (not (string-match-p "N/A"
-                                (battery-format "%B"
-                                                (funcall battery-status-function)))))
-  (display-battery-mode 1))         ; 知道还剩多少 ⚡️ 很重要
+;; (require 'battery)
+;; (when (and battery-status-function
+;;            (not (string-match-p "N/A"
+;;                                 (battery-format "%B"
+;;                                                 (funcall battery-status-function)))))
+;;   (display-battery-mode 1))         ; 知道还剩多少 ⚡️ 很重要
 
 (global-subword-mode 1)             ; 识别驼峰，而不是傻瓜前进
 (global-unset-key (kbd "C-z"))      ; 关闭 "C-z" 最小化

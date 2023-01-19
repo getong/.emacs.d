@@ -1923,6 +1923,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
           treemacs-tag-follow-cleanup            t
           treemacs-tag-follow-delay              1.5
           treemacs-user-mode-line-format         nil
+          ;; M-x projectile-purge-file-from-cache
+          ;; M-x projectile-purge-dir-from-cache
+          projectile-enable-caching t
+          projectile-sort-order 'recentf
           treemacs-width                         35)
 
     ;; The default width and height of the icons is 22 pixels. If you are

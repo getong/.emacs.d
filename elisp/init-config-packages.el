@@ -1207,8 +1207,19 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; 高亮当前行。
 (use-package hl-line
-  :ensure nil
-  :hook (after-init . global-hl-line-mode))
+  :ensure t
+  ;; :hook (after-init . global-hl-line-mode)
+  :config
+  (global-hl-line-mode 1)
+  (setq global-hl-line-sticky-flag t)
+  ;; copy from [hl-line-mode hide background, how to avoid this?](https://emacs.stackexchange.com/questions/10445/hl-line-mode-hide-background-how-to-avoid-this)
+  (defun my-hl-line-range-function ()
+    (cons (line-end-position) (line-beginning-position 2)))
+  (setq hl-line-range-function #'my-hl-line-range-function)
+
+  :custom-face
+  (hl-line ((nil (:background "light yellow"))))
+  )
 
 ;; 隐藏、显示结构化数据，如 { } 里的内容。对于单函数较长的情况比较有用。
 (use-package hideshow

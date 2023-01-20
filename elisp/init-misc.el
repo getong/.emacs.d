@@ -17,15 +17,15 @@
 ;; (global-hl-line-mode t)
 
 ;; copy from [hl-line-mode hide background, how to avoid this?](https://emacs.stackexchange.com/questions/10445/hl-line-mode-hide-background-how-to-avoid-this)
-(defun my-hl-line-range-function ()
-  (cons (line-end-position) (line-beginning-position 2)))
-(setq hl-line-range-function #'my-hl-line-range-function)
+;; (defun my-hl-line-range-function ()
+;;   (cons (line-end-position) (line-beginning-position 2)))
+;; (setq hl-line-range-function #'my-hl-line-range-function)
 
-(when window-system
-  (require 'hl-line)
-  (set-face-attribute 'hl-line nil :inherit nil :background "light yellow")
-  (setq global-hl-line-sticky-flag t)
-  (global-hl-line-mode 1))
+;; (when window-system
+;;   (require 'hl-line)
+;;   (set-face-attribute 'hl-line nil :inherit nil :background "light yellow")
+;;   (setq global-hl-line-sticky-flag t)
+;;   (global-hl-line-mode 1))
 
 ;;(setq-default indent-tabs-mode nil)
 (ido-mode 1)

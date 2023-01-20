@@ -26,10 +26,13 @@
   (setq transient-history nil))
 
 (use-package display-line-numbers
-  :defer
+  :ensure t
   :config
   (global-display-line-numbers-mode 1)
   ;;(setq-default display-line-numbers-width 4)
+  :custom-face
+  (line-number ((t (:foreground "light green"))))
+  (line-number-current-line ((t (:foreground "blue"))))
   :custom
   ;; Calculate max number to prevent shaking.
   (display-line-numbers-width-start t)

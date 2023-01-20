@@ -561,8 +561,8 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 ;; Remove duplicate candidate.
 (add-to-list 'company-transformers #'delete-dups)
 
-;;(set-face-attribute 'hl-line nil :inherit nil :background "light yellow")
-(set-face-attribute 'line-number nil :inherit nil :foreground "light green")
-(set-face-attribute 'line-number-current-line nil :inherit nil :foreground "white")
+;; (set-face-attribute 'hl-line nil :inherit nil :background "light yellow")
+;; (set-face-attribute 'line-number nil :inherit nil :foreground "light green")
+;; (set-face-attribute 'line-number-current-line nil :inherit nil :foreground "white")
 
 (provide 'init-misc)

@@ -1121,12 +1121,14 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 (use-package git-timemachine)
 
-;; Cursor
+;; Cursor 光标彩虹效果
 (use-package beacon
   :ensure t
   :custom
-  (beacon-color "orange")
+  (beacon-color "blue")
   :config
+  (setq-default beacon-size 15)
+  (add-hook 'after-init-hook 'beacon-mode)
   (beacon-mode 1))
 
 (use-package s)
@@ -1454,8 +1456,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (when buffer-file-name
     (setq-local buffer-save-without-query t))
   (add-hook 'before-save-hook 'lsp-format-buffer nil t))
-
-
 
 
 (use-package tide

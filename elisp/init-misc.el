@@ -14,7 +14,7 @@
 (add-hook 'dart-server-hook 'flycheck-mode)
 
 (global-superword-mode t)
-(global-hl-line-mode t)
+;; (global-hl-line-mode t)
 
 ;; copy from [hl-line-mode hide background, how to avoid this?](https://emacs.stackexchange.com/questions/10445/hl-line-mode-hide-background-how-to-avoid-this)
 (defun my-hl-line-range-function ()
@@ -29,7 +29,7 @@
 
 ;;(setq-default indent-tabs-mode nil)
 (ido-mode 1)
-(setq column-number-mode t)
+:: (setq column-number-mode t)
 
 (setq inhibit-startup-message t) ;; 关闭起动时LOGO
 (setq visible-bell t);;关闭出错时的提示声
@@ -560,5 +560,9 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 
 ;; Remove duplicate candidate.
 (add-to-list 'company-transformers #'delete-dups)
+
+;;(set-face-attribute 'hl-line nil :inherit nil :background "light yellow")
+(set-face-attribute 'line-number nil :inherit nil :foreground "light green")
+(set-face-attribute 'line-number-current-line nil :inherit nil :foreground "white")
 
 (provide 'init-misc)

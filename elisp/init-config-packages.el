@@ -28,20 +28,12 @@
 (use-package display-line-numbers
   :defer
   :config
-  ;; Set absolute line numbers.  A value of "relative" is also useful.
-  (setq display-line-numbers-type t)
-  (define-minor-mode prot/display-line-numbers-mode
-    "Toggle `display-line-numbers-mode' and `hl-line-mode'."
-    :init-value nil
-    :global nil
-    (if prot/display-line-numbers-mode
-        (progn
-          (display-line-numbers-mode 1)
-          (hl-line-mode 1))
-      (display-line-numbers-mode -1)
-      (hl-line-mode -1)))
-  :bind ("<f7>" . prot/display-line-numbers-mode))
-
+  (global-display-line-numbers-mode 1)
+  ;;(setq-default display-line-numbers-width 4)
+  :custom
+  ;; Calculate max number to prevent shaking.
+  (display-line-numbers-width-start t)
+  (display-line-numbers-grow-only t))
 
 (use-package ispell
   :config
@@ -863,6 +855,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; 默认的 mode-line 不是很好看，用 doom-modeline 好一些。
 (use-package all-the-icons)
 
+(use-package all-the-icons-completion
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init
+  (all-the-icons-completion-mode))
+
 ;; https://www.emacswiki.org/emacs/KeyCast
 ;; copy from https://book.emacs-china.org/#org737719a
 ;; ;;modeline上显示我的所有的按键和执行的命令
@@ -882,14 +880,17 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
 (use-package doom-modeline
-  :hook
-  (after-init . doom-modeline-mode)
-  :custom ((doom-modeline-height 15))
+  :demand
+  :init
+  (setq doom-modeline-buffer-encoding nil)
+  (setq doom-modeline-env-enable-python nil)
+  (setq doom-modeline-height 15)
+  (setq doom-modeline-project-detection 'projectile)
   :config
-  (setq
-   doom-modeline-project-detection 'project
-   doom-modeline-battery nil
-   ))
+  (setq doom-modeline-battery nil)
+  (doom-modeline-mode 1)
+  (set-face-attribute 'doom-modeline-evil-insert-state nil :foreground "orange")
+  )
 
 ;; M-x all-the-icons-install-fonts
 ;; copy from [Why do I have Chinese/Mandarin characters in my mode-line and e-shell out of the blue? How do I fix this?](https://emacs.stackexchange.com/questions/73397/why-do-i-have-chinese-mandarin-characters-in-my-mode-line-and-e-shell-out-of-the)
@@ -897,38 +898,44 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; 让 Emacs 识别文件在项目里
 ;;projectile 提供了这个功能。 C-c c-p 会列举它的快捷键，其中包括在项目中搜索，切换项目等。
-;;(use-package projectile
-;;  :diminish projectile-mode
-;;  :init
-;;  (setq projectile-keymap-prefix (kbd "C-c C-p"))
-;;  :config
-;;  (projectile-mode +1)
-;;  (setq projectile-enable-caching t)
-;;  (setq-default projectile-mode-line-prefix " Proj")
-;;  (projectile-global-mode))
+(use-package projectile
+  :diminish projectile-mode
+  :init
+  (setq projectile-keymap-prefix (kbd "C-c C-p"))
+  :config
+  (projectile-mode +1)
+  ;; M-x projectile-purge-file-from-cache
+  ;; M-x projectile-purge-dir-from-cache
+ (progn
+  (setq
+   projectile-enable-caching t
+   projectile-sort-order 'recentf
+   ))
+  (setq-default projectile-mode-line-prefix " Proj")
+  (projectile-global-mode))
 
 
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; F8 侧边打开项目目录
-;;(use-package neotree
-;;  :config
-;;  ;; f8 to view tree strucure of folder
-;;  (defun neotree-project-dir ()
-;;    "Open NeoTree using the git root."
-;;    (interactive)
-;;    (let ((project-dir (projectile-project-root))
-;;          (file-name (buffer-file-name)))
-;;      (neotree-toggle)
-;;      (if project-dir
-;;          (if (neo-global--window-exists-p)
-;;              (progn
-;;                (neotree-dir project-dir)
-;;                (neotree-find file-name)))
-;;        (message "Could not find git project root."))))
-;;  (global-set-key [f8] 'neotree-project-dir)
-;;  ;; switch with projectile
-;;  (use-package projectile)
-;;  (setq projectile-switch-project-action 'neotree-projectile-action))
+(use-package neotree
+  :config
+  ;; f8 to view tree strucure of folder
+  (defun neotree-project-dir ()
+    "Open NeoTree using the git root."
+    (interactive)
+    (let ((project-dir (projectile-project-root))
+          (file-name (buffer-file-name)))
+      (neotree-toggle)
+      (if project-dir
+          (if (neo-global--window-exists-p)
+              (progn
+                (neotree-dir project-dir)
+                (neotree-find file-name)))
+        (message "Could not find git project root."))))
+  (global-set-key [f8] 'neotree-project-dir)
+  ;; switch with projectile
+  (use-package projectile)
+  (setq projectile-switch-project-action 'neotree-projectile-action))
 
 ;; copy from [Highlight current active window](https://stackoverflow.com/questions/33195122/highlight-current-active-window)
 (use-package auto-dim-other-buffers
@@ -1360,13 +1367,13 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; (global-linum-mode 1)
 ;; (setq linum-format "%3d ")
 ;; (add-hook 'prog-mode-hook 'linum-mode)
-(use-package linum
-  :init
-  (progn
-    (global-linum-mode t)
-    (setq linum-format "%4d  ")
-    (set-face-background 'linum nil)
-    ))
+;; (use-package linum
+;;   :init
+;;   (progn
+;;     (global-linum-mode t)
+;;     (setq linum-format "%4d  ")
+;;     (set-face-background 'linum nil)
+;;     ))
 
 ;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
 ;; Json
@@ -1885,11 +1892,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
   )
 
-;; copy from https://gitlab.univ-lille.fr/michael.hauspie/emacs/-/blob/master/configuration.org
-(use-package projectile
-  :config
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode t))
 ;; copy from https://huadeyu.tech/tools/emacs-setup-notes.html
 (use-package treemacs
   :ensure t
@@ -1904,7 +1906,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
           treemacs-directory-name-transformer    #'identity
           treemacs-display-in-side-window        t
           treemacs-eldoc-display                 t
-          treemacs-file-event-delay              5000
+          treemacs-file-event-delay              1000
           treemacs-file-extension-regex          treemacs-last-period-regex-value
           treemacs-file-follow-delay             0.2
           treemacs-file-name-transformer         #'identity
@@ -1935,10 +1937,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
           treemacs-tag-follow-cleanup            t
           treemacs-tag-follow-delay              1.5
           treemacs-user-mode-line-format         nil
-          ;; M-x projectile-purge-file-from-cache
-          ;; M-x projectile-purge-dir-from-cache
-          projectile-enable-caching t
-          projectile-sort-order 'recentf
           treemacs-width                         35)
 
     ;; The default width and height of the icons is 22 pixels. If you are
@@ -1962,6 +1960,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
         ("C-x t B"   . treemacs-bookmark)
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
+
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired nil))
 
 (use-package treemacs-projectile
   :after treemacs projectile
@@ -2196,5 +2197,22 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (doom-themes-org-config))
 
 (use-package dsvn)
+
+;; copy from https://www.zhihu.com/column/p/23359721
+(use-package dired-ranger
+  :ensure t
+  :bind (:map dired-mode-map
+              ("W" . dired-ranger-copy)
+              ("X" . dired-ranger-move)
+              ("Y" . dired-ranger-paste)))
+
+;; copy from https://www.lucacambiaghi.com/vanilla-emacs/readme.html
+;; 安装后可以通过 M-x restart-emacs 重启 emacs
+(use-package restart-emacs)
+
+;; copy from https://codeberg.org/ideasman42/emacs-elisp-autofmt
+(use-package elisp-autofmt
+  :commands (elisp-autofmt-mode elisp-autofmt-buffer)
+  :hook (emacs-lisp-mode . elisp-autofmt-mode))
 
 (provide 'init-config-packages)

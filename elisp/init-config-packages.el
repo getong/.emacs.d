@@ -687,11 +687,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; The terminal that will be used.
   ;; You can also customize the options passed to the terminal.
   ;; The default terminal is "gnome-terminal" with options "--".
-  (org-babel-tmux-terminal "xterm")
-  (org-babel-tmux-terminal-opts '("-T" "ob-tmux" "-e"))
+  (org-babel-tmux-terminal "/Applications/iTerm.app/Contents/MacOS/iTerm2")
+  ;; (org-babel-tmux-terminal "alacritty")
+  (org-babel-tmux-terminal-opts '("-t" "ob-tmux" "-e"))
   ;; Finally, if your tmux is not in your $PATH for whatever reason, you
   ;; may set the path to the tmux binary as follows:
-  (org-babel-tmux-location "/usr/bin/tmux"))
+  (org-babel-tmux-location (executable-find "tmux")))
 
 ;; copy from https://emacs.stackexchange.com/questions/31872/how-to-update-packages-installed-with-use-package
 ;; With that setup, packages will be updated every 4 days, and the old packages will be removed.
@@ -2222,11 +2223,22 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; copy from https://www.lucacambiaghi.com/vanilla-emacs/readme.html
 ;; 安装后可以通过 M-x restart-emacs 重启 emacs
-(use-package restart-emacs)
+(use-package restart-emacs
+  :bind ("C-c x r" . restart-emacs))
 
 ;; copy from https://codeberg.org/ideasman42/emacs-elisp-autofmt
 (use-package elisp-autofmt
   :commands (elisp-autofmt-mode elisp-autofmt-buffer)
   :hook (emacs-lisp-mode . elisp-autofmt-mode))
+
+;;; plantuml
+;; https://github.com/skuro/plantuml-mode
+(use-package plantuml-mode
+  :init
+  ;; (setq plantuml-jar-path "d:/plantuml/plantuml.jar")
+  (setq plantuml-default-exec-mode 'jar)
+  )
+
+
 
 (provide 'init-config-packages)

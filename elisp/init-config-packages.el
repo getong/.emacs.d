@@ -9,17 +9,6 @@
   :ensure
   :init (exec-path-from-shell-initialize))
 
-;; copy from https://www.reddit.com/r/emacs/comments/iu0euj/getting_modern_multiple_cursors_in_emacs/
-;;(use-package multiple-cursors
-;;  :ensure   t
-;;  :bind (("H-SPC" . set-rectangular-region-anchor)
-;;         ("C-M-SPC" . set-rectangular-region-anchor)
-;;         ("C->" . mc/mark-next-like-this)
-;;         ("C-<" . mc/mark-previous-like-this)
-;;         ("C-c C->" . mc/mark-all-like-this)
-;;         ("C-c C-SPC" . mc/edit-lines)
-;;         ))
-
 ;; copy from [Error when running magit-status: run-hooks: Wrong number of arguments](https://github.com/magit/magit/issues/3837)
 (use-package transient
   :init
@@ -147,6 +136,8 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
                           ("u"   undo-tree-visualize "visualize" :color blue)
                           ("q"   nil "quit" :color blue)))
 
+(use-package iedit
+  :ensure t)
 (use-package multiple-cursors
   :ensure t
   :after hydra
@@ -547,6 +538,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
   )
 
+(use-package fennel-mode
+  :ensure t)
+
 (use-package reformatter
   :ensure t)
 
@@ -566,9 +560,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;  rainbow-delimiters 可以将对称的括号用同一种颜色标记出来。
 ;; parens
 (use-package smartparens
-  :diminish nil
-  :config
-  (sp-use-smartparens-bindings))
+  :ensure t
+  :diminish
+  smartparens-mode
+  :hook
+  (after-prog-mode . smartparens-mode))
 (use-package smartparens-config
   :diminish nil
   :ensure smartparens
@@ -857,7 +853,14 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; 默认的 mode-line 不是很好看，用 doom-modeline 好一些。
-(use-package all-the-icons)
+(use-package all-the-icons
+  :ensure t
+  :config
+  (set-fontset-font t 'symbol "Apple Color Emoji")
+  (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
+  (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
+  (set-fontset-font t 'symbol "Symbola" nil 'append)
+  )
 
 (use-package all-the-icons-completion
   :after (marginalia all-the-icons)
@@ -1403,7 +1406,49 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package protobuf-mode)
 
 (use-package flycheck-rust)
-(use-package flycheck)
+
+;; Flycheck is a general syntax highlighting framework which other packages hook into. It's an improvment on the built in flymake.
+;; Setup is pretty simple - we just enable globally and turn on a custom eslint function, and also add a custom checker for proselint.
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+  (add-to-list 'flycheck-checkers 'proselint)
+  (setq-default flycheck-highlighting-mode 'lines)
+  ;; Define fringe indicator / warning levels
+  (define-fringe-bitmap 'flycheck-fringe-bitmap-ball
+    (vector #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00011100
+            #b00111110
+            #b00111110
+            #b00111110
+            #b00011100
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00000000))
+  (flycheck-define-error-level 'error
+    :severity 2
+    :overlay-category 'flycheck-error-overlay
+    :fringe-bitmap 'flycheck-fringe-bitmap-ball
+    :fringe-face 'flycheck-fringe-error)
+  (flycheck-define-error-level 'warning
+    :severity 1
+    :overlay-category 'flycheck-warning-overlay
+    :fringe-bitmap 'flycheck-fringe-bitmap-ball
+    :fringe-face 'flycheck-fringe-warning)
+  (flycheck-define-error-level 'info
+    :severity 0
+    :overlay-category 'flycheck-info-overlay
+    :fringe-bitmap 'flycheck-fringe-bitmap-ball
+    :fringe-face 'flycheck-fringe-info))
 
 (use-package rustic
   :ensure
@@ -2031,11 +2076,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   )
 
 ;; Hit M-m, expand up to the next largest region based on mode-context sensitive scope.
-;; (use-package expand-region
-;;   :ensure expand-region
-;;   :bind (("M-#" . er/mark-symbol)
-;;          ("M-m" . er/expand-region))
-;;   :commands (er/expand-region er/enable-mode-expansions))
+(use-package expand-region
+  :ensure expand-region
+  :bind (("M-#" . er/mark-symbol)
+         ("M-m" . er/expand-region))
+  :commands (er/expand-region er/enable-mode-expansions))
 
 (defun my/deadgrep-fix-buffer-advice (fun &rest args)
   (let ((buf (apply fun args)))
@@ -2080,9 +2125,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq dashboard-banner-logo-title "Welcome to Emacs!") ;; 个性签名，随读者喜好设置
   (setq dashboard-projects-backend 'projectile) ;; 读者可以暂时注释掉这一行，等安装了 projectile 后再使用
   (setq dashboard-startup-banner 'official) ;; 也可以自定义图片
-  (setq dashboard-items '((recents  . 5)   ;; 显示多少个最近文件
-			              (bookmarks . 5)  ;; 显示多少个最近书签
-			              (projects . 10))) ;; 显示多少个最近项目
+  (setq dashboard-items '((recents  . 20)   ;; 显示多少个最近文件
+			              (bookmarks . 10)  ;; 显示多少个最近书签
+			              (projects . 12) ;; 显示多少个最近项目
+                          (agenda . 5)
+                          ))
   (dashboard-setup-startup-hook))
 
 (use-package highlight-symbol
@@ -2239,6 +2286,302 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq plantuml-default-exec-mode 'jar)
   )
 
+;; Will automated download images for the first time
+(use-package emojify
+  :ensure t
+  :hook (after-init . global-emojify-mode))
 
+;; Suggest next keys to me based on currently entered key combination.
+(use-package which-key
+  :ensure t
+  :init
+  (which-key-mode 1)
+  :config
+  (which-key-setup-side-window-right-bottom)
+  (setq which-key-sort-order 'which-key-key-order-alpha
+        which-key-side-window-max-width 0.33
+        which-key-idle-delay 2
+        which-key-show-early-on-C-h t
+        which-key-idle-secondary-delay 0.05)
+  :diminish
+  which-key-mode)
+
+;; How to rename or delete file and buffer
+(use-package crux
+  :ensure t
+  :bind (
+         ("C-c r" . crux-rename-file-and-buffer)
+         ("C-c D" . crux-delete-file-and-buffer)
+         ))
+
+;; How to navigate between windows
+(use-package ace-window
+  :ensure t
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (custom-set-faces
+   '(aw-leading-char-face
+     ((t (:inherit ace-jump-face-foreground :height 5.0)))))
+  :bind
+  ("M-o" . ace-window))
+
+;; How to delete consecutive space at once
+(use-package smart-hungry-delete
+  :ensure t
+  :bind (("<backspace>" . smart-hungry-delete-backward-char)
+         ("C-d" . smart-hungry-delete-forward-char))
+  :defer nil ;; dont defer so we can add our functions to hooks
+  :config (smart-hungry-delete-add-default-hooks))
+
+;; M-<up> M-<down> to move line up and down
+(use-package drag-stuff
+  :ensure t
+  :diminish drag-stuff-mode
+  :config
+  (drag-stuff-global-mode t)
+  (drag-stuff-define-keys))
+
+;; By default emacs will not delete selection text when typing on it, let's fix it
+(delete-selection-mode t)
+
+;; In some case I want to hide the mode line
+(use-package hide-mode-line
+  :ensure t)
+
+;; Nyan Cat is lovely, it can live on mode line
+(use-package nyan-mode
+  :ensure t
+  :init
+  (setq nyan-animate-nyancat t)
+  (setq nyan-wavy-trail t)
+  (setq nyan-minimum-window-width 80)
+  (setq nyan-bar-length 20)
+  (nyan-mode))
+
+;; Format all
+(use-package format-all
+  :ensure t)
+
+;; fzf is a fuzzy file finder which is very quick.
+(use-package fzf
+  :ensure t)
+
+;; You can now edit files directly from results buffers with M-x deadgrep-edit-mode.
+(use-package deadgrep
+  :ensure t)
+
+;; dumb-jump attempts to support many languages by simple searching.
+;; It's quite effective even with dynamic libraries like JS and Python.
+(use-package dumb-jump
+  :ensure t
+  :diminish dumb-jump-mode
+  :bind (("C-M-g" . dumb-jump-go)
+         ("C-M-p" . dumb-jump-back)
+         ("C-M-q" . dumb-jump-quick-look)))
+
+;; Display line changes in gutter based on git history. Enable it everywhere.
+(use-package git-gutter
+  :ensure t
+  :diminish git-gutter-mode
+  :config
+  (global-git-gutter-mode t))
+
+;; TimeMachine lets us step through the history of a file as recorded in git.
+(use-package git-timemachine
+  :ensure t)
+
+;; Color Identifier
+(use-package color-identifiers-mode
+  :ensure t
+  :commands color-identifiers-mode)
+
+;; elixir
+(use-package elixir-mode
+  :ensure t)
+(use-package alchemist
+  :ensure t)
+
+;; Emacs has a great built in C/C++ mode, but we can improve on it with irony-mode for code completion via libclang.
+(use-package irony
+  :ensure t
+  :hook (c-mode . irony-mode))
+
+;; Add company mode support.
+(use-package company-irony
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-irony))
+
+;; Add flycheck support.
+(use-package flycheck-irony
+  :ensure t
+  :hook (flycheck-mode . flycheck-irony-setup))
+
+;; Web mode handles html/css/js.
+(use-package web-mode
+  :ensure t
+  :mode (("\\.html\\'" . web-mode)
+         ("\\.erb\\'" . web-mode))
+  :config
+  (setq web-mode-markup-indent-offset 2))
+
+;; Web beautify prettifies html / css / js using js-beautify - install with npm install -g js-beautify.
+(use-package web-beautify
+  :ensure t
+  :bind (:map web-mode-map
+              ("C-c b" . web-beautify-html)
+              :map js2-mode-map
+              ("C-c b" . web-beautify-js)))
+
+;; HTML preview
+(use-package impatient-mode
+  :ensure t)
+
+;; Emmet mode
+;; use C-j to expand it
+(use-package emmet-mode
+  :ensure t)
+
+;; Solidity
+(use-package solidity-mode
+  :ensure t)
+
+;; Capture my task or idea
+;; (use-package org-capture
+;;   :bind ("C-c c" . org-capture)
+;;   :after org
+;;   :config
+;;   (add-to-list 'org-capture-templates
+;;                '("t" "Todo"  entry
+;;                  (file "~/Documents/org/todo.org")
+;;                  "* TODO %?" :empty-lines 0))
+
+;;   (add-to-list 'org-capture-templates
+;;                '("w" "Work" entry
+;;                  (file+olp "~/Documents/org/work.org" "2021")
+;;                  "* %?" :empty-lines 0)))
+;; Beautify Org heading symbol
+(use-package org-superstar
+  :ensure t
+  :hook (org-mode . org-superstar-mode))
+
+;; Emoji Org tag
+(use-package org-pretty-tags
+  :diminish org-pretty-tags-mode
+  :ensure t
+  :config
+  (setq org-pretty-tags-surrogate-strings
+        '(
+          ("work"  . "⚒")
+          ("@pc" . "🖥")
+          ("@ps5" . "🎮")
+          ("@switch" . "🕹")
+          ("script" . "📝")
+          ))
+  (org-pretty-tags-global-mode))
+
+;; Colorful todo stags
+(use-package hl-todo
+  :ensure t
+  :hook ((prog-mode org-mode) . teddy-ma/hl-todo-init)
+  :init
+  (defun teddy-ma/hl-todo-init ()
+    (setq-local hl-todo-keyword-faces '(("TODO" . "#ff9977")
+                                        ("DOING" . "#FF00BC")
+                                        ("DONE" . "#44bc44")
+                                        ("BLOCKED" . "#003366")
+                                        ))
+    (hl-todo-mode))
+  )
+
+;; Org fancy Priorities
+(use-package org-fancy-priorities
+  :diminish
+  :ensure t
+  :hook (org-mode . org-fancy-priorities-mode)
+  :config
+  (setq org-fancy-priorities-list '("🅰" "🅱" "🅲" "🅳" "🅴")))
+
+;; Interactive agenda in the console
+;; (use-package org-agenda
+;;   :bind ("C-c a" . org-agenda)
+;;   :config
+;;   (setq org-agenda-files (directory-files-recursively "~/Documents/org/" "\\.org$"))
+;;   ;; (setq org-agenda-files '(
+;;   ;;                          "~/Documents/org/work.org"
+;;   ;;                          "~/Documents/org/reminder.org"
+;;   ;;                         ))
+;;   (setq org-agenda-start-with-log-mode t)
+;;   (setq org-agenda-prefix-format
+;;         '((agenda . " %i %-24:c%?-16t%-10e% s")
+;;           (todo   . " %i %-24:c %-10e")
+;;           (tags   . " %i %-24:c")
+;;           (search . " %i %-24:c")))
+
+;;   ;;https://www.philnewton.net/blog/how-i-get-work-done-with-emacs/
+;;   (setq org-agenda-custom-commands
+;;         '(("d" "Today's Tasks"
+;;            ((agenda "" ((org-agenda-span 1)
+;;                         (org-agenda-overriding-header "Today's Tasks")))))))
+;;   )
+
+(use-package org-roam
+  :ensure t
+  :diminish org-roam-mode
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "~/Documents/org/roam/")
+  (org-roam-db-update-method 'immediate)
+  (org-roam-completion-system 'ivy)
+  :bind
+  (:map org-roam-mode-map
+        (("C-c n l" . org-roam)
+         ("C-c n f" . org-roam-find-file)
+         ("C-c n g" . org-roam-graph))
+        :map org-mode-map
+        (("C-c n i" . org-roam-insert))
+        (("C-c n I" . org-roam-insert-immediate))))
+
+;; (use-package org-roam-server
+;;   :ensure t
+;;   :config
+;;   (setq org-roam-server-host "127.0.0.1"
+;;         org-roam-server-port 8686
+;;         org-roam-server-authenticate nil
+;;         org-roam-server-export-inline-images t
+;;         org-roam-server-serve-files nil
+;;         org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
+;;         org-roam-server-network-poll t
+;;         org-roam-server-network-arrows nil
+;;         org-roam-server-network-label-truncate t
+;;         org-roam-server-network-label-truncate-length 60
+;;         org-roam-server-network-label-wrap-length 20))
+
+;; English Chinese Dictionary
+(use-package youdao-dictionary
+  :ensure t
+  :config
+  (setq url-automatic-caching t))
+
+;; Disk Usage
+(use-package disk-usage
+  :ensure t)
+
+(use-package shell-pop
+  :ensure t
+  :custom
+  (shell-pop-shell-type '("vterm" "*vterm*" (lambda () (vterm))))
+  (shell-pop-full-span t))
+
+;; view PDF in emacs
+(use-package pdf-tools
+  :ensure t
+  :config
+  (custom-set-variables
+   '(pdf-tools-handle-upgrades nil)))
+;;(pdf-tools-install)
+;;(pdf-info-check-epdfinfo)
+;; copy  from https://www.songofcode.com/dotfiles/
 
 (provide 'init-config-packages)

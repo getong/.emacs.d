@@ -1408,7 +1408,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; Protobuf
 (use-package protobuf-mode)
 
-(use-package flycheck-rust)
+(use-package flycheck-rust
+  :ensure t
+  :after flycheck
+  :commands flycheck-rust-setup
+  :config
+  :init (add-hook 'flycheck-mode-hook 'flycheck-rust-setup))
 
 ;; Flycheck is a general syntax highlighting framework which other packages hook into. It's an improvment on the built in flymake.
 ;; Setup is pretty simple - we just enable globally and turn on a custom eslint function, and also add a custom checker for proselint.
@@ -1671,12 +1676,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 (use-package rust-playground :ensure)
 
-
-;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-;; for Cargo.toml and other config files
-
-(use-package toml-mode :ensure)
-
+(use-package toml-mode
+  :ensure t
+  :mode (("\\.toml\\'" . toml-mode)
+         ("/Pipfile\\'" . toml-mode)))
 
 ;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;; setting up debugging support with dap-mode
@@ -1714,13 +1717,24 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 			                (yas-minor-mode)
                             ))
 
-;; copy from https://blog.sumtypeofway.com/posts/emacs-config.html
+;; copy from https://gitter.im/emacs-lsp/lsp-mode?at=5f7fea9824a20801a8d60649
 (use-package rust-mode
   :ensure t
-  :custom
-  (rust-format-on-save t)
-  (lsp-rust-server 'rust-analyzer)
-  )
+  :mode "\\.rs\\'"
+  :hook (rust-mode . flycheck-mode)
+  :init (setq lsp-rust-server 'rust-analyzer)
+  :config
+  (setq rust-format-on-save t)
+  (setq lsp-completion-provider :capf)
+  (setq lsp-progress-via-spinner t)
+  (require 'lsp-mode)
+  :hook ((rust-mode . lsp)))
+
+(use-package cargo
+  :ensure t
+  :commands cargo-minor-mode
+  :hook (rust-mode . cargo-minor-mode))
+
 
 ;; copy from https://zenn.dev/yukit/articles/25a88b33a35633
 (cond
@@ -1948,7 +1962,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; (setq consult-project-function #'consult--default-project--function)
   ;;;; 2. projectile.el (projectile-project-root)
   ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  (setq consult-project-function (lambda (_) (projectile-project-root)))
   ;;;; 3. vc.el (vc-root-dir)
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 4. locate-dominating-file

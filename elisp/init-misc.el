@@ -567,5 +567,9 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 ;; (set-face-attribute 'hl-line nil :inherit nil :background "light yellow")
 ;; (set-face-attribute 'line-number nil :inherit nil :foreground "light green")
 ;; (set-face-attribute 'line-number-current-line nil :inherit nil :foreground "white")
+;; copy from https://qiita.com/sanryuu/items/e2584d6163b5bf27c885
+(setq max-specpdl-size 10000)
+(setq max-lisp-eval-depth 10000)
+
 
 (provide 'init-misc)

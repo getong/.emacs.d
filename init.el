@@ -16,8 +16,6 @@
 
 (require 'init-config-packages)
 
-(require 'init-cpp)
-
 (require 'init-font)
 
 (require 'init-macro)

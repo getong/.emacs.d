@@ -9,6 +9,9 @@
   :ensure
   :init (exec-path-from-shell-initialize))
 
+(use-package use-package-ensure-system-package
+  :ensure t)
+
 ;; copy from [Error when running magit-status: run-hooks: Wrong number of arguments](https://github.com/magit/magit/issues/3837)
 (use-package transient
   :init
@@ -2667,6 +2670,42 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :ensure t
   :diminish ivy-mode
   :hook (after-init . ivy-mode))
+
+(use-package ag
+  :ensure t
+  :ensure-system-package (ag . "brew install ag")
+  )
+
+(use-package helm
+  :bind (("M-x" . helm-M-x)
+         ("C-x b" . helm-mini)
+         ("C-x C-f" . helm-find-files)
+         ("C-c y"   . helm-show-kill-ring)
+         ("C-c m"   . helm-man-woman)
+         ("C-c o"   . helm-occur)
+         :map helm-map
+         ("C-h" . delete-backward-char)
+         :map helm-find-files-map
+         ("C-h" . delete-backward-char))
+  :init
+  (custom-set-faces
+   '(helm-header           ((t (:background "#3a3a3a" :underline nil))))
+   '(helm-source-header    ((t (:background "gray16" :foreground "gray64" :slant italic))))
+   '(helm-candidate-number ((t (:foreground "#00afff"))))
+   '(helm-selection        ((t (:background "#005f87" :weight normal))))
+   '(helm-match            ((t (:foreground "darkolivegreen3")))))
+  :config
+  (helm-mode 1))
+
+(use-package helm-projectile
+  :diminish projectile-mode
+  :bind ("C-c p p" . helm-projectile-switch-project)
+  :init
+  (use-package helm-ag)
+  :config
+  (projectile-global-mode t)
+  (helm-projectile-on))
+
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

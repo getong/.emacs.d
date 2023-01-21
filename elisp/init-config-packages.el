@@ -2653,5 +2653,20 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
       lsp-idle-delay 0.1)  ;; clangd is fast
 
 
+(use-package swiper
+  :ensure t
+  :config
+  (defun isearch-forward-or-swiper (use-swiper)
+    (interactive "p")
+    (let (current-prefix-arg)
+      (call-interactively (if use-swiper 'swiper 'isearch-forward))))
+  (global-set-key (kbd "C-s") 'isearch-forward-or-swiper)
+  )
+
+(use-package ivy
+  :ensure t
+  :diminish ivy-mode
+  :hook (after-init . ivy-mode))
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

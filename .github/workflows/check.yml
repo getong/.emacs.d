@@ -28,10 +28,10 @@ jobs:
     - uses: leotaku/elisp-check@master
       with:
         check: load-file
-        file: init.el
+        file: ~/.emacs.d/.emacs.d/init.el
         ignore_warnings: ${{ matrix.ignore_warnings }}
     - uses: leotaku/elisp-check@master
       with:
         check: byte-compile
-        file: init.el
+        file: ~/.emacs.d/.emacs.d/init.el
         ignore_warnings: ${{ matrix.ignore_warnings }}

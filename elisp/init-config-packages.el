@@ -12,6 +12,9 @@
 (use-package use-package-ensure-system-package
   :ensure t)
 
+(use-package diminish
+  :ensure t)
+
 ;; 让 .emacs.d 更干净
 ;; no littering, keep .emacs.d clean
 (use-package no-littering
@@ -40,10 +43,11 @@
 ;; copy from [Error when running magit-status: run-hooks: Wrong number of arguments](https://github.com/magit/magit/issues/3837)
 (use-package transient
   :init
-  :: (setq transient-history nil)
+  ;; (setq transient-history nil)
   (setq transient-history-file "~/.emacs.d/var/transient/history.el")
   )
 
+;; 显示行号
 (use-package display-line-numbers
   :ensure t
   :config
@@ -270,7 +274,15 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :init
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
-
+  ;; life is too short
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  ;; no tabs
+  ;; (setq indent-tabs-mode nil)
+  (setq-default indent-tabs-mode nil)
+  ;; keep everything under vc
+  (setq make-backup-files nil)
+  ;; no need to create lockfiles
+  (setq create-lockfiles nil)
   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
   ;; (setq read-extended-command-predicate
@@ -279,6 +291,41 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete)
+  (set-charset-priority 'unicode) ;; utf8 in every nook and cranny
+  (setq locale-coding-system 'utf-8
+        coding-system-for-read 'utf-8
+        coding-system-for-write 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+  (set-file-name-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-language-environment 'utf-8)
+  (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; escape quits everything
+
+  ;; Don't persist a custom file
+  ;; (setq custom-file (make-temp-file "")) ; use a temp file as a placeholder
+  ;; (setq custom-safe-themes t)            ; mark all themes as safe, since we can't persist now
+  (setq enable-local-variables :all)     ; fix =defvar= warnings
+
+  (setq delete-by-moving-to-trash t) ;; use trash-cli rather than rm when deleting files.
+
+  ;; less noise when compiling elisp
+  (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
+  (setq native-comp-async-report-warnings-errors nil)
+  (setq load-prefer-newer t)
+
+  ;; FIXME currently using tempel in org-mode triggers this warning
+  ;; (setq warning-suppress-types (append warning-suppress-types '((org-element-cache))))
+
+  ;; 显示括号匹配
+  (show-paren-mode t)
+
+  ;; Hide commands in M-x which don't work in the current mode
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
   :config
   ;; 默认情况下，Emacs 为每个打开的文件创建一些临时的文件，这会搞乱我们的目录，不需要它。
   ;; Don't generate backups or lockfiles. While auto-save maintains a copy so long
@@ -286,14 +333,13 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; written, and never again until it is killed and reopened. This is better
   ;; suited to version control, and I don't want world-readable copies of
   ;; potentially sensitive material floating around our filesystem.
-  (setq create-lockfiles nil
-        make-backup-files nil
-        ;; But in case the user does enable it, some sensible defaults:
-        version-control t     ; number each backup file
-        backup-by-copying t   ; instead of renaming current file (clobbers links)
-        delete-old-versions t ; clean up after itself
-        kept-old-versions 5
-        kept-new-versions 5)
+  (setq
+   ;; But in case the user does enable it, some sensible defaults:
+   version-control t     ; number each backup file
+   backup-by-copying t   ; instead of renaming current file (clobbers links)
+   delete-old-versions t ; clean up after itself
+   kept-old-versions 5
+   kept-new-versions 5)
   ;; But turn on auto-save, so we have a fallback in case of crashes or lost data.
   ;; Use `recover-file' or `recover-session' to recover them.
   ;; copy from https://stackoverflow.com/questions/15302973/emacs-auto-save-why-are-files-not-stored-in-the-correct-folder
@@ -657,24 +703,24 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package switch-window
   :config
   (global-set-key (kbd "C-x o") 'switch-window)
-(global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
-(global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
-(global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
-(global-set-key (kbd "C-x 0") 'switch-window-then-delete)
+  (global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
+  (global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
+  (global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
+  (global-set-key (kbd "C-x 0") 'switch-window-then-delete)
 
-(global-set-key (kbd "C-x 4 d") 'switch-window-then-dired)
-(global-set-key (kbd "C-x 4 f") 'switch-window-then-find-file)
-(global-set-key (kbd "C-x 4 m") 'switch-window-then-compose-mail)
-(global-set-key (kbd "C-x 4 r") 'switch-window-then-find-file-read-only)
+  (global-set-key (kbd "C-x 4 d") 'switch-window-then-dired)
+  (global-set-key (kbd "C-x 4 f") 'switch-window-then-find-file)
+  (global-set-key (kbd "C-x 4 m") 'switch-window-then-compose-mail)
+  (global-set-key (kbd "C-x 4 r") 'switch-window-then-find-file-read-only)
 
-(global-set-key (kbd "C-x 4 C-f") 'switch-window-then-find-file)
-(global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
+  (global-set-key (kbd "C-x 4 C-f") 'switch-window-then-find-file)
+  (global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
 
-(global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
+  (global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
 
-(setq switch-window-shortcut-style 'qwerty)
-(setq switch-window-qwerty-shortcuts
-      '("a" "s" "d" "f" "j" "k" "l" ";" "w" "e" "i" "o"))
+  (setq switch-window-shortcut-style 'qwerty)
+  (setq switch-window-qwerty-shortcuts
+        '("a" "s" "d" "f" "j" "k" "l" ";" "w" "e" "i" "o"))
   )
 
 (use-package aggressive-indent
@@ -715,61 +761,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq auto-package-update-delete-old-versions t
         auto-package-update-interval 4)
   (auto-package-update-maybe))
-
-
-;; copy from https://www.patrickdelliott.com/emacs.d/
-(use-package emacs
-  :init
-  (setq user-full-name "Patrick D. Elliott") ;; my details
-  (setq user-mail-address "patrick.d.elliott@gmail.com")
-
-  (defalias 'yes-or-no-p 'y-or-n-p) ;; life is too short
-
-  (setq indent-tabs-mode nil) ;; no tabs
-
-  (setq make-backup-files nil) ;; keep everything under vc
-  ;;(setq auto-save-default nil)
-
-  ;; keep backup and save files in a dedicated directory
-  ;; (setq backup-directory-alist
-  ;;       `((".*" . ,(concat user-emacs-directory "backups")))
-  ;;       auto-save-file-name-transforms
-  ;;       `((".*" ,(concat user-emacs-directory "backups") t)))
-
-  (setq create-lockfiles nil) ;; no need to create lockfiles
-
-  (set-charset-priority 'unicode) ;; utf8 in every nook and cranny
-  (setq locale-coding-system 'utf-8
-        coding-system-for-read 'utf-8
-        coding-system-for-write 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system 'utf-8)
-  (prefer-coding-system 'utf-8)
-  (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
-
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; escape quits everything
-
-  ;; Don't persist a custom file
-  (setq custom-file (make-temp-file "")) ; use a temp file as a placeholder
-  (setq custom-safe-themes t)            ; mark all themes as safe, since we can't persist now
-  (setq enable-local-variables :all)     ; fix =defvar= warnings
-
-  (setq delete-by-moving-to-trash t) ;; use trash-cli rather than rm when deleting files.
-
-  ;; less noise when compiling elisp
-  (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
-  (setq native-comp-async-report-warnings-errors nil)
-  (setq load-prefer-newer t)
-
-  ;; FIXME currently using tempel in org-mode triggers this warning
-  ;; (setq warning-suppress-types (append warning-suppress-types '((org-element-cache))))
-
-  (show-paren-mode t)
-
-  ;; Hide commands in M-x which don't work in the current mode
-  (setq read-extended-command-predicate #'command-completion-default-include-p))
-
 
 (use-package general
   :config
@@ -1356,15 +1347,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :custom
   (comment-auto-fill-only-comments t))
 
-
 ;; RET 后仅保留一个 dired buffer
 ;; For Emacs 28
 (use-package dired
   :ensure nil
   :custom
   (dired-kill-when-opening-new-dired-buffer t))
-
-
 
 ;; typescript
 ;; copy from https://vxlabs.com/2022/06/12/typescript-development-with-emacs-tree-sitter-and-lsp-in-2022/
@@ -1415,10 +1403,13 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
 ;; Json
 (use-package json-mode)
+
 ;; Yaml
 (use-package yaml-mode)
+
 ;; Dockfile
 (use-package dockerfile-mode)
+
 ;; Protobuf
 (use-package protobuf-mode)
 
@@ -1433,6 +1424,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; Setup is pretty simple - we just enable globally and turn on a custom eslint function, and also add a custom checker for proselint.
 (use-package flycheck
   :ensure t
+  :init
+  (setq flycheck-indication-mode 'right-fringe)
+  ;; only check on save
+  (setq flycheck-check-syntax-automatically '(mode-enabled save))
   :config
   (add-hook 'after-init-hook 'global-flycheck-mode)
   (add-to-list 'flycheck-checkers 'proselint)
@@ -1698,10 +1693,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
             (company-complete-common)
           (indent-for-tab-command)))))
 
-
-;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;; Create / cleanup rust scratch projects quickly
-
 (use-package rust-playground :ensure)
 
 (use-package toml-mode
@@ -1709,7 +1701,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :mode (("\\.toml\\'" . toml-mode)
          ("/Pipfile\\'" . toml-mode)))
 
-;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;; setting up debugging support with dap-mode
 (when (executable-find "lldb-mi")
   (use-package dap-mode
@@ -2094,10 +2085,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
         )
   )
 
-(use-package saveplace
-  :ensure nil
-  :hook (after-init . save-place-mode))
-
 ;; 显示文件列
 (use-package simple
   :ensure nil
@@ -2294,7 +2281,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;   (magit-mode . change-new-theme)
 ;;   )
 
-
 (use-package doom-themes
   :ensure t
   :config
@@ -2421,10 +2407,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package fzf
   :ensure t)
 
-;; You can now edit files directly from results buffers with M-x deadgrep-edit-mode.
-(use-package deadgrep
-  :ensure t)
-
 ;; dumb-jump attempts to support many languages by simple searching.
 ;; It's quite effective even with dynamic libraries like JS and Python.
 (use-package dumb-jump
@@ -2453,6 +2435,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; elixir
 (use-package elixir-mode
   :ensure t)
+
 (use-package alchemist
   :ensure t)
 
@@ -2660,8 +2643,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :mode (("CMakeLists\\.txt\\'" . cmake-mode)
          ("\\.cmake\\'" . cmake-mode)))
 
-(use-package diminish
-  :ensure t)
 
 ;; C++20 highlighting
 (use-package modern-cpp-font-lock
@@ -2706,7 +2687,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
       company-idle-delay 0.0
       company-minimum-prefix-length 1
       lsp-idle-delay 0.1)  ;; clangd is fast
-
 
 (use-package swiper
   :ensure t

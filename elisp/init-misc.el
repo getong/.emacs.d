@@ -6,10 +6,10 @@
 (push '(tool-bar-lines . 0)   default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
 
-(setq-default indent-tabs-mode nil)
+;; (setq-default indent-tabs-mode nil)
 (setq default-tab-width 4)
 
-(setq dart-server-sdk-path "~/flutter/bin/cache/dart-sdk/")
+;; (setq dart-server-sdk-path "~/flutter/bin/cache/dart-sdk/")
 (setq dart-server-enable-analysis-server t)
 (add-hook 'dart-server-hook 'flycheck-mode)
 
@@ -29,18 +29,18 @@
 
 ;;(setq-default indent-tabs-mode nil)
 (ido-mode 1)
-:: (setq column-number-mode t)
+;; (setq column-number-mode t)
 
 (setq inhibit-startup-message t) ;; 关闭起动时LOGO
 (setq visible-bell t);;关闭出错时的提示声
 (global-font-lock-mode t);语法高亮
-(show-paren-mode t) ;; 显示括号匹配
+;; (show-paren-mode t) ;; 显示括号匹配
 (setq show-paren-style 'parenthesis)
 ;;(setq mouse-yank-at-point t);;支持中键粘贴
 (mouse-avoidance-mode 'animate) ;;光标靠近鼠标指针时，让鼠标指针自动让开，别挡住视线。
 (setq appt-issue-message t)
 
-(add-to-list 'auto-mode-alist '("\\.dart\\'" . dart-mode))
+;; (add-to-list 'auto-mode-alist '("\\.dart\\'" . dart-mode))
 
 
 (setq backup-directory-alist (quote (("." . "~/.backups"))))
@@ -174,17 +174,17 @@
 (setq x-underline-at-descent-line t)
 
 ;;文本解码设置默认为 UTF-8
-(setq locale-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-file-name-coding-system 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
+;; (setq locale-coding-system 'utf-8)
+;; (set-keyboard-coding-system 'utf-8)
+;; (set-selection-coding-system 'utf-8)
+;; (set-language-environment 'utf-8)
+;; (set-default-coding-systems 'utf-8)
+;; (set-file-name-coding-system 'utf-8)
+;; (set-terminal-coding-system 'utf-8)
+;; (prefer-coding-system 'utf-8)
 
 ;; Emacs 自动加载外部修改过的文件
-(global-auto-revert-mode 1)
+;; (global-auto-revert-mode 1)
 
 ;; set default tab char's display width to 4 spaces
 (setq-default tab-width 4) ; emacs 23.1, 24.2, default to 8
@@ -215,7 +215,7 @@
 
 (savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-(setq savehist-file "~/.emacs.d/var/savehist")
+;; (setq savehist-file "~/.emacs.d/var/savehist")
 
 ;; copy from https://github.com/dimitri/switch-window
 ;;(require 'switch-window)
@@ -382,7 +382,7 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 ;; copy from https://github.com/d12frosted/homebrew-emacs-plus/issues/383
 (when (eq system-type 'darwin)
   (setq insert-directory-program "/usr/local/bin/gls"))
-(setq insert-directory-program "gls" dired-use-ls-dired t)
+;; (setq insert-directory-program "gls" dired-use-ls-dired t)
 (setq dired-listing-switches "-al --group-directories-first")
 
 ;; copy from https://github.com/NapoleonWils0n/ubuntu-dotfiles/blob/f061fa1b05c5ccba8f6b4a2d165660ab8ab3c56b/.config/emacs/init.el#L170
@@ -457,7 +457,7 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 
 (put 'dired-find-alternate-file 'disabled nil)
 (setq dired-dwim-target t)
-(defalias 'yes-or-no-p 'y-or-n-p)
+;; (defalias 'yes-or-no-p 'y-or-n-p)
 
 
 (setq user-emacs-directory (file-truename "~/.emacs.d/"))
@@ -472,10 +472,10 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (setq undo-limit 104857600         ; 重置撤销限制到 100 MiB
       auto-save-default t          ; 没有人喜欢丢失工作，我也是如此
       truncate-string-ellipsis "…" ; Unicode 省略号相比 ascii 更好
-                                        ; 同时节省 /宝贵的/ 空间
+      ;; 同时节省 /宝贵的/ 空间
       password-cache-expiry nil    ; 我能信任我的电脑 ... 或不能?
-                                        ; scroll-preserve-screen-position 'always
-                                        ; 不要让 `点' (光标) 跳来跳去
+      ;; scroll-preserve-screen-position 'always
+      ;; 不要让 `点' (光标) 跳来跳去
       scroll-margin 2              ; 适当保持一点点边距
       gc-cons-threshold 1073741824
       read-process-output-max 1048576
@@ -484,7 +484,7 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (remove-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'text-mode-hook #'auto-fill-mode)
 (add-hook 'window-setup-hook #'toggle-frame-fullscreen)
-                                        ; 设置最大化启动
+;; 设置最大化启动
 ;;(display-time-mode t)             ; 开启时间状态栏
 ;; (require 'battery)
 ;; (when (and battery-status-function

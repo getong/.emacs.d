@@ -2103,6 +2103,14 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :config
   (add-to-list 'recentf-exclude "\\elpa")
   (add-to-list 'recentf-exclude "private/tmp")
+  ;; 50 files ought to be enough.
+  (setq recentf-max-saved-items 50)
+  (setq recentf-max-saved-items 2000)
+  (setq recentf-auto-cleanup 'never)  ;
+  (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"))
+  (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
+  (bind-key "C-c っ" 'helm-recentf)
+  (bind-key "C-c t" 'helm-recentf)
   (recentf-mode))
 
 (use-package yasnippet-snippets

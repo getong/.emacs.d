@@ -625,6 +625,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; 让 .emacs.d 更干净
 ;; no littering, keep .emacs.d clean
 (use-package no-littering
+  :ensure t
   :config
   (with-eval-after-load 'recentf
     (set 'recentf-exclude
@@ -632,7 +633,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
            no-littering-etc-directory
            (expand-file-name "elpa" user-emacs-directory)
            (expand-file-name "cache" user-emacs-directory))))
-  (setq custom-file (no-littering-expand-etc-file-name "custom.el")))
+  (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
+  (unless (file-exists-p custom-file)  ;; 如果该文件不存在
+    (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
+  (load custom-file)
+  )
 
 
 (use-package indent-guide
@@ -1592,10 +1597,24 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 (use-package lsp-ui
   :ensure
+  ;; :requires use-package-hydra
   :commands lsp-ui-mode
-  :custom
-  (lsp-ui-peek-always-show t)
+  :config
+  (setq lsp-print-io nil)
+  (setq lsp-prefer-flymake :none)
+  (setq flycheck-checker-error-threshold 10000)
+  (setq lsp-ui-flycheck-enable t)
+  (setq-local flycheck-checker 'python-flake8)
+  (setq lsp-ui-flycheck-list-position 'right)
+  (setq lsp-ui-flycheck-live-reporting t)
+  (setq lsp-ui-peek-enable t)
+  (setq lsp-ui-peek-list-width 60)
+  (setq lsp-ui-peek-peek-height 25)
+  (setq lsp-ui-imenu-enable t)
+  (setq lsp-ui-sideline-ignore-duplicate t)
+  ;; (lsp-ui-peek-always-show t)
   ;; copy from [A guide on disabling/enabling lsp-mode features](https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/)
+  :custom
   (lsp-ui-doc-enable t)
   (lsp-ui-doc-show-with-cursor t)
   (lsp-ui-doc-show-with-mouse nil)
@@ -1998,7 +2017,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
           treemacs-no-png-images                 nil
           treemacs-no-delete-other-windows       t
           treemacs-project-follow-cleanup        nil
-          treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          ;; treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-persist-file (no-littering-expand-etc-file-name '"treemacs-persist.org")
+          ;; treemacs–last-error-persist-file (no-littering-expand-etc-file-name '“treemacs-last-error-persist-file.org”)
           treemacs-position                      'left
           treemacs-recenter-distance             0.1
           treemacs-recenter-after-file-follow    nil

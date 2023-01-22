@@ -2720,6 +2720,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (projectile-global-mode t)
   (helm-projectile-on))
 
+(use-package lsp-ivy
+  :ensure t
+  :after (lsp-mode))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

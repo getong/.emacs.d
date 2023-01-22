@@ -571,5 +571,7 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (setq max-specpdl-size 10000)
 (setq max-lisp-eval-depth 10000)
 
+;; https://emacs.stackexchange.com/questions/18677/prevent-auto-save-list-directory-to-be-created
+(setq auto-save-list-file-prefix nil)
 
 (provide 'init-misc)

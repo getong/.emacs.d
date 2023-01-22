@@ -40,7 +40,9 @@
 ;; copy from [Error when running magit-status: run-hooks: Wrong number of arguments](https://github.com/magit/magit/issues/3837)
 (use-package transient
   :init
-  (setq transient-history nil))
+  :: (setq transient-history nil)
+  (setq transient-history-file "~/.emacs.d/var/transient/history.el")
+  )
 
 (use-package display-line-numbers
   :ensure t
@@ -2812,11 +2814,12 @@ any directory proferred by `consult-dir'."
 
 (use-package parinfer-rust-mode
   :defer 1
-  :if *is-unix*
   :hook
   emacs-lisp-mode
   lisp-mode
   clojure-mode
+  :config
+  (setq parinfer-rust-library "~/.emacs.d/var/parinfer-rust/parinfer-rust-library.so")
   :custom
   (parinfer-rust-auto-download t))
 

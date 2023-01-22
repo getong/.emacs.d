@@ -12,6 +12,31 @@
 (use-package use-package-ensure-system-package
   :ensure t)
 
+;; 让 .emacs.d 更干净
+;; no littering, keep .emacs.d clean
+(use-package no-littering
+  :ensure t
+  :config
+  (with-eval-after-load 'recentf
+    (set 'recentf-exclude
+         '(no-littering-var-directory
+           no-littering-etc-directory
+           (expand-file-name "elpa" user-emacs-directory)
+           (expand-file-name "cache" user-emacs-directory))))
+  (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
+  (unless (file-exists-p custom-file)  ;; 如果该文件不存在
+    (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
+  (load custom-file)
+
+  ;; https://eshelyaron.com/esy.html
+  (setq auto-save-file-name-transforms
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  (when (fboundp 'startup-redirect-eln-cache)
+    (startup-redirect-eln-cache
+     (convert-standard-filename
+      (expand-file-name  "var/eln-cache/" user-emacs-directory))))
+  )
+
 ;; copy from [Error when running magit-status: run-hooks: Wrong number of arguments](https://github.com/magit/magit/issues/3837)
 (use-package transient
   :init
@@ -621,24 +646,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; (use-package ef-themes
 ;;   :defer t
 ;;   :init (load-theme 'ef-winter t))
-
-;; 让 .emacs.d 更干净
-;; no littering, keep .emacs.d clean
-(use-package no-littering
-  :ensure t
-  :config
-  (with-eval-after-load 'recentf
-    (set 'recentf-exclude
-         '(no-littering-var-directory
-           no-littering-etc-directory
-           (expand-file-name "elpa" user-emacs-directory)
-           (expand-file-name "cache" user-emacs-directory))))
-  (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
-  (unless (file-exists-p custom-file)  ;; 如果该文件不存在
-    (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
-  (load custom-file)
-  )
-
 
 (use-package indent-guide
   :config
@@ -1883,7 +1890,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
          ;; C-x bindings (ctl-x-map)
          ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
          ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ;; ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
          ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
          ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
          ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
@@ -2122,11 +2129,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   )
 
 ;; Hit M-m, expand up to the next largest region based on mode-context sensitive scope.
-(use-package expand-region
-  :ensure expand-region
-  :bind (("M-#" . er/mark-symbol)
-         ("M-m" . er/expand-region))
-  :commands (er/expand-region er/enable-mode-expansions))
+;; (use-package expand-region
+;;   :ensure expand-region
+;;   :bind (("M-#" . er/mark-symbol)
+;;          ("M-m" . er/expand-region))
+;;   :commands (er/expand-region er/enable-mode-expansions))
 
 (defun my/deadgrep-fix-buffer-advice (fun &rest args)
   (let ((buf (apply fun args)))
@@ -2752,6 +2759,66 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package lsp-ivy
   :ensure t
   :after (lsp-mode))
+
+(use-package consult-dir
+       :ensure t
+       :bind (("C-x C-d" . consult-dir)
+              :map minibuffer-local-completion-map
+              ("C-x C-d" . consult-dir)
+              ("C-x C-j" . consult-dir-jump-file)))
+
+;; https://karthinks.com/software/jumping-directories-in-eshell/
+(defun eshell/z (&optional regexp)
+  "Navigate to a previously visited directory in eshell, or to
+any directory proferred by `consult-dir'."
+  (let ((eshell-dirs (delete-dups
+                      (mapcar 'abbreviate-file-name
+                              (ring-elements eshell-last-dir-ring)))))
+    (cond
+     ((and (not regexp) (featurep 'consult-dir))
+      (let* ((consult-dir--source-eshell `(:name "Eshell"
+                                                 :narrow ?e
+                                                 :category file
+                                                 :face consult-file
+                                                 :items ,eshell-dirs))
+             (consult-dir-sources (cons consult-dir--source-eshell
+                                        consult-dir-sources)))
+        (eshell/cd (substring-no-properties
+                    (consult-dir--pick "Switch directory: ")))))
+     (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
+                     (completing-read "cd: " eshell-dirs)))))))
+
+;; environment
+(defconst *is-windows* (eq system-type 'windows-nt))
+(defconst *is-unix* (not *is-windows*))
+
+(defun me/hide-trailing-whitespace ()
+  (setq show-trailing-whitespace nil))
+
+(use-package whitespace-cleanup-mode
+  :demand t
+  :hook
+  (special-mode     . me/hide-trailing-whitespace)
+  (comint-mode      . me/hide-trailing-whitespace)
+  (compilation-mode . me/hide-trailing-whitespace)
+  (term-mode        . me/hide-trailing-whitespace)
+  (vterm-mode       . me/hide-trailing-whitespace)
+  (shell-mode       . me/hide-trailing-whitespace)
+  (minibuffer-setup . me/hide-trailing-whitespace)
+  :custom
+  (show-trailing-whitespace t)
+  :config
+  (global-whitespace-cleanup-mode 1))
+
+(use-package parinfer-rust-mode
+  :defer 1
+  :if *is-unix*
+  :hook
+  emacs-lisp-mode
+  lisp-mode
+  clojure-mode
+  :custom
+  (parinfer-rust-auto-download t))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

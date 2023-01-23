@@ -924,7 +924,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
  (progn
   (setq
    projectile-enable-caching t
-   projectile-sort-order 'recentf
+   projectile-sort-order 'recently-active
    ))
   (setq-default projectile-mode-line-prefix " Proj")
   (projectile-global-mode))
@@ -2096,18 +2096,49 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; copy from https://blog.sumtypeofway.com/posts/emacs-config.html
 (use-package recentf
-  :config
-  (add-to-list 'recentf-exclude "\\elpa")
-  (add-to-list 'recentf-exclude "private/tmp")
-  ;; 50 files ought to be enough.
-  (setq recentf-max-saved-items 50)
+  :init
+  ;; (add-to-list 'recentf-exclude "\\elpa")
+  ;; (add-to-list 'recentf-exclude "private/tmp")
+  ;; 2000 files ought to be enough.
   (setq recentf-max-saved-items 2000)
+  ;;(setq recentf-max-menu-items 5000)
   (setq recentf-auto-cleanup 'never)  ;
   (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"))
   (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
   (bind-key "C-c っ" 'helm-recentf)
   (bind-key "C-c t" 'helm-recentf)
-  (recentf-mode))
+  (recentf-mode)
+  ;;(run-at-time nil (* 5 60) 'recentf-save-list)
+  )
+
+(use-package sync-recentf
+  :config
+  (setq recentf-auto-cleanup 60)
+  (recentf-mode 1)
+  )
+
+(defun suppress-messages (func &rest args)
+  "Suppress message output from FUNC."
+  ;; Some packages are too noisy.
+  ;; https://superuser.com/questions/669701/emacs-disable-some-minibuffer-messages
+  (cl-flet ((silence (&rest args1) (ignore)))
+    (advice-add 'message :around #'silence)
+    (unwind-protect
+        (apply func args)
+      (advice-remove 'message #'silence))))
+
+;; Suppress "Cleaning up the recentf...done (0 removed)"
+(advice-add 'recentf-cleanup :around #'suppress-messages)
+(defconst recentf-used-hooks
+  '(
+    (find-file-hook       recentf-track-opened-file)
+    (write-file-functions recentf-track-opened-file)
+    (kill-buffer-hook     recentf-track-closed-file)
+    (kill-emacs-hook      recentf-save-list)
+    )
+  "Hooks used by recentf.")
+(defun recentf-save-list/silent ()
+  (let ((save-silently t)) (recentf-save-list)))
 
 (use-package yasnippet-snippets
   :disabled
@@ -2412,6 +2443,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package dumb-jump
   :ensure t
   :diminish dumb-jump-mode
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  (setq xref-show-definitions-function #'xref-show-definitions-completing-read)
   :bind (("C-M-g" . dumb-jump-go)
          ("C-M-p" . dumb-jump-back)
          ("C-M-q" . dumb-jump-quick-look)))

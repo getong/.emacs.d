@@ -1,5 +1,13 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 
+;; copy from https://sachachua.com/dotemacs/index.html
+(defvar my-laptop-p (equal (system-name) "sacha-x220"))
+(defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "sacha")))
+(defvar my-phone-p (not (null (getenv "ANDROID_ROOT")))
+  "If non-nil, GNU Emacs is running on Termux.")
+(when my-phone-p (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+(global-auto-revert-mode)  ; simplifies syncingr
+
 (use-package esup
   :ensure t
   ;; To use MELPA Stable use ":pin melpa-stable",
@@ -145,11 +153,127 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 ;;    ))
 
 (use-package hydra
-  :ensure t)
+  :ensure t
+  :commands defhydra)
 
 (use-package use-package-hydra
   :ensure t
   :after hydra)
+(if my-laptop-p
+    (use-package hydra-posframe :if my-laptop-p :after hydra))
+
+(with-eval-after-load 'hydra
+  (defhydra my-window-movement ()
+    ("<left>" windmove-left)
+    ("<right>" windmove-right)
+    ("<down>" windmove-down)
+    ("<up>" windmove-up)
+    ("y" other-window "other")
+    ("h" switch-window "switch-window")
+    ("b" consult-buffer "buffer")
+    ("f" find-file "file")
+    ("F" find-file-other-window "other file")
+    ("v" (progn (split-window-right) (windmove-right)))
+    ("o" delete-other-windows :color blue)
+    ("a" ace-window)
+    ("s" ace-swap-window)
+    ("d" delete-window "delete")
+    ("D" ace-delete-window "ace delete")
+    ("i" ace-maximize-window "maximize")
+    ("q" nil)))
+
+(with-eval-after-load 'hydra
+  (defhydra my-shortcuts (:exit t)
+    ("j" my-helm-journal "Journal")
+    ("C" my-resolve-orgzly-syncthing "Conflicts")
+    ("n" my-capture-timestamped-note "Note")
+    ("c" my-org-categorize-emacs-news/body "Categorize")
+    ("d" my-emacs-news-check-duplicates "Dupe")
+    ("s" save-buffer "Save")
+    ("f" my-file-shortcuts/body "File shortcut")
+    ("+" text-scale-increase "Increase")
+    ("-" text-scale-decrease "Decrease")
+    ("G" gif-screencast-start-or-stop "GIF screencast")
+    ("g" my-geeqie/body "Geeqie")
+    ("r" my-record-ffmpeg-toggle-recording "Record screen")
+    ("l" (my-toggle-or-create "*scratch*" (lambda () (switch-to-buffer (startup--get-buffer-create-scratch)))) "Lisp")
+    ("e" eshell-toggle "Eshell")
+    ("w" my-engine-dmode-hydra/body "Search web")
+    ("E" my-emacs-news/body "Emacs News"))
+  (global-set-key (kbd "<f5>") #'my-shortcuts/body)
+  (defhydra my-emacs-news (:exit t)
+    "Emacs News"
+    ("f" (find-file "~/sync/emacs-news/index.org") "News")
+    ("C" (find-file "~/proj/emacs-calendar/README.org") "Calendar")
+    ("C" (find-file "/ssh:web:/var/www/emacslife.com/calendar/README.org" "Calendar on server"))
+    ("d" my-emacs-news-check-duplicates "Dupe")
+    ("c" my-org-categorize-emacs-news/body "Categorize")
+    ("h" (my-org-update-link-description "HN") "Link HN")
+    ("i" (my-org-update-link-description "Irreal") "Link Irreal")
+    ("m" my-share-emacs-news "Mail")
+    ("t" (browse-url "https://tweetdeck.twitter.com") "Twitter")))
+
+(defun my-org-update-link-description (description)
+  "Update the current link's DESCRIPTION."
+  (interactive "MDescription: ")
+  (let (link)
+    (save-excursion
+      (cond
+       ((org-in-regexp org-link-bracket-re 1)
+        (setq link (org-link-unescape (match-string-no-properties 1)))
+        (delete-region (match-beginning 0) (match-end 0))
+        (insert (org-link-make-string link description))
+        (sit-for 0))
+       ((or (org-in-regexp org-link-angle-re)
+            (org-in-regexp org-link-plain-re))
+        (setq link (org-unbracket-string "<" ">" (match-string 0)))
+        (delete-region (match-beginning 0) (match-end 0))
+        (insert (org-link-make-string link description))
+        (sit-for 0))))))
+
+(defun my-org-insert-link ()
+  (interactive)
+  (when (org-in-regexp org-bracket-link-regexp 1)
+    (goto-char (match-end 0))
+    (insert "\n"))
+  (call-interactively 'org-insert-link))
+
+(defun my-switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+      Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+(defun my-org-check-agenda ()
+  "Peek at agenda."
+  (interactive)
+  (cond
+   ((derived-mode-p 'org-agenda-mode)
+    (if (window-parent) (delete-window) (bury-buffer)))
+   ((get-buffer "*Org Agenda*")
+    (switch-to-buffer-other-window "*Org Agenda*"))
+   (t (org-agenda nil "a"))))
+
+(defun my-goto-random-char ()
+  (interactive)
+  (goto-char (random (point-max))))
+
+(defvar hydra-stack nil)
+
+(defun my-hydra-push (expr)
+  (push `(lambda () ,expr) hydra-stack))
+
+(defun my-hydra-pop ()
+  (interactive)
+  (let ((x (pop hydra-stack)))
+    (when x (funcall x))))
+
+(defun my-hydra-go-and-push (expr)
+  (push hydra-curr-body-fn hydra-stack)
+  (prin1 hydra-stack)
+  (funcall expr))
+
+
 
 (use-package undo-tree
   :ensure t
@@ -1891,7 +2015,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
          ;; C-x bindings (ctl-x-map)
          ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
          ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-         ;; ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
          ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
          ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
          ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
@@ -1994,6 +2118,14 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 4. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+  (projectile-load-known-projects)
+  (setq my-consult-source-projectile-projects
+        `(:name "Projectile projects"
+                :narrow   ?P
+                :category project
+                :action   ,#'projectile-switch-project-by-name
+                :items    ,projectile-known-projects))
+  (add-to-list 'consult-buffer-sources my-consult-source-projectile-projects 'append)
   )
 
 (use-package consult-flycheck)
@@ -2309,7 +2441,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :config
   (setq magit-buffer-name-format (concat "*" magit-buffer-name-format "*"))
   (with-eval-after-load 'magit ;; your code
-    :: copy from [在 magit 中使用 difftastic](https://emacs-china.org/t/magit-difftastic/23207)
+    ;; copy from [在 magit 中使用 difftastic](https://emacs-china.org/t/magit-difftastic/23207)
     (defun my/magit--with-difftastic (buffer command)
       "Run COMMAND with GIT_EXTERNAL_DIFF=difft then show result in BUFFER."
       (let ((process-environment
@@ -2964,6 +3096,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
                                   mwheel-scroll
                                   dap-tooltip-mouse-motion
                                   gud-tooltip-mouse-motion))
+
+(defun my-reload-emacs-configuration ()
+  (interactive)
+  (load-file "~/.emacs.d/init.el"))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

@@ -2103,11 +2103,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq recentf-max-saved-items 2000)
   ;;(setq recentf-max-menu-items 5000)
   (setq recentf-auto-cleanup 'never)  ;
-  (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"))
+  (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker"))
   (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
-  (bind-key "C-c っ" 'helm-recentf)
-  (bind-key "C-c t" 'helm-recentf)
-  (recentf-mode)
+  ;; (bind-key "C-c っ" 'helm-recentf)
+  ;; (bind-key "C-c t" 'helm-recentf)
+  (recentf-mode 1)
   ;;(run-at-time nil (* 5 60) 'recentf-save-list)
   )
 
@@ -2744,7 +2744,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 (use-package helm
   :bind (("M-x" . helm-M-x)
-         ("C-x b" . helm-mini)
+         ;; ("C-x b" . helm-mini)
          ("C-x C-f" . helm-find-files)
          ("C-c y"   . helm-show-kill-ring)
          ("C-c m"   . helm-man-woman)

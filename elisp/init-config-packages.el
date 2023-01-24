@@ -1822,6 +1822,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   ;; (setq vertico-cycle t)
+  (vertico-multiform-mode)
+  (setq vertico-multiform-categories
+        '((file grid)
+          (consult-grep buffer)))
   )
 
 ;; minibuffer 模糊匹配
@@ -1869,6 +1873,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
   :ensure t ; only need to install it, embark loads it after consult if found
+  :after (embark consult)
+  :demand t ; only necessary if you have the hook below
+  ;; if you want to have consult previews as you move around an
+  ;; auto-updating embark collect buffer
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -1987,6 +1995,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;;;; 4. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
   )
+
+(use-package consult-flycheck)
 
 ;; copy from https://huadeyu.tech/tools/emacs-setup-notes.html
 (use-package treemacs
@@ -2885,25 +2895,25 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
               ("C-x C-j" . consult-dir-jump-file)))
 
 ;; https://karthinks.com/software/jumping-directories-in-eshell/
-(defun eshell/z (&optional regexp)
-  "Navigate to a previously visited directory in eshell, or to
-any directory proferred by `consult-dir'."
-  (let ((eshell-dirs (delete-dups
-                      (mapcar 'abbreviate-file-name
-                              (ring-elements eshell-last-dir-ring)))))
-    (cond
-     ((and (not regexp) (featurep 'consult-dir))
-      (let* ((consult-dir--source-eshell `(:name "Eshell"
-                                                 :narrow ?e
-                                                 :category file
-                                                 :face consult-file
-                                                 :items ,eshell-dirs))
-             (consult-dir-sources (cons consult-dir--source-eshell
-                                        consult-dir-sources)))
-        (eshell/cd (substring-no-properties
-                    (consult-dir--pick "Switch directory: ")))))
-     (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
-                     (completing-read "cd: " eshell-dirs)))))))
+;; (defun eshell/z (&optional regexp)
+;;   "Navigate to a previously visited directory in eshell, or to
+;; any directory proferred by `consult-dir'."
+;;   (let ((eshell-dirs (delete-dups
+;;                       (mapcar 'abbreviate-file-name
+;;                               (ring-elements eshell-last-dir-ring)))))
+;;     (cond
+;;      ((and (not regexp) (featurep 'consult-dir))
+;;       (let* ((consult-dir--source-eshell `(:name "Eshell"
+;;                                                  :narrow ?e
+;;                                                  :category file
+;;                                                  :face consult-file
+;;                                                  :items ,eshell-dirs))
+;;              (consult-dir-sources (cons consult-dir--source-eshell
+;;                                         consult-dir-sources)))
+;;         (eshell/cd (substring-no-properties
+;;                     (consult-dir--pick "Switch directory: ")))))
+;;      (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
+;;                      (completing-read "cd: " eshell-dirs)))))))
 
 ;; environment
 (defconst *is-windows* (eq system-type 'windows-nt))
@@ -2927,16 +2937,16 @@ any directory proferred by `consult-dir'."
   :config
   (global-whitespace-cleanup-mode 1))
 
-(use-package parinfer-rust-mode
-  :defer 1
-  :hook
-  emacs-lisp-mode
-  lisp-mode
-  clojure-mode
-  :config
-  (setq parinfer-rust-library "~/.emacs.d/var/parinfer-rust/parinfer-rust-library.so")
-  :custom
-  (parinfer-rust-auto-download t))
+;; (use-package parinfer-rust-mode
+;;   :ensure t
+;;   :hook
+;;   emacs-lisp-mode
+;;   lisp-mode
+;;   clojure-mode
+;;   :config
+;;   (setq parinfer-rust-library "~/.emacs.d/var/parinfer-rust/parinfer-rust-library.so")
+;;   :custom
+;;   (parinfer-rust-auto-download t))
 
 ;; keyfreq to analyze the key using situation
 (use-package keyfreq

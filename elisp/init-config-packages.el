@@ -3152,5 +3152,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (interactive)
   (load-file "~/.emacs.d/init.el"))
 
+;; copy from https://tech.toryanderson.com/2020/11/13/migrating-to-a-custom-file-less-setup/
+;; With this I turn off customization-file-saving.
+(use-package cus-edit
+  :ensure nil
+  :custom
+  (custom-file null-device "Don't store customizations"))
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

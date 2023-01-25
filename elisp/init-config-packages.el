@@ -2232,6 +2232,13 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :ensure nil
   :hook (after-init . size-indication-mode)
   :init
+  ;; 高亮显示选中区域
+  (transient-mark-mode t)
+  ;; 高亮选中区域颜色
+  ;; (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
+  (custom-set-faces
+   '(region
+     ((nil (:background "#666" :foreground "#ffffff")))))
   (progn
     (setq column-number-mode t)
     ))
@@ -2840,23 +2847,23 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;                         (org-agenda-overriding-header "Today's Tasks")))))))
 ;;   )
 
-(use-package org-roam
-  :ensure t
-  :diminish org-roam-mode
-  :hook
-  (after-init . org-roam-mode)
-  :custom
-  (org-roam-directory "~/Documents/org/roam/")
-  (org-roam-db-update-method 'immediate)
-  (org-roam-completion-system 'ivy)
-  :bind
-  (:map org-roam-mode-map
-        (("C-c n l" . org-roam)
-         ("C-c n f" . org-roam-find-file)
-         ("C-c n g" . org-roam-graph))
-        :map org-mode-map
-        (("C-c n i" . org-roam-insert))
-        (("C-c n I" . org-roam-insert-immediate))))
+;; (use-package org-roam
+;;   :ensure t
+;;   :diminish org-roam-mode
+;;   :hook
+;;   (after-init . org-roam-mode)
+;;   :custom
+;;   (org-roam-directory "~/Documents/org/roam/")
+;;   (org-roam-db-update-method 'immediate)
+;;   (org-roam-completion-system 'ivy)
+;;   :bind
+;;   (:map org-roam-mode-map
+;;         (("C-c n l" . org-roam)
+;;          ("C-c n f" . org-roam-find-file)
+;;          ("C-c n g" . org-roam-graph))
+;;         :map org-mode-map
+;;         (("C-c n i" . org-roam-insert))
+;;         (("C-c n I" . org-roam-insert-immediate))))
 
 ;; (use-package org-roam-server
 ;;   :ensure t

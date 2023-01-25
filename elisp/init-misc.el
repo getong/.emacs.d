@@ -149,9 +149,9 @@
 (spinner-start 'triangle)
 
 ;; 高亮显示选中区域
-(transient-mark-mode t)
+;; (transient-mark-mode t)
 ;; 高亮选中区域颜色
-(set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
+;; (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
 
 
 

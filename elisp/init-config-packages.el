@@ -1431,7 +1431,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; 有时候Emacs里打开的文件可能被外部修改，启用autorevert的话可以自动更新对应的 buffer.
 (use-package autorevert
-  :ensure nil
+  :ensure t
   :hook (after-init . global-auto-revert-mode))
 
 ;; 来显示如 10/100 这种状态。
@@ -2985,26 +2985,68 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :ensure-system-package (ag . "brew install ag")
   )
 
+;; (use-package helm
+;;   :bind (("M-x" . helm-M-x)
+;;          ;; ("C-x b" . helm-mini)
+;;          ("C-x C-f" . helm-find-files)
+;;          ("C-c y"   . helm-show-kill-ring)
+;;          ("C-c m"   . helm-man-woman)
+;;          ("C-c o"   . helm-occur)
+;;          :map helm-map
+;;          ("C-h" . delete-backward-char)
+;;          :map helm-find-files-map
+;;          ("C-h" . delete-backward-char))
+;;   :init
+;;   (custom-set-faces
+;;    '(helm-header           ((t (:background "#3a3a3a" :underline nil))))
+;;    '(helm-source-header    ((t (:background "gray16" :foreground "gray64" :slant italic))))
+;;    '(helm-candidate-number ((t (:foreground "#00afff"))))
+;;    '(helm-selection        ((t (:background "#005f87" :weight normal))))
+;;    '(helm-match            ((t (:foreground "darkolivegreen3")))))
+;;   :config
+;;   (helm-mode 1))
+;; copy from https://sachachua.com/dotemacs/index.html
 (use-package helm
-  :bind (("M-x" . helm-M-x)
-         ;; ("C-x b" . helm-mini)
-         ("C-x C-f" . helm-find-files)
-         ("C-c y"   . helm-show-kill-ring)
-         ("C-c m"   . helm-man-woman)
-         ("C-c o"   . helm-occur)
-         :map helm-map
-         ("C-h" . delete-backward-char)
-         :map helm-find-files-map
-         ("C-h" . delete-backward-char))
-  :init
-  (custom-set-faces
-   '(helm-header           ((t (:background "#3a3a3a" :underline nil))))
-   '(helm-source-header    ((t (:background "gray16" :foreground "gray64" :slant italic))))
-   '(helm-candidate-number ((t (:foreground "#00afff"))))
-   '(helm-selection        ((t (:background "#005f87" :weight normal))))
-   '(helm-match            ((t (:foreground "darkolivegreen3")))))
+  :diminish helm-mode
+  :if my-laptop-p
   :config
-  (helm-mode 1))
+  (progn
+    (require 'helm-for-files)
+    (setq helm-candidate-number-limit 100)
+    (setq helm-completing-read-handlers-alist
+          '((describe-function)
+            (consult-bookmark)
+            (org-refile-get-location)
+            (consult-outline)
+            (consult-line)
+            (org-olpath-completing-read)
+            (consult-mark)
+            (org-refile)
+            (consult-multi-occur)
+            (describe-variable)
+            (execute-extended-command)
+            (consult-yank)))
+    ;; From https://gist.github.com/antifuchs/9238468
+    (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+          helm-input-idle-delay 0.01  ; this actually updates things
+                                        ; reeeelatively quickly.
+          helm-yas-display-key-on-candidate t
+          helm-quick-update t
+          helm-M-x-requires-pattern nil
+          helm-ff-skip-boring-files t))
+  (defadvice helm-files-insert-as-org-links (around sacha activate)
+    (insert (mapconcat (lambda (candidate)
+                         (org-link-make-string candidate))
+                       (helm-marked-candidates)
+                       "\n")))
+  :bind (("C-c h" . helm-mini)
+         ("C-h a" . helm-apropos)
+         ("C-x C-b" . helm-buffers-list)
+         ("C-x c o" . helm-occur)
+         ("C-x c s" . helm-swoop)
+         ("C-x c y" . helm-yas-complete)
+         ("C-x c Y" . helm-yas-create-snippet-on-region)
+         ("C-x c SPC" . helm-all-mark-rings)))
 
 (use-package helm-projectile
   :diminish projectile-mode

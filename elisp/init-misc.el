@@ -75,8 +75,8 @@
 (global-set-key (kbd "M-o") 'open-previous-line)
 
 ;; Autoindent open-*-lines
-(defvar newline-and-indent t
-  "Modify the behavior of the open-*-line functions to cause them to autoindent.")
+;(defvar newline-and-indent t
+;  "Modify the behavior of the open-*-line functions to cause them to autoindent.")
 
 (setq initial-scratch-message nil)
 
@@ -459,9 +459,7 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (setq dired-dwim-target t)
 ;; (defalias 'yes-or-no-p 'y-or-n-p)
 
-
 (setq user-emacs-directory (file-truename "~/.emacs.d/"))
-
 
 ;; copy from https://blog.ginshio.org/2022/doom_emacs_configuration/#guix
 (setq-default

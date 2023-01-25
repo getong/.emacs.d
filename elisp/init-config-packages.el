@@ -1507,11 +1507,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;  (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
 
 ;; auto-format different source code files extremely intelligently
+;; apheleia 会折断长行, 非常耗费资源，不建议日常开启
 ;; https://github.com/radian-software/apheleia
-(use-package apheleia
-  :ensure t
-  :config
-  (apheleia-global-mode +1))
+;; (use-package apheleia
+;;   :ensure t
+;;   :config
+;;   (apheleia-global-mode +1))
 
 ;; (global-linum-mode 1)
 ;; (setq linum-format "%3d ")
@@ -1641,7 +1642,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; no longer be necessary.
   (when buffer-file-name
     (setq-local buffer-save-without-query t))
-  (add-hook 'before-save-hook 'lsp-format-buffer nil t))
+  ;; (add-hook 'before-save-hook 'lsp-format-buffer nil t)
+  )
 
 
 (use-package tide

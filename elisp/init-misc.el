@@ -145,6 +145,12 @@
 ;; 根据条件删除行尾的空白
 (when newline-and-indent
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  ;; 编程模式下让结尾的空白符亮起
+  ;; (add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
+
+  ;; Show a marker when the line has empty characters at the end
+  ;; (setq-default show-trailing-whitespace t)
+
   )
 
 
@@ -157,7 +163,6 @@
 ;; (transient-mark-mode t)
 ;; 高亮选中区域颜色
 ;; (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
-
 
 
 (defun switch-to-frame (frame-name)
@@ -506,12 +511,6 @@ When using Homebrew, install it using \"brew install trash-cli\"."
                       '(delete-by-moving-to-trash t) ;; delete && move to transh
                       '(inhibit-compacting-font-caches t) ;; don’t compact font caches during GC.
                       '(gc-cons-percentage 1))
-
-;; 编程模式下让结尾的空白符亮起
-(add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
-
-;; Show a marker when the line has empty characters at the end
-(setq-default show-trailing-whitespace t)
 
 ;; Dark and transparent title bar in macOS
 (when (memq window-system '(mac ns))

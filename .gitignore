@@ -26,3 +26,4 @@ var
 etc
 .emacs.desktop
 .cache
+elisp/flycheck_*

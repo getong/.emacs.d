@@ -1,5 +1,9 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 
+;; Autoindent open-*-lines
+(defvar newline-and-indent nil
+  "Modify the behavior of the open-*-line functions to cause them to autoindent.")
+
 (setq inhibit-startup-screen t)
 ;; disable menu bar, tool-bar
 (push '(menu-bar-lines . 0)   default-frame-alist)
@@ -42,7 +46,6 @@
 
 ;; (add-to-list 'auto-mode-alist '("\\.dart\\'" . dart-mode))
 
-
 (setq backup-directory-alist (quote (("." . "~/.backups"))))
 (setq version-control t)
 (setq kept-old-versions 2)
@@ -74,9 +77,7 @@
     (indent-according-to-mode)))
 (global-set-key (kbd "M-o") 'open-previous-line)
 
-;; Autoindent open-*-lines
-;(defvar newline-and-indent t
-;  "Modify the behavior of the open-*-line functions to cause them to autoindent.")
+
 
 (setq initial-scratch-message nil)
 
@@ -141,7 +142,11 @@
   (if arg (other-window 1))
   (split-window-horizontally))
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; 根据条件删除行尾的空白
+(when newline-and-indent
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  )
+
 
 (spinner-start 'vertical-breathing 10)
 (spinner-start 'minibox)
@@ -502,7 +507,8 @@ When using Homebrew, install it using \"brew install trash-cli\"."
                       '(inhibit-compacting-font-caches t) ;; don’t compact font caches during GC.
                       '(gc-cons-percentage 1))
 
-(add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1))) ; 编程模式下让结尾的空白符亮起
+;; 编程模式下让结尾的空白符亮起
+(add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
 
 ;; Show a marker when the line has empty characters at the end
 (setq-default show-trailing-whitespace t)

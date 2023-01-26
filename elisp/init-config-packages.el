@@ -1071,6 +1071,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
                 (neotree-dir project-dir)
                 (neotree-find file-name)))
         (message "Could not find git project root."))))
+  (setq-default neo-show-hidden-files t)
   (global-set-key [f8] 'neotree-project-dir)
   ;; switch with projectile
   (use-package projectile)
@@ -2256,6 +2257,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq recentf-auto-cleanup 'never)  ;
   (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker"))
   (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
+  (setq recentf-save-file "~/.emacs.d/var/recentf")
   ;; (bind-key "C-c っ" 'helm-recentf)
   ;; (bind-key "C-c t" 'helm-recentf)
   (recentf-mode 1)
@@ -2268,28 +2270,28 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (recentf-mode 1)
   )
 
-(defun suppress-messages (func &rest args)
-  "Suppress message output from FUNC."
-  ;; Some packages are too noisy.
-  ;; https://superuser.com/questions/669701/emacs-disable-some-minibuffer-messages
-  (cl-flet ((silence (&rest args1) (ignore)))
-    (advice-add 'message :around #'silence)
-    (unwind-protect
-        (apply func args)
-      (advice-remove 'message #'silence))))
+;; (defun suppress-messages (func &rest args)
+;;   "Suppress message output from FUNC."
+;;   ;; Some packages are too noisy.
+;;   ;; https://superuser.com/questions/669701/emacs-disable-some-minibuffer-messages
+;;   (cl-flet ((silence (&rest args1) (ignore)))
+;;     (advice-add 'message :around #'silence)
+;;     (unwind-protect
+;;         (apply func args)
+;;       (advice-remove 'message #'silence))))
 
-;; Suppress "Cleaning up the recentf...done (0 removed)"
-(advice-add 'recentf-cleanup :around #'suppress-messages)
-(defconst recentf-used-hooks
-  '(
-    (find-file-hook       recentf-track-opened-file)
-    (write-file-functions recentf-track-opened-file)
-    (kill-buffer-hook     recentf-track-closed-file)
-    (kill-emacs-hook      recentf-save-list)
-    )
-  "Hooks used by recentf.")
-(defun recentf-save-list/silent ()
-  (let ((save-silently t)) (recentf-save-list)))
+;; ;; Suppress "Cleaning up the recentf...done (0 removed)"
+;; (advice-add 'recentf-cleanup :around #'suppress-messages)
+;; (defconst recentf-used-hooks
+;;   '(
+;;     (find-file-hook       recentf-track-opened-file)
+;;     (write-file-functions recentf-track-opened-file)
+;;     (kill-buffer-hook     recentf-track-closed-file)
+;;     (kill-emacs-hook      recentf-save-list)
+;;     )
+;;   "Hooks used by recentf.")
+;; (defun recentf-save-list/silent ()
+;;   (let ((save-silently t)) (recentf-save-list)))
 
 (use-package yasnippet-snippets
   :disabled

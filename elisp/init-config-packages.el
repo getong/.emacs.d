@@ -3215,5 +3215,53 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :custom
   (custom-file null-device "Don't store customizations"))
 
+;; async给emacs提供了elisp层面的异步支持, 避免长时间等待
+(use-package async
+  :config
+  (setq async-bytecomp-allowed-packages '(all))
+  (dired-async-mode 1)
+  (async-bytecomp-package-mode 1))
+
+
+;; (use-package popwin
+;;   :config
+;;   (global-set-key (kbd "s-j") popwin:keymap)
+;;   (push '(compilation-mode :noselect t :position bottom :height 22) popwin:special-display-config)
+;;   (push '("*rspec-compilation*" :noselect t :position bottom :height 22) popwin:special-display-config)
+;;   (push '("*Go Test*" :noselect t :position bottom :height 22) popwin:special-display-config)
+;;   (push '("*vterm" :regexp t :stick t :position bottom :height 24) popwin:special-display-config)
+;;   (popwin-mode))
+
+;; Edit multiple regions in the same way simultaneously
+(use-package iedit
+  :defines desktop-minor-mode-table
+  :bind (("C-x ;" . iedit-mode)
+         ("C-x r RET" . iedit-rectangle-mode)
+         :map isearch-mode-map ("C-x ;" . iedit-mode-from-isearch)
+         :map esc-map ("C-x ;" . iedit-execute-last-modification)
+         :map help-map ("C-x ;" . iedit-mode-toggle-on-function))
+  :config
+  ;; Avoid restoring `iedit-mode'
+  (with-eval-after-load 'desktop
+    (add-to-list 'desktop-minor-mode-table
+                 '(iedit-mode nil))))
+
+;; Dimmer (for dimming inactive buffers)
+(use-package dimmer
+  :disabled
+  :custom
+  (dimmer-fraction 0.5)
+  (dimmer-exclusion-regexp-list
+   '(".*Minibuf.*"
+	 ".*which-key.*"
+	 ".*NeoTree.*"
+	 ".*Messages.*"
+	 ".*Async.*"
+	 ".*Warnings.*"
+	 ".*LV.*"
+	 ".*Ilist.*"))
+  :config
+  (dimmer-mode t))
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

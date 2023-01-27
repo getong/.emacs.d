@@ -3263,5 +3263,22 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :config
   (dimmer-mode t))
 
+;; 查看二进制文件
+(use-package nhexl-mode
+  :ensure t
+  :defer t)
+
+;; eldoc-overlay则是将信息显示于sideline
+(use-package eldoc-overlay
+  :ensure t
+  :after quick-look
+  :custom
+  ((quick-peek-add-spacer nil)
+   (quick-peek-position 'above)))
+
+;; julia
+(use-package julia-mode)
+(use-package julia-repl)
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

@@ -1327,11 +1327,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package dash
   :defer t)
 
-(use-package lsp-treemacs
-  :commands lsp-treemacs-errors-list
-  :config
-  ;;(lsp-metals-treeview-enable t)
-  (setq lsp-metals-treeview-show-when-views-received t))
+;; (use-package lsp-treemacs
+;;   :commands lsp-treemacs-errors-list
+;;   :config
+;;   ;;(lsp-metals-treeview-enable t)
+;;   (setq lsp-metals-treeview-show-when-views-received t))
 
 ;; copy from https://emacs-china.org/t/purcell-emacs-emacs/17511/13
 (use-package desktop
@@ -2190,82 +2190,82 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package consult-flycheck)
 
 ;; copy from https://huadeyu.tech/tools/emacs-setup-notes.html
-(use-package treemacs
-  :ensure t
-  :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  :config
-  (progn
-    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
-          treemacs-deferred-git-apply-delay      0.5
-          treemacs-directory-name-transformer    #'identity
-          treemacs-display-in-side-window        t
-          treemacs-eldoc-display                 t
-          treemacs-file-event-delay              1000
-          treemacs-file-extension-regex          treemacs-last-period-regex-value
-          treemacs-file-follow-delay             0.2
-          treemacs-file-name-transformer         #'identity
-          treemacs-follow-after-init             t
-          treemacs-git-command-pipe              ""
-          treemacs-goto-tag-strategy             'refetch-index
-          treemacs-indentation                   2
-          treemacs-indentation-string            " "
-          treemacs-is-never-other-window         nil
-          treemacs-max-git-entries               5000
-          treemacs-missing-project-action        'ask
-          treemacs-no-png-images                 nil
-          treemacs-no-delete-other-windows       t
-          treemacs-project-follow-cleanup        nil
-          ;; treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-          treemacs-persist-file (no-littering-expand-etc-file-name '"treemacs-persist.org")
-          ;; treemacs–last-error-persist-file (no-littering-expand-etc-file-name '“treemacs-last-error-persist-file.org”)
-          treemacs-position                      'left
-          treemacs-recenter-distance             0.1
-          treemacs-recenter-after-file-follow    nil
-          treemacs-recenter-after-tag-follow     nil
-          treemacs-recenter-after-project-jump   'always
-          treemacs-recenter-after-project-expand 'on-distance
-          treemacs-show-cursor                   nil
-          treemacs-show-hidden-files             t
-          treemacs-silent-filewatch              nil
-          treemacs-silent-refresh                nil
-          treemacs-sorting                       'alphabetic-asc
-          treemacs-space-between-root-nodes      t
-          treemacs-tag-follow-cleanup            t
-          treemacs-tag-follow-delay              1.5
-          treemacs-user-mode-line-format         nil
-          treemacs-width                         35)
+;; (use-package treemacs
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (with-eval-after-load 'winum
+;;     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+;;   :config
+;;   (progn
+;;     (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+;;           treemacs-deferred-git-apply-delay      0.5
+;;           treemacs-directory-name-transformer    #'identity
+;;           treemacs-display-in-side-window        t
+;;           treemacs-eldoc-display                 t
+;;           treemacs-file-event-delay              1000
+;;           treemacs-file-extension-regex          treemacs-last-period-regex-value
+;;           treemacs-file-follow-delay             0.2
+;;           treemacs-file-name-transformer         #'identity
+;;           treemacs-follow-after-init             t
+;;           treemacs-git-command-pipe              ""
+;;           treemacs-goto-tag-strategy             'refetch-index
+;;           treemacs-indentation                   2
+;;           treemacs-indentation-string            " "
+;;           treemacs-is-never-other-window         nil
+;;           treemacs-max-git-entries               5000
+;;           treemacs-missing-project-action        'ask
+;;           treemacs-no-png-images                 nil
+;;           treemacs-no-delete-other-windows       t
+;;           treemacs-project-follow-cleanup        nil
+;;           ;; treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+;;           treemacs-persist-file (no-littering-expand-etc-file-name '"treemacs-persist.org")
+;;           ;; treemacs–last-error-persist-file (no-littering-expand-etc-file-name '“treemacs-last-error-persist-file.org”)
+;;           treemacs-position                      'left
+;;           treemacs-recenter-distance             0.1
+;;           treemacs-recenter-after-file-follow    nil
+;;           treemacs-recenter-after-tag-follow     nil
+;;           treemacs-recenter-after-project-jump   'always
+;;           treemacs-recenter-after-project-expand 'on-distance
+;;           treemacs-show-cursor                   nil
+;;           treemacs-show-hidden-files             t
+;;           treemacs-silent-filewatch              nil
+;;           treemacs-silent-refresh                nil
+;;           treemacs-sorting                       'alphabetic-asc
+;;           treemacs-space-between-root-nodes      t
+;;           treemacs-tag-follow-cleanup            t
+;;           treemacs-tag-follow-delay              1.5
+;;           treemacs-user-mode-line-format         nil
+;;           treemacs-width                         35)
 
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;;(treemacs-resize-icons 44)
+;;     ;; The default width and height of the icons is 22 pixels. If you are
+;;     ;; using a Hi-DPI display, uncomment this to double the icon size.
+;;     ;;(treemacs-resize-icons 44)
 
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode t)
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null treemacs-python-executable)))
-      (`(t . t)
-       (treemacs-git-mode 'deferred))
-      (`(t . _)
-       (treemacs-git-mode 'simple))))
-  :bind
-  (:map global-map
-        ("M-0"       . treemacs-select-window)
-        ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
-        ("C-x t B"   . treemacs-bookmark)
-        ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
+;;     (treemacs-follow-mode t)
+;;     (treemacs-filewatch-mode t)
+;;     (treemacs-fringe-indicator-mode t)
+;;     (pcase (cons (not (null (executable-find "git")))
+;;                  (not (null treemacs-python-executable)))
+;;       (`(t . t)
+;;        (treemacs-git-mode 'deferred))
+;;       (`(t . _)
+;;        (treemacs-git-mode 'simple))))
+;;   :bind
+;;   (:map global-map
+;;         ("M-0"       . treemacs-select-window)
+;;         ("C-x t 1"   . treemacs-delete-other-windows)
+;;         ("C-x t t"   . treemacs)
+;;         ("C-x t B"   . treemacs-bookmark)
+;;         ("C-x t C-t" . treemacs-find-file)
+;;         ("C-x t M-t" . treemacs-find-tag)))
 
 (when (string= system-type "darwin")
   (setq dired-use-ls-dired nil))
 
-(use-package treemacs-projectile
-  :after treemacs projectile
-  :ensure t)
+;; (use-package treemacs-projectile
+;;   :after treemacs projectile
+;;   :ensure t)
 
 ;; 保存光标历史，记住上个命令
 ;; copy from https://book.emacs-china.org/#orga142e60
@@ -2635,8 +2635,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   (doom-themes-neotree-config)
   ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-  (doom-themes-treemacs-config)
+  ;; (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  ;; (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
@@ -3027,7 +3027,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (add-hook 'c++-mode-hook 'lsp)
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
-      treemacs-space-between-root-nodes nil
+      ;; treemacs-space-between-root-nodes nil
       company-idle-delay 0.0
       company-minimum-prefix-length 1
       lsp-idle-delay 0.1)  ;; clangd is fast

@@ -24,8 +24,6 @@
   ;;(set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend)
   )
 
-
-
 (when (eq system-type 'gnu/linux)
   (set-frame-font "EB Garamond 12 Italic 20" nil t)
   ;;(setq fonts '("EB Garamond 12 Italic"  "SF Mono" "冬青黑体简体中文"))

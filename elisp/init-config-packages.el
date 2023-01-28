@@ -277,24 +277,51 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (prin1 hydra-stack)
   (funcall expr))
 
-(use-package undo-tree
-  :ensure t
-  :init (global-undo-tree-mode)
-  :after hydra
-  :bind ("C-x C-h u" . hydra-undo-tree/body)
-  :custom
-  (undo-tree-visualizer-diff t)
-  (undo-tree-history-directory-alist '(("." . "~/.emacs.d/var/undo")))
-  (undo-tree-visualizer-timestamps t)
-  :hydra (hydra-undo-tree (:hint nil)
-                          "
-  _p_: undo  _n_: redo _s_: save _l_: load   "
-                          ("p"   undo-tree-undo)
-                          ("n"   undo-tree-redo)
-                          ("s"   undo-tree-save-history)
-                          ("l"   undo-tree-load-history)
-                          ("u"   undo-tree-visualize "visualize" :color blue)
-                          ("q"   nil "quit" :color blue)))
+;; (use-package undo-tree
+;;   :ensure t
+;;   :init (global-undo-tree-mode)
+;;   :after hydra
+;;   :bind ("C-x C-h u" . hydra-undo-tree/body)
+;;   :custom
+;;   (undo-tree-visualizer-diff t)
+;;   (undo-tree-history-directory-alist '(("." . "~/.emacs.d/var/undo")))
+;;   (undo-tree-visualizer-timestamps t)
+;;   :hydra (hydra-undo-tree (:hint nil)
+;;                           "
+;;   _p_: undo  _n_: redo _s_: save _l_: load   "
+;;                           ("p"   undo-tree-undo)
+;;                           ("n"   undo-tree-redo)
+;;                           ("s"   undo-tree-save-history)
+;;                           ("l"   undo-tree-load-history)
+;;                           ("u"   undo-tree-visualize "visualize" :color blue)
+;;                           ("q"   nil "quit" :color blue)))
+
+(use-package undohist
+  :ensure t)
+
+(use-package vundo
+  :bind (("C-x u" . 'vundo))
+  :config
+  (setq undohist-directory (expand-file-name "var/undohist" user-emacs-directory))
+  (undohist-initialize)
+  (defun my/vundo-diff ()
+    (interactive)
+    (let* ((orig vundo--orig-buffer)
+           (source (vundo--current-node vundo--prev-mod-list))
+           (dest (vundo-m-parent source)))
+      (if (or (not dest) (eq source dest))
+          (message "vundo diff not available.")
+	    (let ((buf (make-temp-name (concat (buffer-name orig) "-vundo-diff"))))
+          (vundo--move-to-node source dest orig vundo--prev-mod-list)
+          (with-current-buffer (get-buffer-create buf)
+	        (insert-buffer orig))
+          (vundo--refresh-buffer orig (current-buffer) 'incremental)
+          (vundo--move-to-node dest source orig vundo--prev-mod-list)
+          (vundo--refresh-buffer orig (current-buffer) 'incremental)
+          (diff-buffers buf orig)
+          (kill-buffer buf)))))
+  (keymap-set vundo-mode-map "d" #'my/vundo-diff)
+  )
 
 (use-package iedit
   :ensure t)
@@ -675,6 +702,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package highlight-thing
   :config
   (global-highlight-thing-mode)
+  (setq highlight-thing-what-thing 'symbol)
+  (setq highlight-thing-delay-seconds 0.1)
+  (setq highlight-thing-limit-to-defun t)
+  (setq highlight-thing-case-sensitive-p t)
   )
 
 ;; copy from https://immerrr.github.io/lua-mode/
@@ -1270,6 +1301,43 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (add-hook 'after-init-hook 'beacon-mode)
   (beacon-mode 1))
 
+
+(use-package diredfl
+  :commands diredfl-global-mode
+  :init
+  (diredfl-global-mode)
+  (put 'diredp-tagged-autofile-name 'face-alias 'diredfl-tagged-autofile-name)
+  (put 'diredp-autofile-name 'face-alias 'diredfl-autofile-name)
+  (put 'diredp-ignored-file-name 'face-alias 'diredfl-ignored-file-name)
+  (put 'diredp-symlink 'face-alias 'diredfl-symlink)
+  (put 'diredp-compressed-file-name 'face-alias 'diredfl-compressed-file-name)
+  (put 'diredp-file-suffix 'face-alias 'diredfl-file-suffix)
+  (put 'diredp-compressed-extensions 'face-alias 'diredfl-compressed-extensions)
+  (put 'diredp-deletion 'face-alias 'diredfl-deletion)
+  (put 'diredp-deletion-file-name 'face-alias 'diredfl-deletion-file-name)
+  (put 'diredp-flag-mark-line 'face-alias 'diredfl-flag-mark-line)
+  (put 'diredp-rare-priv 'face-alias 'diredfl-rare-priv)
+  (put 'diredp-number 'face-alias 'diredfl-number)
+  (put 'diredp-exec-priv 'face-alias 'diredfl-exec-priv)
+  (put 'diredp-file-name 'face-alias 'diredfl-file-name)
+  (put 'diredp-dir-heading 'face-alias 'diredfl-dir-heading)
+  (put 'diredp-compressed-file-suffix 'face-alias 'diredfl-compressed-file-suffix)
+  (put 'diredp-flag-mark 'face-alias 'diredfl-flag-mark)
+  (put 'diredp-mode-set-explicitly 'face-alias 'diredfl-mode-set-explicitly)
+  (put 'diredp-executable-tag 'face-alias 'diredfl-executable-tag)
+  (put 'diredp-global-mode-hook 'face-alias 'diredfl-global-mode-hook)
+  (put 'diredp-ignore-compressed-flag 'face-alias 'diredfl-ignore-compressed-flag)
+  (put 'diredp-dir-priv 'face-alias 'diredfl-dir-priv)
+  (put 'diredp-date-time 'face-alias 'diredfl-date-time)
+  (put 'diredp-other-priv 'face-alias 'diredfl-other-priv)
+  (put 'diredp-no-priv 'face-alias 'diredfl-no-priv)
+  (put 'diredp-link-priv 'face-alias 'diredfl-link-priv)
+  (put 'diredp-write-priv 'face-alias 'diredfl-write-priv)
+  (put 'diredp-global-mode-buffers 'face-alias 'diredfl-global-mode-buffers)
+  (put 'dired-directory 'face-alias 'diredfl-dir-name)
+  (put 'diredp-read-priv 'face-alias 'diredfl-read-priv))
+
+;; 基于 Dired 的极简、一站式文件管理器
 (use-package dirvish
   :init
   (dirvish-override-dired-mode)
@@ -1279,7 +1347,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
      ("d" "~/Downloads/"                "Downloads")
      ("o" "~/Syncthings/org/"           "Org")
      ("r" "~/Syncthings/org/roam/"      "Roam")))
+  :after (diredfl all-the-icons)
   :config
+  ;; 异步读取含 10000 个以上文件的文件夹
+  (setq dirvish-async-listing-threshold 10000)
   ;; (dirvish-peek-mode) ; Preview files in minibuffer
   ;; (dirvish-side-follow-mode) ; similar to `treemacs-follow-mode'
   (setq dirvish-mode-line-format
@@ -1289,6 +1360,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq delete-by-moving-to-trash t)
   (setq dired-listing-switches
         "-l --almost-all --human-readable --group-directories-first --no-group")
+  (dirvish-override-dired-mode +1)
+  (setq dirvish-attributes '(all-the-icons file-size))
+  (set-face-attribute 'dirvish-hl-line nil
+                      :foreground (face-attribute 'diredfl-flag-mark :foreground)
+                      :background (face-attribute 'diredfl-flag-mark :background))
   :bind ; Bind `dirvish|dirvish-side|dirvish-dwim' as you see fit
   (("C-c f" . dirvish-fd)
    ("C-x d" . dirvish)
@@ -2297,7 +2373,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
   (custom-set-faces
    '(region
-     ((nil (:background "#666" :foreground "#ffffff")))))
+     ;; ((nil (:background "#666" :foreground "#ffffff")))
+     ((nil (:background "purple" :foreground "black")))
+     ))
   (progn
     (setq column-number-mode t)
     ))
@@ -2414,11 +2492,13 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
                           ))
   (dashboard-setup-startup-hook))
 
-(use-package highlight-symbol
-  :ensure t
-  :init (highlight-symbol-mode)
-  ;; :bind ("<f5>" . highlight-symbol)  ;; 按下 F3 键就可高亮当前符号
-  )
+;; (use-package highlight-symbol
+;;   :ensure t
+;;   :init (highlight-symbol-mode)
+;;   ;; :bind ("<f5>" . highlight-symbol)  ;; 按下 F3 键就可高亮当前符号
+;;   :config
+;;   (setq highlight-symbol-idle-delay 1.0)
+;;   )
 
 ;; C-c / t 触发 google-this，
 (use-package google-this
@@ -3278,6 +3358,31 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; julia
 (use-package julia-mode)
 (use-package julia-repl)
+
+
+;; symbol-overlay
+;; homepage: https://github.com/wolray/symbol-overlay
+;;
+;; 作者的知乎，新插件推荐，高亮symbol同时支持一键跳转 https://zhuanlan.zhihu.com/p/26471685
+;; 同时高亮多个symbol https://emacs-china.org/t/package-symbol-overlay-symbol/7706
+;;
+;; 老王的使用中提到了 https://manateelazycat.github.io/emacs/2022/11/07/how-i-use-emacs.html
+;; 用 Emacs 的都少不了 isearch, 但是 isearch 不方便的地方是每次都要手动输入或者 yank 当前 symbol 给 isearch， 同时要批量替换的按键流程也很繁琐。 在使用 symbol-overlay 之前我一直用我自己开发的 lazy-search, 这两个项目的目标都是启动后立即选中光标处的 symbol, 再按单按键比如按 n/p 后， 快速跳转上一个和下一个匹配项， 节省了大量选中当前 symbol 启动 isearch 再粘贴 symbol 的操作时间。 用了 symbol-overlay 后， 发现比我的 lazy-search 实现的更加简洁和强大， 包括搜索后快速按 r 键可以对所有匹配的 symbol 进行快速重命名操作， symbol-overlay 基本上是单文件重构场景下最好用的插件， 强烈推荐大家使用。
+;;
+(use-package symbol-overlay
+  :defer 2
+  :config
+  (global-set-key (kbd "M-i") 'symbol-overlay-put)
+  (global-set-key (kbd "M-n") 'symbol-overlay-switch-forward)
+  (global-set-key (kbd "M-p") 'symbol-overlay-switch-backward)
+  (global-set-key (kbd "<f7>") 'symbol-overlay-mode)
+  (global-set-key (kbd "<f8>") 'symbol-overlay-remove-all)
+  )
+
+;; 高亮当前字符
+(use-package idle-highlight-mode
+  :pin melpa
+  :ensure t)
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

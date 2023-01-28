@@ -20,8 +20,12 @@
 (use-package use-package-ensure-system-package
   :ensure t)
 
-(use-package diminish
-  :ensure t)
+;; async给emacs提供了elisp层面的异步支持, 避免长时间等待
+(use-package async
+  :config
+  (setq async-bytecomp-allowed-packages '(all))
+  (dired-async-mode 1)
+  (async-bytecomp-package-mode 1))
 
 ;; 让 .emacs.d 更干净
 ;; no littering, keep .emacs.d clean
@@ -272,8 +276,6 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
   (push hydra-curr-body-fn hydra-stack)
   (prin1 hydra-stack)
   (funcall expr))
-
-
 
 (use-package undo-tree
   :ensure t
@@ -3215,12 +3217,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :custom
   (custom-file null-device "Don't store customizations"))
 
-;; async给emacs提供了elisp层面的异步支持, 避免长时间等待
-(use-package async
-  :config
-  (setq async-bytecomp-allowed-packages '(all))
-  (dired-async-mode 1)
-  (async-bytecomp-package-mode 1))
 
 
 ;; (use-package popwin
@@ -3275,6 +3271,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :custom
   ((quick-peek-add-spacer nil)
    (quick-peek-position 'above)))
+
+(use-package diminish
+  :ensure t)
 
 ;; julia
 (use-package julia-mode)

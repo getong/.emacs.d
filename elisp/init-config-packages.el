@@ -297,11 +297,34 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 ;;                           ("q"   nil "quit" :color blue)))
 
 (use-package undohist
-  :ensure t)
-
-(use-package vundo
-  :bind (("C-x u" . 'vundo))
+  :ensure t
   :config
+  (setq undohist-ignored-files '("\\.git/COMMIT_EDITMSG$" (expand-file-name "var/undohist" user-emacs-directory)))
+  (undohist-initialize)
+  )
+
+;; Vundo exposes a visual tree of all the available undo paths
+(use-package vundo
+  :bind (("C-x u" . 'vundo)
+         :map vundo-mode-map
+         ("C-f" . vundo-forward)
+         ("C-b" . vundo-backward)
+         ("C-n" . vundo-next)
+         ("C-p" . vundo-previous)
+         ("C-a" . vundo-stem-root)
+         ("C-e" . vundo-stem-end))
+  :init (setq vundo-compact-display t)
+  :config
+  ;; Better contrasting highlight.
+  ;; (custom-set-faces
+  ;;  '(vundo-node ((t (:foreground "#808080"))))
+  ;;  '(vundo-stem ((t (:foreground "#808080"))))
+  ;;  '(vundo-highlight ((t (:foreground "#FFFF00")))))
+  (setq vundo--window-max-height 5)
+  ;; 是否需要回车确认
+  (setq vundo-roll-back-on-quit t)
+  ;; 头部显示
+  ;; (setq  vundo-window-side 'top)
   (setq undohist-directory (expand-file-name "var/undohist" user-emacs-directory))
   (undohist-initialize)
   (defun my/vundo-diff ()
@@ -2389,7 +2412,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq recentf-max-saved-items 2000)
   ;;(setq recentf-max-menu-items 5000)
   (setq recentf-auto-cleanup 'never)  ;
-  (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker"))
+  (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker" (expand-file-name "var/undohist/*" user-emacs-directory)))
   (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
   (setq recentf-save-file "~/.emacs.d/var/recentf")
   ;; (bind-key "C-c っ" 'helm-recentf)

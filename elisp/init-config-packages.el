@@ -1048,37 +1048,37 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (projectile-mode +1)
   ;; M-x projectile-purge-file-from-cache
   ;; M-x projectile-purge-dir-from-cache
- (progn
-  (setq
-   projectile-enable-caching t
-   projectile-sort-order 'recently-active
-   ))
+  (progn
+    (setq
+     projectile-enable-caching t
+     projectile-sort-order 'recently-active
+     ))
   (setq-default projectile-mode-line-prefix " Proj")
   (projectile-global-mode))
 
 
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; F8 侧边打开项目目录
-(use-package neotree
-  :config
-  ;; f8 to view tree strucure of folder
-  (defun neotree-project-dir ()
-    "Open NeoTree using the git root."
-    (interactive)
-    (let ((project-dir (projectile-project-root))
-          (file-name (buffer-file-name)))
-      (neotree-toggle)
-      (if project-dir
-          (if (neo-global--window-exists-p)
-              (progn
-                (neotree-dir project-dir)
-                (neotree-find file-name)))
-        (message "Could not find git project root."))))
-  (setq-default neo-show-hidden-files t)
-  (global-set-key [f8] 'neotree-project-dir)
-  ;; switch with projectile
-  (use-package projectile)
-  (setq projectile-switch-project-action 'neotree-projectile-action))
+;; (use-package neotree
+;;   :config
+;;   ;; f8 to view tree strucure of folder
+;;   (defun neotree-project-dir ()
+;;     "Open NeoTree using the git root."
+;;     (interactive)
+;;     (let ((project-dir (projectile-project-root))
+;;           (file-name (buffer-file-name)))
+;;       (neotree-toggle)
+;;       (if project-dir
+;;           (if (neo-global--window-exists-p)
+;;               (progn
+;;                 (neotree-dir project-dir)
+;;                 (neotree-find file-name)))
+;;         (message "Could not find git project root."))))
+;;   (setq-default neo-show-hidden-files t)
+;;   (global-set-key [f8] 'neotree-project-dir)
+;;   ;; switch with projectile
+;;   (use-package projectile)
+;;   (setq projectile-switch-project-action 'neotree-projectile-action))
 
 ;; copy from [Highlight current active window](https://stackoverflow.com/questions/33195122/highlight-current-active-window)
 (use-package auto-dim-other-buffers

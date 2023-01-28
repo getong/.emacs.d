@@ -14,8 +14,8 @@
 (setq default-tab-width 4)
 
 ;; (setq dart-server-sdk-path "~/flutter/bin/cache/dart-sdk/")
-(setq dart-server-enable-analysis-server t)
-(add-hook 'dart-server-hook 'flycheck-mode)
+;; (setq dart-server-enable-analysis-server t)
+;; (add-hook 'dart-server-hook 'flycheck-mode)
 
 (global-superword-mode t)
 ;; (global-hl-line-mode t)
@@ -77,8 +77,6 @@
     (indent-according-to-mode)))
 (global-set-key (kbd "M-o") 'open-previous-line)
 
-
-
 (setq initial-scratch-message nil)
 
 (global-unset-key (kbd "C-SPC")) ;; 输入法快捷键冲突
@@ -105,7 +103,6 @@
     (funcall split-fn arg)
     (mapcar* 'set-window-buffer (window-list) bufList)))
 
-
 (defun change-split-type-2 (&optional arg)
   "Changes splitting from vertical to horizontal and vice-versa"
   (interactive "P")
@@ -114,7 +111,6 @@
                       (if arg (split-window-vertically)
                         (split-window-horizontally)))))
     (change-split-type split-type arg)))
-
 
 (defun change-split-type-3-v (&optional arg)
   "change 3 window style from horizon to vertical"
@@ -150,7 +146,6 @@
 
   ;; Show a marker when the line has empty characters at the end
   ;; (setq-default show-trailing-whitespace t)
-
   )
 
 
@@ -293,7 +288,6 @@ Get it from:  <http://hasseg.org/trash/>"
                            "| sed -e 's/^/Trashed: /'")
                    nil ;; Name of output buffer
                    "*Trash Error Buffer*")))
-
 
 (defun insert-todo-comment ()
   (interactive)

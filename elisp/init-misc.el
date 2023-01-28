@@ -148,11 +148,10 @@
   ;; (setq-default show-trailing-whitespace t)
   )
 
-
-(spinner-start 'vertical-breathing 10)
-(spinner-start 'minibox)
-(spinner-start 'moon)
-(spinner-start 'triangle)
+;; (spinner-start 'vertical-breathing 10)
+;; (spinner-start 'minibox)
+;; (spinner-start 'moon)
+;; (spinner-start 'triangle)
 
 ;; 高亮显示选中区域
 ;; (transient-mark-mode t)
@@ -203,15 +202,14 @@
 ;;如果有喜欢用鼠标选择emacs文本的同学, 可以试试加上这句配置:
 (setq mouse-drag-copy-region t)
 
+;; (autoload 'markdown-mode "markdown-mode"
+;;   "Major mode for editing Markdown files" t)
+;; (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+;; (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode))
 
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode))
-
-(autoload 'gfm-mode "markdown-mode"
-  "Major mode for editing GitHub Flavored Markdown files" t)
-(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+;; (autoload 'gfm-mode "markdown-mode"
+;;   "Major mode for editing GitHub Flavored Markdown files" t)
+;; (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
 
 (setq debug-on-error nil)
 
@@ -245,11 +243,11 @@
 ;;      '("a" "s" "d" "f" "j" "k" "l" ";" "w" "e" "i" "o"))
 
 ;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
+;; (add-hook 'before-save-hook 'tide-format-before-save)
 
 ;;(add-hook 'typescript-mode-hook #'setup-tide-modeµ)
 
-(setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+;; (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
 ;; copy from [Aligning columns in Emacs](https://blog.lambda.cx/posts/emacs-align-columns/)
 (defun align-non-space (BEG END)
@@ -371,8 +369,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
                                                   :size (string-to-number $fSize)))
         )
       )))
-
-
 
 ;; copy from https://www.emacswiki.org/emacs/SystemTrash
 (setq delete-by-moving-to-trash t)

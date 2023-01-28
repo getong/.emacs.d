@@ -3395,6 +3395,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package symbol-overlay
   :defer 2
   :config
+  (setq symbol-overlay-idle-time 0.1)
   (global-set-key (kbd "M-i") 'symbol-overlay-put)
   (global-set-key (kbd "M-n") 'symbol-overlay-switch-forward)
   (global-set-key (kbd "M-p") 'symbol-overlay-switch-backward)

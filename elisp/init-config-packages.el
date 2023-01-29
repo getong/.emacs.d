@@ -27,6 +27,10 @@
   (dired-async-mode 1)
   (async-bytecomp-package-mode 1))
 
+(use-package async-await
+  :config
+  (promise-rejection-tracking-enable '((all-rejections . t))))
+
 ;; 让 .emacs.d 更干净
 ;; no littering, keep .emacs.d clean
 (use-package no-littering
@@ -1432,17 +1436,17 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :ensure t)
 
 
-(use-package diff-hl
-  :ensure t
-  :custom
-  (diff-hl-show-staged-changes nil)
-  ;; for some reason the :hook form doesn't work so we have to use :init
-  :init
-  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-  :config
-  (global-diff-hl-mode))
+;; (use-package diff-hl
+;;   :ensure t
+;;   :custom
+;;   (diff-hl-show-staged-changes nil)
+;;   ;; for some reason the :hook form doesn't work so we have to use :init
+;;   :init
+;;   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+;;   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+;;   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+;;   :config
+;;   (global-diff-hl-mode))
 
 (use-package gist
   :ensure t

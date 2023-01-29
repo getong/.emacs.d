@@ -299,7 +299,7 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 (use-package undohist
   :ensure t
   :config
-  (setq undohist-ignored-files '("\\.git/COMMIT_EDITMSG$" (expand-file-name "var/undohist" user-emacs-directory)))
+  (setq undohist-ignored-files '("\\.git/COMMIT_EDITMSG$"))
   (undohist-initialize)
   )
 
@@ -448,6 +448,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 (use-package emacs
   :commands prot/hidden-mode-line-mode
+
+  ;; C-c l is used for `org-store-link'.  The mnemonic for this is to
+  ;; focus the Line and also works as a variant of C-l.
+  :bind ("C-c L" . prot/scroll-centre-cursor-mode)
+
   :init
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
@@ -643,10 +648,141 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
     (progn
       (message "Linux"))))
 
+  ;; Autoindent open-*-lines
+  (defvar newline-and-indent nil
+    "Modify the behavior of the open-*-line functions to cause them to autoindent.")
 
-  ;; C-c l is used for `org-store-link'.  The mnemonic for this is to
-  ;; focus the Line and also works as a variant of C-l.
-  :bind ("C-c L" . prot/scroll-centre-cursor-mode)
+
+  ;; Behave like vi's o command
+  (defun open-next-line (arg)
+    "Move to the next line and then opens a line.
+  See also `newline-and-indent'."
+    (interactive "p")
+    (end-of-line)
+    (open-line arg)
+    (next-line 1)
+    (when newline-and-indent
+      (indent-according-to-mode)))
+
+  (global-set-key (kbd "C-o") 'open-next-line)
+
+  ;; Behave like vi's O command
+  (defun open-previous-line (arg)
+    "Open a new line before the current one.
+  See also `newline-and-indent'."
+    (interactive "p")
+    (beginning-of-line)
+    (open-line arg)
+    (when newline-and-indent
+      (indent-according-to-mode)))
+  (global-set-key (kbd "M-o") 'open-previous-line)  
+
+  (defun split-window-4()
+    "Splite window into 4 sub-window"
+    (interactive)
+    (if (= 1 (length (window-list)))
+        (progn (split-window-vertically)
+               (split-window-horizontally)
+               (other-window 2)
+               (split-window-horizontally)
+               )
+      )
+    )
+
+  (defun change-split-type (split-fn &optional arg)
+    "Change 3 window style from horizontal to vertical and vice-versa"
+    (let ((bufList (mapcar 'window-buffer (window-list))))
+      (select-window (get-largest-window))
+      (funcall split-fn arg)
+      (mapcar* 'set-window-buffer (window-list) bufList)))
+
+  (defun change-split-type-2 (&optional arg)
+    "Changes splitting from vertical to horizontal and vice-versa"
+    (interactive "P")
+    (let ((split-type (lambda (&optional arg)
+                        (delete-other-windows-internal)
+                        (if arg (split-window-vertically)
+                          (split-window-horizontally)))))
+      (change-split-type split-type arg)))
+
+  (defun change-split-type-3-v (&optional arg)
+    "change 3 window style from horizon to vertical"
+    (interactive "P")
+    (change-split-type 'split-window-3-horizontally arg))
+
+  (defun change-split-type-3-h (&optional arg)
+    "change 3 window style from vertical to horizon"
+    (interactive "P")
+    (change-split-type 'split-window-3-vertically arg))
+
+  (defun split-window-3-horizontally (&optional arg)
+    "Split window into 3 while largest one is in horizon"
+    ;;  (interactive "P")
+    (delete-other-windows)
+    (split-window-horizontally)
+    (if arg (other-window 1))
+    (split-window-vertically))
+
+  (defun split-window-3-vertically (&optional arg)
+    "Split window into 3 while largest one is in vertical"
+    ;; (interactive "P")
+    (delete-other-windows)
+    (split-window-vertically)
+    (if arg (other-window 1))
+    (split-window-horizontally))
+
+  ;; 根据条件删除行尾的空白
+  (when newline-and-indent
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)
+    ;; 编程模式下让结尾的空白符亮起
+    ;; (add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
+
+    ;; Show a marker when the line has empty characters at the end
+    ;; (setq-default show-trailing-whitespace t)
+    )
+
+  ;; 关闭所有的buffer
+  (defun close-all-buffers ()
+    (interactive)
+    (mapc 'kill-buffer (buffer-list)))
+
+  ;; copy from https://emacs-china.org/t/magit-emacs-terminal-proxy/16942/2
+  (defun proxy-socks-show ()
+    "Show SOCKS proxy."
+    (interactive)
+    (when (fboundp 'cadddr)
+      (if (bound-and-true-p socks-noproxy)
+          (message "Current SOCKS%d proxy is %s:%d"
+                   (cadddr socks-server) (cadr socks-server) (caddr socks-server))
+        (message "No SOCKS proxy"))))
+
+  (defun proxy-socks-enable ()
+    "Enable SOCKS proxy."
+    (interactive)
+    (require 'socks)
+    (setq url-gateway-method 'socks
+          socks-noproxy '("localhost")
+          socks-server '("Default server" "127.0.0.1" 10808 5))
+    (setenv "all_proxy" "socks5://127.0.0.1:10808")
+    (proxy-socks-show))
+
+  (defun proxy-socks-disable ()
+    "Disable SOCKS proxy."
+    (interactive)
+    (require 'socks)
+    (setq url-gateway-method 'native
+          socks-noproxy nil)
+    (setenv "all_proxy" "")
+    (proxy-socks-show))
+
+  (defun proxy-socks-toggle ()
+    "Toggle SOCKS proxy."
+    (interactive)
+    (require 'socks)
+    (if (bound-and-true-p socks-noproxy)
+        (proxy-socks-disable)
+      (proxy-socks-enable)))
+
   )
 
 ;; copy from https://www.danielde.dev/blog/emacs-for-swift-development
@@ -876,10 +1012,14 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;   :defer t
 ;;   :init (load-theme 'ef-winter t))
 
-(use-package indent-guide
-  :config
-  (indent-guide-global-mode)
-  )
+;; (use-package indent-guide
+;;   :config
+;;   (indent-guide-global-mode)
+;;   )
+(use-package highlight-indent-guides
+  :custom (highlight-indent-guides-method 'character)
+  (highlight-indent-guides-responsive 'top)
+  :hook (prog-mode . highlight-indent-guides-mode))
 
 (use-package switch-window
   :config
@@ -1802,12 +1942,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   )
 
 
-(use-package tide
-  :ensure t
-  :after (typescript-mode company flycheck)
-  :hook ((typescript-mode . tide-setup)
-         (typescript-mode . tide-hl-identifier-mode)
-         (before-save . tide-format-before-save)))
+;; (use-package tide
+;;   :ensure t
+;;   :after (typescript-mode company flycheck)
+;;   :hook ((typescript-mode . tide-setup)
+;;          (typescript-mode . tide-hl-identifier-mode)
+;;          (before-save . tide-format-before-save)))
 
 (use-package lsp-mode
   :ensure t
@@ -1856,7 +1996,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
                     :major-modes '(python-mode)
                     :server-id 'pyls))
   (setq company-minimum-prefix-length 1
-	    company-idle-delay 0.500) ;; default is 0.2
+    company-idle-delay 0.500) ;; default is 0.2
   ;;(require 'lsp-clients)
   (setq lsp-completion-provider :none) ;; 阻止 lsp 重新设置 company-backend 而覆盖我们 yasnippet 的设置
   (setq lsp-headerline-breadcrumb-enable t)
@@ -2090,32 +2230,73 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; 增强 minibuffer 补全：vertico 和 Orderless, 垂直补全
 (use-package vertico
-  :init
-  (vertico-mode)
-
-  ;; Different scroll margin
-  ;; (setq vertico-scroll-margin 0)
-
-  ;; Show more candidates
-  ;; (setq vertico-count 20)
-
-  ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
-
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  ;; (setq vertico-cycle t)
+  :config
   (vertico-multiform-mode)
-  (setq vertico-multiform-categories
-        '((file grid)
-          (consult-grep buffer)))
-  )
+  ;; Use `consult-completion-in-region' if Vertico is enabled.
+  ;; Otherwise use the default `completion--in-region' function.
+  (setq completion-in-region-function
+	    (lambda (&rest args)
+	      (apply (if vertico-mode
+		             #'consult-completion-in-region
+		           #'completion--in-region)
+		         args)))
+  (setq read-file-name-completion-ignore-case t
+	    read-buffer-completion-ignore-case t
+	    completion-ignore-case t)
+  (setq vertico-cycle t))
 
 ;; minibuffer 模糊匹配
 (use-package orderless
-  :ensure t
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+  :config
+  (defvar +orderless-dispatch-alist
+    '((?% . char-fold-to-regexp)
+	  (?! . orderless-without-literal)
+	  (?`. orderless-initialism)
+	  (?= . orderless-literal)
+	  (?~ . orderless-flex)))
+  (defun +orderless-dispatch (pattern index _total)
+    (cond
+     ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
+     ((string-suffix-p "$" pattern)
+	  `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x100000-\x10FFFD]*$")))
+     ;; File extensions
+     ((and
+	   ;; Completing filename or eshell
+	   (or minibuffer-completing-file-name
+	       (derived-mode-p 'eshell-mode))
+	   ;; File extension
+	   (string-match-p "\\`\\.." pattern))
+	  `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x100000-\x10FFFD]*$")))
+     ;; Ignore single !
+     ((string= "!" pattern) `(orderless-literal . ""))
+     ;; Prefix and suffix
+     ((if-let (x (assq (aref pattern 0) +orderless-dispatch-alist))
+	      (cons (cdr x) (substring pattern 1))
+	    (when-let (x (assq (aref pattern (1- (length pattern))) +orderless-dispatch-alist))
+	      (cons (cdr x) (substring pattern 0 -1)))))))
+
+  ;; Define orderless style with initialism by default
+  (orderless-define-completion-style +orderless-with-initialism
+    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+
+  ;; Certain dynamic completion tables (completion-table-dynamic)
+  ;; do not work properly with orderless. One can add basic as a fallback.
+  ;; Basic will only be used when orderless fails, which happens only for
+  ;; these special tables.
+  (setq completion-styles '(orderless basic)
+	    completion-category-defaults nil
+	    ;;; Enable partial-completion for files.
+	    ;;; Either give orderless precedence or partial-completion.
+	    ;;; Note that completion-category-overrides is not really an override,
+	    ;;; but rather prepended to the default completion-styles.
+	    ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
+	    completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
+					                    ;; enable initialism by default for symbols
+					                    (command (styles +orderless-with-initialism))
+					                    (variable (styles +orderless-with-initialism))
+					                    (symbol (styles +orderless-with-initialism)))
+	    orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
+	    orderless-style-dispatchers '(+orderless-dispatch)))
 
 ;;配置 Marginalia 增强 minubuffer 的 annotation
 (use-package marginalia
@@ -2776,7 +2957,21 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; Will automated download images for the first time
 (use-package emojify
   :ensure t
-  :hook (after-init . global-emojify-mode))
+  :hook (after-init . global-emojify-mode)
+  :config
+  (defun --set-emoji-font (frame)
+    "Adjust the font settings of FRAME so Emacs can display emoji properly."
+    (if (eq system-type 'darwin)
+	    ;; For NS/Cocoa
+	    (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+	  ;; For Linux
+	  (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
+
+  ;; For when Emacs is started in GUI mode:
+  (--set-emoji-font nil)
+  ;; Hook for when a frame is created with emacsclient
+  ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
+  (add-hook 'after-make-frame-functions '--set-emoji-font))
 
 ;; Suggest next keys to me based on currently entered key combination.
 (use-package which-key
@@ -3409,6 +3604,203 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package idle-highlight-mode
   :pin melpa
   :ensure t)
+
+(use-package keychain-environment
+  :config (keychain-refresh-environment))
+
+(use-package rg
+  :config (rg-enable-menu)
+  ;; :init (setq ripgrep-arguments "--ignore-case")
+  )
+
+(use-package wgrep
+  :after (embark-consult ripgrep)
+  :bind (:map wgrep-mode-map
+		      ;; Added keybinding to echo Magit behavior
+		      ("C-c C-c" . save-buffer)
+		      :map grep-mode-map
+		      ("e" . wgrep-change-to-wgrep-mode)
+		      :map ripgrep-search-mode-map
+		      ("e" . wgrep-change-to-wgrep-mode)))
+
+;; (use-package corfu
+;;   :demand t
+;;   ;; Optionally use TAB for cycling, default is `corfu-complete'.
+;;   :bind (:map corfu-map
+;; 		      ("<escape>". corfu-quit)
+;; 		      ("<return>" . corfu-insert)
+;; 		      ("M-d" . corfu-show-documentation)
+;; 		      ("M-l" . 'corfu-show-location)
+;; 		      ("TAB" . corfu-next)
+;; 		      ([tab] . corfu-next)
+;; 		      ("S-TAB" . corfu-previous)
+;; 		      ([backtab] . corfu-previous))
+
+;;   :custom
+;;   ;; Works with `indent-for-tab-command'. Make sure tab doesn't indent when you
+;;   ;; want to perform completion
+;;   (tab-always-indent 'complete)
+;;   (completion-cycle-threshold nil)      ; Always show candidates in menu
+
+;;   (corfu-auto nil)
+;;   (corfu-auto-prefix 2)
+;;   (corfu-auto-delay 0.25)
+
+;;   ;; (corfu-min-width 80)
+;;   ;; (corfu-max-width corfu-min-width)     ; Always have the same width
+;;   (corfu-count 14)
+;;   (corfu-scroll-margin 4)
+;;   (corfu-cycle nil)
+
+;;   ;; (corfu-echo-documentation nil)        ; Already use corfu-doc
+;;   (corfu-separator ?\s)                 ; Necessary for use with orderless
+;;   (corfu-quit-no-match 'separator)
+
+;;   (corfu-preview-current 'insert)       ; Preview current candidate?
+;;   (corfu-preselect-first t)             ; Preselect first candidate?
+
+;;   :init
+;;   ;; Recommended: Enable Corfu globally.
+;;   ;; This is recommended since dabbrev can be used globally (M-/).
+;;   (global-corfu-mode))
+
+;; (defun corfu-move-to-minibuffer ()
+;;   "Move \"popup\" completion candidates to minibuffer.
+
+;;   Useful if you want a more robust view into the recommend candidates."
+;;   (interactive)
+;;   (let (completion-cycle-threshold completion-cycling)
+;;     (apply #'consult-completion-in-region completion-in-region--data)))
+;; (define-key corfu-map "\M-m" #'corfu-move-to-minibuffer)
+
+(use-package kind-icon
+  :after corfu
+  :custom
+  (kind-icon-use-icons t)
+  (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
+  (kind-icon-blend-background nil)  ; Use midpoint color between foreground and background colors ("blended")?
+  (kind-icon-blend-frac 0.08)
+
+  ;; NOTE 2022-02-05: `kind-icon' depends `svg-lib' which creates a cache
+  ;; directory that defaults to the `user-emacs-directory'. Here, I change that
+  ;; directory to a location appropriate to `no-littering' conventions, a
+  ;; package which moves directories of other packages to sane locations.
+  ;; (svg-lib-icons-dir (no-littering-expand-var-file-name "svg-lib/cache/")) ; Change cache dir
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
+
+  ;; Add hook to reset cache so the icon colors match my theme
+  ;; NOTE 2022-02-05: This is a hook which resets the cache whenever I switch
+  ;; the theme using my custom defined command for switching themes. If I don't
+  ;; do this, then the backgound color will remain the same, meaning it will not
+  ;; match the background color corresponding to the current theme. Important
+  ;; since I have a light theme and dark theme I switch between. This has no
+  ;; function unless you use something similar
+  (add-hook 'kb/themes-hooks #'(lambda () (interactive) (kind-icon-reset-cache))))
+
+;; (use-package corfu-doc
+;;   ;; NOTE 2022-02-05: At the time of writing, `corfu-doc' is not yet on melpa
+;;   :bind (:map corfu-map
+;; 	      ;; This is a manual toggle for the documentation window.
+;; 	      ([remap corfu-show-documentation] . corfu-doc-toggle) ; Remap the default doc command
+;; 	      ;; Scroll in the documentation window
+;; 	      ("M-n" . corfu-doc-scroll-up)
+;; 	      ("M-p" . corfu-doc-scroll-down))
+;;   :hook (corfu-mode . corfu-doc-mode)
+;;   :custom
+;;   (corfu-doc-delay 0.1)
+;;   (corfu-doc-hide-threshold 10)
+;;   (corfu-doc-max-width 60)
+;;   (corfu-doc-max-height 10)
+
+;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
+;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
+;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
+;;   ;; (corfu-echo-documentation nil)
+;;   :config
+;;   ;; NOTE 2022-02-05: This is optional. Enabling the mode means that every corfu
+;;   ;; popup will have corfu-doc already enabled. This isn't desirable for me
+;;   ;; since (i) most of the time I do not need to see the documentation and (ii)
+;;   ;; when scrolling through many candidates, corfu-doc makes the corfu popup
+;;   ;; considerably laggy when there are many candidates. Instead, I rely on
+;;   ;; manual toggling via `corfu-doc-toggle'.
+;;   (corfu-doc-mode))
+
+;; (use-package cape
+;;   :bind (("C-c p p" . completion-at-point)
+;; 	 ("C-c p d" . cape-dabbrev)
+;; 	 ("C-c p f" . cape-file)
+;; 	 ("C-c p s" . cape-symbol)
+;; 	 ("C-c p i" . cape-ispell)))
+
+;; Use Company backends as Capfs.
+;; (setq-local completion-at-point-functions
+;;             (mapcar #'cape-company-to-capf
+;;                     (list #'company-files #'company-ispell #'company-dabbrev)))
+
+;; (use-package link-hint
+;;   :bind
+;;   ("C-c l o" . link-hint-open-link)
+;;   ("C-c l c" . link-hint-copy-link))
+
+(use-package lin
+  :config (lin-global-mode 1)
+  (setq lin-face 'lin-blue))
+
+(use-package pulsar
+  :custom
+  (pulsar-pulse-functions ; Read the doc string for why not `setq'
+   '(recenter-top-bottom
+     move-to-window-line-top-bottom
+     reposition-window
+     bookmark-jump
+     other-window
+     delete-window
+     delete-other-windows
+     forward-page
+     backward-page
+     scroll-up-command
+     scroll-down-command
+     windmove-right
+     windmove-left
+     windmove-up
+     windmove-down
+     windmove-swap-states-right
+     windmove-swap-states-left
+     windmove-swap-states-up
+     windmove-swap-states-down
+     tab-new
+     tab-close
+     tab-next
+     org-next-visible-heading
+     org-previous-visible-heading
+     org-forward-heading-same-level
+     org-backward-heading-same-level
+     outline-backward-same-level
+     outline-forward-same-level
+     outline-next-visible-heading
+     outline-previous-visible-heading
+     ace-window
+     outline-up-heading))
+  :hook
+  (consult-after-jump . pulsar-recenter-top)
+  (consult-after-jump . pulsar-reveal-entry)
+  ;; integration with the built-in `imenu':
+  (imenu-after-jump . pulsar-recenter-top)
+  (imenu-after-jump . pulsar-reveal-entry)
+  :config
+  (pulsar-global-mode 1)
+  (setq pulsar-face 'pulsar-magenta
+	    pulsar-delay 0.05)
+  (defun jf/pulse (parg)
+    "Pulse the current line.
+
+  If PARG (given as universal prefix), pulse between `point' and `mark'."
+    (interactive "P")
+    (if (car parg)
+	    (pulsar--pulse nil nil (point) (mark))
+	  (pulsar-pulse-line)))
+  :bind (("C-x l" . jf/pulse)))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

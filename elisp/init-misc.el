@@ -1,8 +1,5 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 
-;; Autoindent open-*-lines
-(defvar newline-and-indent nil
-  "Modify the behavior of the open-*-line functions to cause them to autoindent.")
 
 (setq inhibit-startup-screen t)
 ;; disable menu bar, tool-bar
@@ -53,100 +50,14 @@
 (setq delete-old-versions t)
 (setq backup-by-copying t)
 
-;; Behave like vi's o command
-(defun open-next-line (arg)
-  "Move to the next line and then opens a line.
-  See also `newline-and-indent'."
-  (interactive "p")
-  (end-of-line)
-  (open-line arg)
-  (next-line 1)
-  (when newline-and-indent
-    (indent-according-to-mode)))
-
-(global-set-key (kbd "C-o") 'open-next-line)
-
-;; Behave like vi's O command
-(defun open-previous-line (arg)
-  "Open a new line before the current one.
-  See also `newline-and-indent'."
-  (interactive "p")
-  (beginning-of-line)
-  (open-line arg)
-  (when newline-and-indent
-    (indent-according-to-mode)))
-(global-set-key (kbd "M-o") 'open-previous-line)
 
 (setq initial-scratch-message nil)
 
 (global-unset-key (kbd "C-SPC")) ;; 输入法快捷键冲突
 (global-set-key (kbd "M-SPC") 'set-mark-command)
 
-(icomplete-mode 99)
+;; (icomplete-mode 99)
 
-(defun split-window-4()
-  "Splite window into 4 sub-window"
-  (interactive)
-  (if (= 1 (length (window-list)))
-      (progn (split-window-vertically)
-             (split-window-horizontally)
-             (other-window 2)
-             (split-window-horizontally)
-             )
-    )
-  )
-
-(defun change-split-type (split-fn &optional arg)
-  "Change 3 window style from horizontal to vertical and vice-versa"
-  (let ((bufList (mapcar 'window-buffer (window-list))))
-    (select-window (get-largest-window))
-    (funcall split-fn arg)
-    (mapcar* 'set-window-buffer (window-list) bufList)))
-
-(defun change-split-type-2 (&optional arg)
-  "Changes splitting from vertical to horizontal and vice-versa"
-  (interactive "P")
-  (let ((split-type (lambda (&optional arg)
-                      (delete-other-windows-internal)
-                      (if arg (split-window-vertically)
-                        (split-window-horizontally)))))
-    (change-split-type split-type arg)))
-
-(defun change-split-type-3-v (&optional arg)
-  "change 3 window style from horizon to vertical"
-  (interactive "P")
-  (change-split-type 'split-window-3-horizontally arg))
-
-(defun change-split-type-3-h (&optional arg)
-  "change 3 window style from vertical to horizon"
-  (interactive "P")
-  (change-split-type 'split-window-3-vertically arg))
-
-(defun split-window-3-horizontally (&optional arg)
-  "Split window into 3 while largest one is in horizon"
-  ;;  (interactive "P")
-  (delete-other-windows)
-  (split-window-horizontally)
-  (if arg (other-window 1))
-  (split-window-vertically))
-
-(defun split-window-3-vertically (&optional arg)
-  "Split window into 3 while largest one is in vertical"
-  ;; (interactive "P")
-  (delete-other-windows)
-  (split-window-vertically)
-  (if arg (other-window 1))
-  (split-window-horizontally))
-
-;; 根据条件删除行尾的空白
-(when newline-and-indent
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
-  ;; 编程模式下让结尾的空白符亮起
-  ;; (add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
-
-  ;; Show a marker when the line has empty characters at the end
-  ;; (setq-default show-trailing-whitespace t)
-  )
 
 ;; (spinner-start 'vertical-breathing 10)
 ;; (spinner-start 'minibox)
@@ -170,10 +81,6 @@
 
 (global-set-key [f9] 'toggle-menu-bar-mode-from-frame)
 
-;; 关闭所有的buffer
-(defun close-all-buffers ()
-  (interactive)
-  (mapc 'kill-buffer (buffer-list)))
 
 (setq x-underline-at-descent-line t)
 
@@ -390,42 +297,6 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (require 'mm-util)
 (add-to-list 'mm-inhibit-file-name-handlers 'openwith-file-handler)
 
-;; copy from https://emacs-china.org/t/magit-emacs-terminal-proxy/16942/2
-(defun proxy-socks-show ()
-  "Show SOCKS proxy."
-  (interactive)
-  (when (fboundp 'cadddr)
-    (if (bound-and-true-p socks-noproxy)
-        (message "Current SOCKS%d proxy is %s:%d"
-                 (cadddr socks-server) (cadr socks-server) (caddr socks-server))
-      (message "No SOCKS proxy"))))
-
-(defun proxy-socks-enable ()
-  "Enable SOCKS proxy."
-  (interactive)
-  (require 'socks)
-  (setq url-gateway-method 'socks
-        socks-noproxy '("localhost")
-        socks-server '("Default server" "127.0.0.1" 10808 5))
-  (setenv "all_proxy" "socks5://127.0.0.1:10808")
-  (proxy-socks-show))
-
-(defun proxy-socks-disable ()
-  "Disable SOCKS proxy."
-  (interactive)
-  (require 'socks)
-  (setq url-gateway-method 'native
-        socks-noproxy nil)
-  (setenv "all_proxy" "")
-  (proxy-socks-show))
-
-(defun proxy-socks-toggle ()
-  "Toggle SOCKS proxy."
-  (interactive)
-  (require 'socks)
-  (if (bound-and-true-p socks-noproxy)
-      (proxy-socks-disable)
-    (proxy-socks-enable)))
 
 
 (setq-default cursor-type 'bar)

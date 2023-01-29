@@ -2371,8 +2371,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
          ;; M-g bindings (goto-map)
          ("M-g e" . consult-compile-error)
          ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-         ("M-g g" . consult-goto-line)             ;; orig. goto-line
-         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ;; ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ;; ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
          ("M-g m" . consult-mark)
          ("M-g k" . consult-global-mark)
@@ -3805,6 +3805,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 	    (pulsar--pulse nil nil (point) (mark))
 	  (pulsar-pulse-line)))
   :bind (("C-x l" . jf/pulse)))
+
+(use-package goto-line-preview
+  :bind (("M-g g" . goto-line-preview)
+         ("M-g M-g" . goto-line-preview)))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

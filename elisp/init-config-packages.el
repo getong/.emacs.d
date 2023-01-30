@@ -2297,8 +2297,10 @@ Activate this advice with:
 ;; 正在从ivy、swiper、counsel、hydra转向vertico、consult、embark、orderless。
 ;; 增强 minibuffer 补全：vertico 和 Orderless, 垂直补全
 (use-package vertico
+  :init
+  (vertico-mode)
   :config
-  (vertico-multiform-mode)
+  ;; (vertico-multiform-mode)
   ;; Use `consult-completion-in-region' if Vertico is enabled.
   ;; Otherwise use the default `completion--in-region' function.
   (setq completion-in-region-function

@@ -22,5 +22,6 @@
 
 (require 'init-misc)
 
+(setq debug-on-quit t)
 
 (message (emacs-init-time))

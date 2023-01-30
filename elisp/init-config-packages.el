@@ -27,6 +27,15 @@
   (dired-async-mode 1)
   (async-bytecomp-package-mode 1))
 
+;; benchmark-init records startup time by package so we can debug. It only records things after it's initialised, so put as early in config as possible.
+(use-package benchmark-init
+    :config
+    ;; To disable collection of benchmark data after init is done.
+    (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
+  (add-hook 'after-init-hook
+            (lambda () (message "loaded in %s" (emacs-init-time))))
+
 (use-package async-await
   :config
   (promise-rejection-tracking-enable '((all-rejections . t))))
@@ -2251,6 +2260,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; minibuffer 模糊匹配
 (use-package orderless
+  :ensure t
   :config
   (defvar +orderless-dispatch-alist
     '((?% . char-fold-to-regexp)
@@ -2294,7 +2304,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 	    ;;; Note that completion-category-overrides is not really an override,
 	    ;;; but rather prepended to the default completion-styles.
 	    ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
-	    completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
+	    completion-category-overrides '((file (styles . (partial-completion))) ;; partial-completion is tried first
 					                    ;; enable initialism by default for symbols
 					                    (command (styles +orderless-with-initialism))
 					                    (variable (styles +orderless-with-initialism))
@@ -2470,6 +2480,23 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
                 :items    ,projectile-known-projects))
   (add-to-list 'consult-buffer-sources my-consult-source-projectile-projects 'append)
   )
+
+;; (global-set-key (kbd "C-s") 'consult-line)
+;; copy from https://tam5917.hatenablog.com/entry/2021/05/01/063232
+(defun consult-line-symbol-at-point ()
+  (interactive)
+  (consult-line (thing-at-point 'symbol)))
+
+(defun my-isearch-or-consult (use-consult)
+  (interactive "p")
+  (cond ((eq use-consult 1)
+         (call-interactively 'isearch-forward))
+        ((eq use-consult 4)
+         (call-interactively 'consult-line-symbol-at-point))
+        ((eq use-consult 16)
+         (call-interactively 'consult-line-migemo))))
+
+(global-set-key (kbd "C-s") 'my-isearch-or-consult)
 
 (use-package consult-flycheck)
 
@@ -2678,8 +2705,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
    "gN" 'persp-kill)
   (general-define-key
    :keymaps 'perspective-map
-   "b" 'persp-ivy-switch-buffer
-   "x" 'persp-ivy-switch-buffer
+   ;;"b" 'persp-ivy-switch-buffer
+   ;;"x" 'persp-ivy-switch-buffer
    "u" 'persp-ibuffer))
 
 (use-package flycheck-package
@@ -3336,20 +3363,21 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
       company-minimum-prefix-length 1
       lsp-idle-delay 0.1)  ;; clangd is fast
 
-(use-package swiper
-  :ensure t
-  :config
-  (defun isearch-forward-or-swiper (use-swiper)
-    (interactive "p")
-    (let (current-prefix-arg)
-      (call-interactively (if use-swiper 'swiper 'isearch-forward))))
-  (global-set-key (kbd "C-s") 'isearch-forward-or-swiper)
-  )
+;; (use-package swiper
+;;   :ensure t
+;;   :config
+;;   (defun isearch-forward-or-swiper (use-swiper)
+;;     (interactive "p")
+;;     (let (current-prefix-arg)
+;;       (call-interactively (if use-swiper 'swiper 'isearch-forward))))
+;;   (global-set-key (kbd "C-s") 'isearch-forward-or-swiper)
+;;   )
 
-(use-package ivy
-  :ensure t
-  :diminish ivy-mode
-  :hook (after-init . ivy-mode))
+;;以前是ivy用户，现在则是仅使用vertico, embark和consult了
+;;(use-package ivy
+;;  :ensure t
+;;  :diminish ivy-mode
+;;  :hook (after-init . ivy-mode))
 
 (use-package ag
   :ensure t
@@ -3428,9 +3456,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (projectile-global-mode t)
   (helm-projectile-on))
 
-(use-package lsp-ivy
-  :ensure t
-  :after (lsp-mode))
+;;(use-package lsp-ivy
+;;  :ensure t
+;; :after (lsp-mode))
 
 (use-package consult-dir
        :ensure t
@@ -3809,6 +3837,10 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package goto-line-preview
   :bind (("M-g g" . goto-line-preview)
          ("M-g M-g" . goto-line-preview)))
+
+;;  Sometimes it's useful to step to the last changes in a buffer.
+(use-package goto-last-change
+  :bind (("C-x ;" . goto-last-change)))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

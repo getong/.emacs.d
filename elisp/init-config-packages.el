@@ -1982,8 +1982,8 @@ Activate this advice with:
   (push 'rustic-clippy flycheck-checkers)
   (setq lsp-rust-analyzer-cargo-watch-command "clippy")
   ;; (setq lsp-rust-analyzer-cargo-watch-enable nil)
-  (setq rustic-format-on-save nil)
-  (setq rustic-lsp-format nil)
+  (setq rustic-format-on-save t)
+  (setq rustic-lsp-format t)
 
   ;; comment to disable rustfmt on save
   (setq rustic-lsp-server 'rust-analyzer)
@@ -4014,6 +4014,38 @@ Activate this advice with:
 ;; 				                  rime-predicate-hydra-p
 ;; 				                  rime-predicate-in-code-string-p
 ;; 				                  rime-predicate-tex-math-or-command-p)))
+
+(use-package edebug-x
+  :ensure t
+  :defer t
+  :commands (edebug-x-mode)
+  ;; :init (setq edebug-x-stop-point-overlay t)
+  :config
+  (set-face-attribute 'hi-edebug-x-stop nil
+                      :reverse-video nil :foreground nil :overline nil
+                      :background (cl-case (alist-get 'background-mode (frame-parameters))
+                                    ('light "orange")
+                                    ('dark "DarkMagenta")))
+  (set-face-attribute 'hi-edebug-x-debug-line nil
+                      :reverse-video nil :foreground nil :underline nil
+                      :background (cl-case (alist-get 'background-mode (frame-parameters))
+                                    ('light "pink")
+                                    ('dark "DarkSlateGray")))
+
+  (add-to-list 'display-buffer-alist
+               '("^\\*Instrumented Functions\\*" (display-buffer-below-selected)))
+  (add-to-list 'display-buffer-alist
+               '("^\\*Edebug Breakpoints\\*" (display-buffer-below-selected))))
+
+(use-package bug-hunter
+  :ensure t
+  :defer t
+  :commands (bug-hunter-file bug-hunter-init-file))
+
+;; tempel
+;; corfu capf
+;; eglot or lsp-bridge
+;; project
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

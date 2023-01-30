@@ -542,6 +542,29 @@
   ;; Hide commands in M-x which don't work in the current mode
   (setq read-extended-command-predicate #'command-completion-default-include-p)
   :config
+  ;; copy from https://emacs.stackexchange.com/questions/32150/how-to-add-a-timestamp-to-each-entry-in-emacs-messages-buffer
+  ;; 添加时间戳到message消息
+  (defun sh/current-time-microseconds ()
+	"Return the current time formatted to include microseconds."
+	(let* ((nowtime (current-time))
+           (now-ms (nth 2 nowtime)))
+      (concat (format-time-string "[%Y-%m-%dT%T" nowtime) (format ".%d]" now-ms))))
+
+  (defun sh/ad-timestamp-message (FORMAT-STRING &rest args)
+	"Advice to run before `message' that prepends a timestamp to each message.
+Activate this advice with:
+(advice-add 'message :before 'sh/ad-timestamp-message)"
+	(unless (string-equal FORMAT-STRING "%s%s")
+      (let ((deactivate-mark nil)
+			(inhibit-read-only t))
+		(with-current-buffer "*Messages*"
+          (goto-char (point-max))
+          (if (not (bolp))
+			  (newline))
+          (insert (sh/current-time-microseconds) " ")))))
+
+  (advice-add 'message :before 'sh/ad-timestamp-message)
+
   (defun my-reload-emacs-configuration ()
     (interactive)
     (load-file "~/.emacs.d/init.el"))
@@ -3435,56 +3458,56 @@
 ;;   :config
 ;;   (helm-mode 1))
 ;; copy from https://sachachua.com/dotemacs/index.html
-(use-package helm
-  :diminish helm-mode
-  :if my-laptop-p
-  :config
-  (progn
-    (require 'helm-for-files)
-    (setq helm-candidate-number-limit 100)
-    (setq helm-completing-read-handlers-alist
-          '((describe-function)
-            (consult-bookmark)
-            (org-refile-get-location)
-            (consult-outline)
-            (consult-line)
-            (org-olpath-completing-read)
-            (consult-mark)
-            (org-refile)
-            (consult-multi-occur)
-            (describe-variable)
-            (execute-extended-command)
-            (consult-yank)))
-    ;; From https://gist.github.com/antifuchs/9238468
-    (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
-          helm-input-idle-delay 0.01  ; this actually updates things
-                                        ; reeeelatively quickly.
-          helm-yas-display-key-on-candidate t
-          helm-quick-update t
-          helm-M-x-requires-pattern nil
-          helm-ff-skip-boring-files t))
-  (defadvice helm-files-insert-as-org-links (around sacha activate)
-    (insert (mapconcat (lambda (candidate)
-                         (org-link-make-string candidate))
-                       (helm-marked-candidates)
-                       "\n")))
-  :bind (("C-c h" . helm-mini)
-         ("C-h a" . helm-apropos)
-         ("C-x C-b" . helm-buffers-list)
-         ("C-x c o" . helm-occur)
-         ("C-x c s" . helm-swoop)
-         ("C-x c y" . helm-yas-complete)
-         ("C-x c Y" . helm-yas-create-snippet-on-region)
-         ("C-x c SPC" . helm-all-mark-rings)))
+;; (use-package helm
+;;   :diminish helm-mode
+;;   :if my-laptop-p
+;;   :config
+;;   (progn
+;;     (require 'helm-for-files)
+;;     (setq helm-candidate-number-limit 100)
+;;     (setq helm-completing-read-handlers-alist
+;;           '((describe-function)
+;;             (consult-bookmark)
+;;             (org-refile-get-location)
+;;             (consult-outline)
+;;             (consult-line)
+;;             (org-olpath-completing-read)
+;;             (consult-mark)
+;;             (org-refile)
+;;             (consult-multi-occur)
+;;             (describe-variable)
+;;             (execute-extended-command)
+;;             (consult-yank)))
+;;     ;; From https://gist.github.com/antifuchs/9238468
+;;     (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+;;           helm-input-idle-delay 0.01  ; this actually updates things
+;;                                         ; reeeelatively quickly.
+;;           helm-yas-display-key-on-candidate t
+;;           helm-quick-update t
+;;           helm-M-x-requires-pattern nil
+;;           helm-ff-skip-boring-files t))
+;;   (defadvice helm-files-insert-as-org-links (around sacha activate)
+;;     (insert (mapconcat (lambda (candidate)
+;;                          (org-link-make-string candidate))
+;;                        (helm-marked-candidates)
+;;                        "\n")))
+;;   :bind (("C-c h" . helm-mini)
+;;          ("C-h a" . helm-apropos)
+;;          ("C-x C-b" . helm-buffers-list)
+;;          ("C-x c o" . helm-occur)
+;;          ("C-x c s" . helm-swoop)
+;;          ("C-x c y" . helm-yas-complete)
+;;          ("C-x c Y" . helm-yas-create-snippet-on-region)
+;;          ("C-x c SPC" . helm-all-mark-rings)))
 
-(use-package helm-projectile
-  :diminish projectile-mode
-  :bind ("C-c p p" . helm-projectile-switch-project)
-  :init
-  (use-package helm-ag)
-  :config
-  (projectile-global-mode t)
-  (helm-projectile-on))
+;; (use-package helm-projectile
+;;   :diminish projectile-mode
+;;   :bind ("C-c p p" . helm-projectile-switch-project)
+;;   :init
+;;   (use-package helm-ag)
+;;   :config
+;;   (projectile-global-mode t)
+;;   (helm-projectile-on))
 
 ;;(use-package lsp-ivy
 ;;  :ensure t

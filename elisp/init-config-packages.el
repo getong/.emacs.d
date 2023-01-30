@@ -1,12 +1,12 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 
 ;; copy from https://sachachua.com/dotemacs/index.html
-(defvar my-laptop-p (equal (system-name) "sacha-x220"))
-(defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "sacha")))
+(defvar my-laptop-p (equal (system-name) "MacBook-Pro.lan"))
+(defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "getong")))
 (defvar my-phone-p (not (null (getenv "ANDROID_ROOT")))
   "If non-nil, GNU Emacs is running on Termux.")
 (when my-phone-p (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
-(global-auto-revert-mode)  ; simplifies syncingr
+;; (global-auto-revert-mode)  ; simplifies syncingr
 
 (use-package esup
   :ensure t
@@ -59,6 +59,10 @@
   ;; https://eshelyaron.com/esy.html
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  ;; 检查auto-save目录是否存在，不存在就创建
+  (unless (file-directory-p (no-littering-expand-var-file-name "auto-save/"))
+    (make-directory (no-littering-expand-var-file-name "auto-save/"))
+    )
   (when (fboundp 'startup-redirect-eln-cache)
     (startup-redirect-eln-cache
      (convert-standard-filename
@@ -174,126 +178,126 @@
 ;;      (setq header-line-format nil))
 ;;    ))
 
-(use-package hydra
-  :ensure t
-  :commands defhydra)
+;; (use-package hydra
+;;   :ensure t
+;;   :commands defhydra)
 
-(use-package use-package-hydra
-  :ensure t
-  :after hydra)
-(if my-laptop-p
-    (use-package hydra-posframe :if my-laptop-p :after hydra))
+;; (use-package use-package-hydra
+;;   :ensure t
+;;   :after hydra)
+;; (if my-laptop-p
+;;     (use-package hydra-posframe :if my-laptop-p :after hydra))
 
-(with-eval-after-load 'hydra
-  (defhydra my-window-movement ()
-    ("<left>" windmove-left)
-    ("<right>" windmove-right)
-    ("<down>" windmove-down)
-    ("<up>" windmove-up)
-    ("y" other-window "other")
-    ("h" switch-window "switch-window")
-    ("b" consult-buffer "buffer")
-    ("f" find-file "file")
-    ("F" find-file-other-window "other file")
-    ("v" (progn (split-window-right) (windmove-right)))
-    ("o" delete-other-windows :color blue)
-    ("a" ace-window)
-    ("s" ace-swap-window)
-    ("d" delete-window "delete")
-    ("D" ace-delete-window "ace delete")
-    ("i" ace-maximize-window "maximize")
-    ("q" nil)))
+;; (with-eval-after-load 'hydra
+;;   (defhydra my-window-movement ()
+;;     ("<left>" windmove-left)
+;;     ("<right>" windmove-right)
+;;     ("<down>" windmove-down)
+;;     ("<up>" windmove-up)
+;;     ("y" other-window "other")
+;;     ("h" switch-window "switch-window")
+;;     ("b" consult-buffer "buffer")
+;;     ("f" find-file "file")
+;;     ("F" find-file-other-window "other file")
+;;     ("v" (progn (split-window-right) (windmove-right)))
+;;     ("o" delete-other-windows :color blue)
+;;     ("a" ace-window)
+;;     ("s" ace-swap-window)
+;;     ("d" delete-window "delete")
+;;     ("D" ace-delete-window "ace delete")
+;;     ("i" ace-maximize-window "maximize")
+;;     ("q" nil)))
 
-(with-eval-after-load 'hydra
-  (defhydra my-shortcuts (:exit t)
-    ("j" my-helm-journal "Journal")
-    ("C" my-resolve-orgzly-syncthing "Conflicts")
-    ("n" my-capture-timestamped-note "Note")
-    ("c" my-org-categorize-emacs-news/body "Categorize")
-    ("d" my-emacs-news-check-duplicates "Dupe")
-    ("s" save-buffer "Save")
-    ("f" my-file-shortcuts/body "File shortcut")
-    ("+" text-scale-increase "Increase")
-    ("-" text-scale-decrease "Decrease")
-    ("G" gif-screencast-start-or-stop "GIF screencast")
-    ("g" my-geeqie/body "Geeqie")
-    ("r" my-record-ffmpeg-toggle-recording "Record screen")
-    ("l" (my-toggle-or-create "*scratch*" (lambda () (switch-to-buffer (startup--get-buffer-create-scratch)))) "Lisp")
-    ("e" eshell-toggle "Eshell")
-    ("w" my-engine-dmode-hydra/body "Search web")
-    ("E" my-emacs-news/body "Emacs News"))
-  (global-set-key (kbd "<f5>") #'my-shortcuts/body)
-  (defhydra my-emacs-news (:exit t)
-    "Emacs News"
-    ("f" (find-file "~/sync/emacs-news/index.org") "News")
-    ("C" (find-file "~/proj/emacs-calendar/README.org") "Calendar")
-    ("C" (find-file "/ssh:web:/var/www/emacslife.com/calendar/README.org" "Calendar on server"))
-    ("d" my-emacs-news-check-duplicates "Dupe")
-    ("c" my-org-categorize-emacs-news/body "Categorize")
-    ("h" (my-org-update-link-description "HN") "Link HN")
-    ("i" (my-org-update-link-description "Irreal") "Link Irreal")
-    ("m" my-share-emacs-news "Mail")
-    ("t" (browse-url "https://tweetdeck.twitter.com") "Twitter")))
+;; (with-eval-after-load 'hydra
+;;   (defhydra my-shortcuts (:exit t)
+;;     ("j" my-helm-journal "Journal")
+;;     ("C" my-resolve-orgzly-syncthing "Conflicts")
+;;     ("n" my-capture-timestamped-note "Note")
+;;     ("c" my-org-categorize-emacs-news/body "Categorize")
+;;     ("d" my-emacs-news-check-duplicates "Dupe")
+;;     ("s" save-buffer "Save")
+;;     ("f" my-file-shortcuts/body "File shortcut")
+;;     ("+" text-scale-increase "Increase")
+;;     ("-" text-scale-decrease "Decrease")
+;;     ("G" gif-screencast-start-or-stop "GIF screencast")
+;;     ("g" my-geeqie/body "Geeqie")
+;;     ("r" my-record-ffmpeg-toggle-recording "Record screen")
+;;     ("l" (my-toggle-or-create "*scratch*" (lambda () (switch-to-buffer (startup--get-buffer-create-scratch)))) "Lisp")
+;;     ("e" eshell-toggle "Eshell")
+;;     ("w" my-engine-dmode-hydra/body "Search web")
+;;     ("E" my-emacs-news/body "Emacs News"))
+;;   (global-set-key (kbd "<f5>") #'my-shortcuts/body)
+;;   (defhydra my-emacs-news (:exit t)
+;;     "Emacs News"
+;;     ("f" (find-file "~/sync/emacs-news/index.org") "News")
+;;     ("C" (find-file "~/proj/emacs-calendar/README.org") "Calendar")
+;;     ("C" (find-file "/ssh:web:/var/www/emacslife.com/calendar/README.org" "Calendar on server"))
+;;     ("d" my-emacs-news-check-duplicates "Dupe")
+;;     ("c" my-org-categorize-emacs-news/body "Categorize")
+;;     ("h" (my-org-update-link-description "HN") "Link HN")
+;;     ("i" (my-org-update-link-description "Irreal") "Link Irreal")
+;;     ("m" my-share-emacs-news "Mail")
+;;     ("t" (browse-url "https://tweetdeck.twitter.com") "Twitter")))
 
-(defun my-org-update-link-description (description)
-  "Update the current link's DESCRIPTION."
-  (interactive "MDescription: ")
-  (let (link)
-    (save-excursion
-      (cond
-       ((org-in-regexp org-link-bracket-re 1)
-        (setq link (org-link-unescape (match-string-no-properties 1)))
-        (delete-region (match-beginning 0) (match-end 0))
-        (insert (org-link-make-string link description))
-        (sit-for 0))
-       ((or (org-in-regexp org-link-angle-re)
-            (org-in-regexp org-link-plain-re))
-        (setq link (org-unbracket-string "<" ">" (match-string 0)))
-        (delete-region (match-beginning 0) (match-end 0))
-        (insert (org-link-make-string link description))
-        (sit-for 0))))))
+;; (defun my-org-update-link-description (description)
+;;   "Update the current link's DESCRIPTION."
+;;   (interactive "MDescription: ")
+;;   (let (link)
+;;     (save-excursion
+;;       (cond
+;;        ((org-in-regexp org-link-bracket-re 1)
+;;         (setq link (org-link-unescape (match-string-no-properties 1)))
+;;         (delete-region (match-beginning 0) (match-end 0))
+;;         (insert (org-link-make-string link description))
+;;         (sit-for 0))
+;;        ((or (org-in-regexp org-link-angle-re)
+;;             (org-in-regexp org-link-plain-re))
+;;         (setq link (org-unbracket-string "<" ">" (match-string 0)))
+;;         (delete-region (match-beginning 0) (match-end 0))
+;;         (insert (org-link-make-string link description))
+;;         (sit-for 0))))))
 
-(defun my-org-insert-link ()
-  (interactive)
-  (when (org-in-regexp org-bracket-link-regexp 1)
-    (goto-char (match-end 0))
-    (insert "\n"))
-  (call-interactively 'org-insert-link))
+;; (defun my-org-insert-link ()
+;;   (interactive)
+;;   (when (org-in-regexp org-bracket-link-regexp 1)
+;;     (goto-char (match-end 0))
+;;     (insert "\n"))
+;;   (call-interactively 'org-insert-link))
 
-(defun my-switch-to-previous-buffer ()
-  "Switch to previously open buffer.
-      Repeated invocations toggle between the two most recently open buffers."
-  (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1)))
+;; (defun my-switch-to-previous-buffer ()
+;;   "Switch to previously open buffer.
+;;       Repeated invocations toggle between the two most recently open buffers."
+;;   (interactive)
+;;   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-(defun my-org-check-agenda ()
-  "Peek at agenda."
-  (interactive)
-  (cond
-   ((derived-mode-p 'org-agenda-mode)
-    (if (window-parent) (delete-window) (bury-buffer)))
-   ((get-buffer "*Org Agenda*")
-    (switch-to-buffer-other-window "*Org Agenda*"))
-   (t (org-agenda nil "a"))))
+;; (defun my-org-check-agenda ()
+;;   "Peek at agenda."
+;;   (interactive)
+;;   (cond
+;;    ((derived-mode-p 'org-agenda-mode)
+;;     (if (window-parent) (delete-window) (bury-buffer)))
+;;    ((get-buffer "*Org Agenda*")
+;;     (switch-to-buffer-other-window "*Org Agenda*"))
+;;    (t (org-agenda nil "a"))))
 
-(defun my-goto-random-char ()
-  (interactive)
-  (goto-char (random (point-max))))
+;; (defun my-goto-random-char ()
+;;   (interactive)
+;;   (goto-char (random (point-max))))
 
-(defvar hydra-stack nil)
+;; (defvar hydra-stack nil)
 
-(defun my-hydra-push (expr)
-  (push `(lambda () ,expr) hydra-stack))
+;; (defun my-hydra-push (expr)
+;;   (push `(lambda () ,expr) hydra-stack))
 
-(defun my-hydra-pop ()
-  (interactive)
-  (let ((x (pop hydra-stack)))
-    (when x (funcall x))))
+;; (defun my-hydra-pop ()
+;;   (interactive)
+;;   (let ((x (pop hydra-stack)))
+;;     (when x (funcall x))))
 
-(defun my-hydra-go-and-push (expr)
-  (push hydra-curr-body-fn hydra-stack)
-  (prin1 hydra-stack)
-  (funcall expr))
+;; (defun my-hydra-go-and-push (expr)
+;;   (push hydra-curr-body-fn hydra-stack)
+;;   (prin1 hydra-stack)
+;;   (funcall expr))
 
 ;; (use-package undo-tree
 ;;   :ensure t
@@ -367,38 +371,49 @@
 (use-package iedit
   :ensure t)
 
+;;
+;; Multiple cursors
+;;
+;; Support for multiple cursor selection and editing.
+;;
 (use-package multiple-cursors
   :ensure t
-  :after hydra
-  :bind
-  (("C-x C-h m" . hydra-multiple-cursors/body)
-   ("C-S-<mouse-1>" . mc/toggle-cursor-on-click))
-  :hydra (hydra-multiple-cursors
-		  (:hint nil)
-		  "
-Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cursor%s(if (> (mc/num-cursors) 1) \"s\" \"\")
-------------------------------------------------------------------
- [_p_]   Prev     [_n_]   Next     [_l_] Edit lines  [_0_] Insert numbers
- [_P_]   Skip     [_N_]   Skip     [_a_] Mark all    [_A_] Insert letters
- [_M-p_] Unmark   [_M-n_] Unmark   [_s_] Search      [_q_] Quit
- [_|_] Align with input CHAR       [Click] Cursor at point"
-		  ("l" mc/edit-lines :exit t)
-		  ("a" mc/mark-all-like-this :exit t)
-		  ("n" mc/mark-next-like-this)
-		  ("N" mc/skip-to-next-like-this)
-		  ("M-n" mc/unmark-next-like-this)
-		  ("p" mc/mark-previous-like-this)
-		  ("P" mc/skip-to-previous-like-this)
-		  ("M-p" mc/unmark-previous-like-this)
-		  ("|" mc/vertical-align)
-		  ("s" mc/mark-all-in-region-regexp :exit t)
-		  ("0" mc/insert-numbers :exit t)
-		  ("A" mc/insert-letters :exit t)
-		  ("<mouse-1>" mc/add-cursor-on-click)
-		  ;; Help with click recognition in this hydra
-		  ("<down-mouse-1>" ignore)
-		  ("<drag-mouse-1>" ignore)
-		  ("q" nil)))
+  :bind (("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("C-c C-SPC" . mc/mark-all-like-this)))
+
+;; (use-package multiple-cursors
+;;   :ensure t
+;;   :after hydra
+;;   :bind
+;;   (("C-x C-h m" . hydra-multiple-cursors/body)
+;;    ("C-S-<mouse-1>" . mc/toggle-cursor-on-click))
+;;   :hydra (hydra-multiple-cursors
+;; 		  (:hint nil)
+;; 		  "
+;; Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cursor%s(if (> (mc/num-cursors) 1) \"s\" \"\")
+;; ------------------------------------------------------------------
+;;  [_p_]   Prev     [_n_]   Next     [_l_] Edit lines  [_0_] Insert numbers
+;;  [_P_]   Skip     [_N_]   Skip     [_a_] Mark all    [_A_] Insert letters
+;;  [_M-p_] Unmark   [_M-n_] Unmark   [_s_] Search      [_q_] Quit
+;;  [_|_] Align with input CHAR       [Click] Cursor at point"
+;; 		  ("l" mc/edit-lines :exit t)
+;; 		  ("a" mc/mark-all-like-this :exit t)
+;; 		  ("n" mc/mark-next-like-this)
+;; 		  ("N" mc/skip-to-next-like-this)
+;; 		  ("M-n" mc/unmark-next-like-this)
+;; 		  ("p" mc/mark-previous-like-this)
+;; 		  ("P" mc/skip-to-previous-like-this)
+;; 		  ("M-p" mc/unmark-previous-like-this)
+;; 		  ("|" mc/vertical-align)
+;; 		  ("s" mc/mark-all-in-region-regexp :exit t)
+;; 		  ("0" mc/insert-numbers :exit t)
+;; 		  ("A" mc/insert-letters :exit t)
+;; 		  ("<mouse-1>" mc/add-cursor-on-click)
+;; 		  ;; Help with click recognition in this hydra
+;; 		  ("<down-mouse-1>" ignore)
+;; 		  ("<drag-mouse-1>" ignore)
+;; 		  ("q" nil)))
 
 ;; copy from https://emacs-china.org/t/vterm-zsh/20497
 ;;; Terminal
@@ -527,6 +542,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   ;; Hide commands in M-x which don't work in the current mode
   (setq read-extended-command-predicate #'command-completion-default-include-p)
   :config
+  (defun my-reload-emacs-configuration ()
+    (interactive)
+    (load-file "~/.emacs.d/init.el"))
+  ;; By default emacs will not delete selection text when typing on it, let's fix it
+  (delete-selection-mode t)
   ;; 默认情况下，Emacs 为每个打开的文件创建一些临时的文件，这会搞乱我们的目录，不需要它。
   ;; Don't generate backups or lockfiles. While auto-save maintains a copy so long
   ;; as a buffer is unsaved, backups create copies once, when the file is first
@@ -667,9 +687,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
       (message "Linux"))))
 
   ;; Autoindent open-*-lines
-  (defvar newline-and-indent nil
+  (defvar newline-and-indent t
     "Modify the behavior of the open-*-line functions to cause them to autoindent.")
-
 
   ;; Behave like vi's o command
   (defun open-next-line (arg)
@@ -693,7 +712,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
     (open-line arg)
     (when newline-and-indent
       (indent-according-to-mode)))
-  (global-set-key (kbd "M-o") 'open-previous-line)  
+  (global-set-key (kbd "M-o") 'open-previous-line)
 
   (defun split-window-4()
     "Splite window into 4 sub-window"
@@ -804,48 +823,50 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   )
 
 ;; copy from https://www.danielde.dev/blog/emacs-for-swift-development
-(defun print-swift-var-under-point()
-  (interactive)
-  (if (string-match-p (string (preceding-char)) "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
-      (backward-sexp)
-    nil)
-  (kill-sexp)
-  (yank)
-  (move-end-of-line nil)
-  (newline)
-  (insert "print(\"")
-  (yank)
-  (insert ": \\(")
-  (yank)
-  (insert ")\")")
-  (indent-for-tab-command))
 (use-package swift-mode
-  :bind (("C-c l" . print-swift-var-under-point)))
+  :bind (("C-c l" . print-swift-var-under-point))
+  :config
+  (defun print-swift-var-under-point()
+    (interactive)
+    (if (string-match-p (string (preceding-char)) "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
+        (backward-sexp)
+      nil)
+    (kill-sexp)
+    (yank)
+    (move-end-of-line nil)
+    (newline)
+    (insert "print(\"")
+    (yank)
+    (insert ": \\(")
+    (yank)
+    (insert ")\")")
+    (indent-for-tab-command))
+  (defun xcode-build()
+    (interactive)
+    (shell-command-to-string
+     "osascript -e 'tell application \"Xcode\"' -e 'set targetProject to active workspace document' -e 'build targetProject' -e 'end tell'"))
+  (defun xcode-run()
+    (interactive)
+    (shell-command-to-string
+     "osascript -e 'tell application \"Xcode\"' -e 'set targetProject to active workspace document' -e 'stop targetProject' -e 'run targetProject' -e 'end tell'"))
+  (defun xcode-test()
+    (interactive)
+    (shell-command-to-string
+     "osascript -e 'tell application \"Xcode\"' -e 'set targetProject to active workspace document' -e 'stop targetProject' -e 'test targetProject' -e 'end tell'"))
+  (global-set-key (kbd "C-c p b") 'xcode-build)
+  (global-set-key (kbd "C-c p r") 'xcode-run)
+  (global-set-key (kbd "C-c p t") 'xcode-test)
 
-(defun xcode-build()
-  (interactive)
-  (shell-command-to-string
-   "osascript -e 'tell application \"Xcode\"' -e 'set targetProject to active workspace document' -e 'build targetProject' -e 'end tell'"))
-(defun xcode-run()
-  (interactive)
-  (shell-command-to-string
-   "osascript -e 'tell application \"Xcode\"' -e 'set targetProject to active workspace document' -e 'stop targetProject' -e 'run targetProject' -e 'end tell'"))
-(defun xcode-test()
-  (interactive)
-  (shell-command-to-string
-   "osascript -e 'tell application \"Xcode\"' -e 'set targetProject to active workspace document' -e 'stop targetProject' -e 'test targetProject' -e 'end tell'"))
-(global-set-key (kbd "C-c p b") 'xcode-build)
-(global-set-key (kbd "C-c p r") 'xcode-run)
-(global-set-key (kbd "C-c p t") 'xcode-test)
+  (defun xcode-open-current-file()
+    (interactive)
+    (shell-command-to-string
+     (concat "open -a \"/Applications/Xcode.app\" " (buffer-file-name)))
+    (kill-new (car (cdr (split-string (what-line)))))
+    (shell-command-to-string
+     "open keysmith://run-shortcut/796BB627-5433-48E4-BB54-1AA6C54A14E8"))
+  (global-set-key (kbd "C-c p o") 'xcode-open-current-file)
+  )
 
-(defun xcode-open-current-file()
-  (interactive)
-  (shell-command-to-string
-   (concat "open -a \"/Applications/Xcode.app\" " (buffer-file-name)))
-  (kill-new (car (cdr (split-string (what-line)))))
-  (shell-command-to-string
-   "open keysmith://run-shortcut/796BB627-5433-48E4-BB54-1AA6C54A14E8"))
-(global-set-key (kbd "C-c p o") 'xcode-open-current-file)
 
 (use-package openwith
   :config
@@ -922,20 +943,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
                "f:close()"
                "end") "\n"))
 
-(defun pnh-lua-complete ()
-  (let* ((boe (save-excursion (search-backward-regexp "[^\.a-zA-Z0-9_]")
-                              (point)))
-         (bot (save-excursion (when (symbol-at-point)
-                                (backward-word)) (point)))
-         (expr (buffer-substring-no-properties (1+ boe) (point)))
-         (file (make-temp-file "lua-completions-")))
-    (lua-send-string (pnh-lua-completion-string-for expr file))
-    (sit-for 0.1)
-    (list bot (point) (when (file-exists-p file)
-                        (with-temp-buffer
-                          (insert-file-contents file)
-                          (delete-file file)
-                          (butlast (split-string (buffer-string) "\n")))))))
+
 
 (use-package lua-mode
   :mode "\\.lua\\'"
@@ -947,6 +955,20 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :config
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+  (defun pnh-lua-complete ()
+    (let* ((boe (save-excursion (search-backward-regexp "[^\.a-zA-Z0-9_]")
+                                (point)))
+           (bot (save-excursion (when (symbol-at-point)
+                                  (backward-word)) (point)))
+           (expr (buffer-substring-no-properties (1+ boe) (point)))
+           (file (make-temp-file "lua-completions-")))
+      (lua-send-string (pnh-lua-completion-string-for expr file))
+      (sit-for 0.1)
+      (list bot (point) (when (file-exists-p file)
+                          (with-temp-buffer
+                            (insert-file-contents file)
+                            (delete-file file)
+                            (butlast (split-string (buffer-string) "\n")))))))
   )
 
 (use-package fennel-mode
@@ -976,24 +998,28 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   smartparens-mode
   :hook
   (after-prog-mode . smartparens-mode))
+
 (use-package smartparens-config
   :diminish nil
   :ensure smartparens
+  :hook
+  (prog-mode-hook . turn-on-smartparens-strict-mode)
   :config (progn (show-smartparens-global-mode t)))
-(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+
 (use-package paren
   :config
   (setq show-paren-delay 0.1
         show-paren-when-point-in-periphery t))
 
-(defun alexm/set-faces-by-spec (&rest specs)
-  "Maps SPECS through face-spec-set."
-  (mapc #'(lambda (f) (apply #'face-spec-set f)) specs))
+
 ;; copy from https://se30.xyz/conf.html
 (use-package rainbow-delimiters
   :ensure rainbow-delimiters
   :commands (rainbow-delimiters-mode rainbow-delimiters-mode-enable)
   :config
+  (defun alexm/set-faces-by-spec (&rest specs)
+    "Maps SPECS through face-spec-set."
+    (mapc #'(lambda (f) (apply #'face-spec-set f)) specs))
   (alexm/set-faces-by-spec
    '(rainbow-delimiters-depth-1-face ((t (:foreground "green" :weight extra-bold))))
    '(rainbow-delimiters-depth-2-face ((t (:foreground "forestgreen" :weight bold))))
@@ -1302,18 +1328,17 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :config
   (unicode-fonts-setup))
 
-
 (use-package all-the-icons-dired
   :ensure t
   :defer t
   :hook (dired-mode . all-the-icons-dired-mode))
 
-(use-package dired-subtree
-  :ensure t
-  :after dired
-  ;;:config
-  ;;(define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
-  )
+;; (use-package dired-subtree
+;;   :ensure t
+;;   :after dired
+;;   ;;:config
+;;   ;;(define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
+;;   )
 
 ;; Share clipoard with OS
 (use-package pbcopy
@@ -1332,15 +1357,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :init (setq lsp-dart-sdk-dir (concat (file-name-directory (file-truename (executable-find "flutter"))) "cache/dart-sdk"))
   :hook (dart-mode . lsp))
 
-(reformatter-define dart-format
-  :program "dart"
-  :args '("format")
-  :group 'dart)
-
-(defun my/dart-run-file ()
-  "Execute the code of the current file."
-  (interactive)
-  (compile (format "dart %s" (buffer-file-name))))
 
 (use-package dart-mode
   :ensure t
@@ -1349,20 +1365,28 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
               ("C-c C-f" . dart-format-buffer)
               ("C-c C-c" . my/dart-run-file))
   :config
+  (reformatter-define dart-format
+    :program "dart"
+    :args '("format")
+    :group 'dart)
+  (defun my/dart-run-file ()
+    "Execute the code of the current file."
+    (interactive)
+    (compile (format "dart %s" (buffer-file-name))))
   (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions))
-
-(defun my/flutter-goto-logs-buffer()
-  "Go to buffer logs buffer."
-  (interactive)
-  (let ((buffer (get-buffer flutter-buffer-name)))
-    (unless buffer
-      (user-error "flutter is not running."))
-    (switch-to-buffer buffer)
-    (goto-line (point-max))))
 
 (use-package flutter
   :ensure t
   :after dart-mode
+  :config
+  (defun my/flutter-goto-logs-buffer()
+    "Go to buffer logs buffer."
+    (interactive)
+    (let ((buffer (get-buffer flutter-buffer-name)))
+      (unless buffer
+        (user-error "flutter is not running."))
+      (switch-to-buffer buffer)
+      (goto-line (point-max))))
   :bind (:map dart-mode-map
               ("C-c C-r" . #'flutter-run-or-hot-reload)
               ("C-c C-l" . #'my/flutter-goto-logs-buffer))
@@ -1410,17 +1434,18 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; Org tree slide
 (use-package hide-mode-line
   :ensure t)
-(defun my/org-tree-slide-setup ()
-  (org-display-inline-images)
-  (hide-mode-line-mode 1))
-
-(defun my/org-tree-slide-end ()
-  (org-display-inline-images)
-  (hide-mode-line-mode 0))
 
 (use-package org-tree-slide
   :ensure t
   :defer t
+  :config
+  (defun my/org-tree-slide-setup ()
+    (org-display-inline-images)
+    (hide-mode-line-mode 1))
+
+  (defun my/org-tree-slide-end ()
+    (org-display-inline-images)
+    (hide-mode-line-mode 0))
   :custom
   (org-image-actual-width nil)
   (org-tree-slide-activate-message "Presentation started!")
@@ -1448,7 +1473,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package git-modes
   :defer t
   :ensure t)
-
 
 ;; (use-package diff-hl
 ;;   :ensure t
@@ -1518,6 +1542,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (put 'dired-directory 'face-alias 'diredfl-dir-name)
   (put 'diredp-read-priv 'face-alias 'diredfl-read-priv))
 
+;; RET 后仅保留一个 dired buffer
+;; For Emacs 28
+(use-package dired
+  :ensure nil
+  :custom
+  (dired-kill-when-opening-new-dired-buffer t))
 ;; 基于 Dired 的极简、一站式文件管理器
 (use-package dirvish
   :init
@@ -1581,6 +1611,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (setq insert-directory-program "gls")
 
 (use-package s)
+
 (use-package dash
   :defer t)
 
@@ -1785,12 +1816,6 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :custom
   (comment-auto-fill-only-comments t))
 
-;; RET 后仅保留一个 dired buffer
-;; For Emacs 28
-(use-package dired
-  :ensure nil
-  :custom
-  (dired-kill-when-opening-new-dired-buffer t))
 
 ;; typescript
 ;; copy from https://vxlabs.com/2022/06/12/typescript-development-with-emacs-tree-sitter-and-lsp-in-2022/
@@ -1920,7 +1945,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
               ("C-c C-c Q" . lsp-workspace-shutdown)
               ("C-c C-c s" . lsp-rust-analyzer-status)
               ("C-c C-c e" . lsp-rust-analyzer-expand-macro)
-              ("C-c C-c d" . dap-hydra)
+              ;; ("C-c C-c d" . dap-hydra)
               ("C-c C-c h" . lsp-ui-doc-glance))
   :config
   ;; uncomment for less flashiness
@@ -2246,6 +2271,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
     :ignore-messages nil
     :server-id 'rust-analyzer-remote)))
 
+;; 正在从ivy、swiper、counsel、hydra转向vertico、consult、embark、orderless。
 ;; 增强 minibuffer 补全：vertico 和 Orderless, 垂直补全
 (use-package vertico
   :config
@@ -2671,9 +2697,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :disabled
   )
 
-(use-package counsel-projectile
-  :after (counsel projectile)
-  )
+;; (use-package counsel-projectile
+;;   :after (counsel projectile)
+;;   )
 
 ;; Hit M-m, expand up to the next largest region based on mode-context sensitive scope.
 ;; (use-package expand-region
@@ -2682,15 +2708,14 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;          ("M-m" . er/expand-region))
 ;;   :commands (er/expand-region er/enable-mode-expansions))
 
-(defun my/deadgrep-fix-buffer-advice (fun &rest args)
-  (let ((buf (apply fun args)))
-    (with-current-buffer buf
-      (toggle-truncate-lines 1))
-    buf))
-
 (use-package deadgrep
   :commands (deadgrep)
   :config
+  (defun my/deadgrep-fix-buffer-advice (fun &rest args)
+    (let ((buf (apply fun args)))
+      (with-current-buffer buf
+        (toggle-truncate-lines 1))
+      buf))
   (advice-add #'deadgrep--buffer :around #'my/deadgrep-fix-buffer-advice))
 
 (use-package perspective
@@ -2965,12 +2990,12 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 (use-package dsvn)
 
 ;; copy from https://www.zhihu.com/column/p/23359721
-(use-package dired-ranger
-  :ensure t
-  :bind (:map dired-mode-map
-              ("W" . dired-ranger-copy)
-              ("X" . dired-ranger-move)
-              ("Y" . dired-ranger-paste)))
+;; (use-package dired-ranger
+;;   :ensure t
+;;   :bind (:map dired-mode-map
+;;               ("W" . dired-ranger-copy)
+;;               ("X" . dired-ranger-move)
+;;               ("Y" . dired-ranger-paste)))
 
 ;; copy from https://www.lucacambiaghi.com/vanilla-emacs/readme.html
 ;; 安装后可以通过 M-x restart-emacs 重启 emacs
@@ -3060,8 +3085,7 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (drag-stuff-global-mode t)
   (drag-stuff-define-keys))
 
-;; By default emacs will not delete selection text when typing on it, let's fix it
-(delete-selection-mode t)
+
 
 ;; In some case I want to hide the mode line
 (use-package hide-mode-line
@@ -3467,11 +3491,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;; :after (lsp-mode))
 
 (use-package consult-dir
-       :ensure t
-       :bind (("C-x C-d" . consult-dir)
-              :map minibuffer-local-completion-map
-              ("C-x C-d" . consult-dir)
-              ("C-x C-j" . consult-dir-jump-file)))
+  :ensure t
+  :bind (("C-x C-d" . consult-dir)
+         :map minibuffer-local-completion-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
 
 ;; https://karthinks.com/software/jumping-directories-in-eshell/
 ;; (defun eshell/z (&optional regexp)
@@ -3495,11 +3519,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;                      (completing-read "cd: " eshell-dirs)))))))
 
 ;; environment
-(defconst *is-windows* (eq system-type 'windows-nt))
-(defconst *is-unix* (not *is-windows*))
-
-(defun me/hide-trailing-whitespace ()
-  (setq show-trailing-whitespace nil))
+;; (defconst *is-windows* (eq system-type 'windows-nt))
+;; (defconst *is-unix* (not *is-windows*))
 
 (use-package whitespace-cleanup-mode
   :demand t
@@ -3514,6 +3535,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   :custom
   (show-trailing-whitespace t)
   :config
+  (defun me/hide-trailing-whitespace ()
+    (setq show-trailing-whitespace nil))
   (global-whitespace-cleanup-mode 1))
 
 ;; (use-package parinfer-rust-mode
@@ -3529,24 +3552,25 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 
 ;; keyfreq to analyze the key using situation
 (use-package keyfreq
-  :ensure t)
-(keyfreq-mode 1)
-(keyfreq-autosave-mode 1)
-(setq keyfreq-excluded-commands '(self-insert-command
-                                  forward-char
-                                  backward-char
-                                  previous-line
-                                  next-line
-                                  org-self-insert-command
-                                  org-delete-backward-char
-                                  org-return
-                                  mwheel-scroll
-                                  dap-tooltip-mouse-motion
-                                  gud-tooltip-mouse-motion))
+  :ensure t
+  :config
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1)
+  (setq keyfreq-excluded-commands '(self-insert-command
+                                    forward-char
+                                    backward-char
+                                    previous-line
+                                    next-line
+                                    org-self-insert-command
+                                    org-delete-backward-char
+                                    org-return
+                                    mwheel-scroll
+                                    dap-tooltip-mouse-motion
+                                    gud-tooltip-mouse-motion))
+  )
 
-(defun my-reload-emacs-configuration ()
-  (interactive)
-  (load-file "~/.emacs.d/init.el"))
+
+
 
 ;; copy from https://tech.toryanderson.com/2020/11/13/migrating-to-a-custom-file-less-setup/
 ;; With this I turn off customization-file-saving.

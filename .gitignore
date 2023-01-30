@@ -27,3 +27,4 @@ etc
 .emacs.desktop
 .cache
 elisp/flycheck_*
+async-bytecomp.log

@@ -92,38 +92,43 @@
   (ispell-change-dictionary "american" t))
 
 ;; https://protesilaos.com/codelog/2020-07-16-emacs-focused-editing/
+;; Emacs次要模式，可提供良好的写作环境
 (use-package olivetti
-  :ensure
-  :defer
-  :diminish
-  :config
-  (setq olivetti-body-width 0.65)
-  (setq olivetti-minimum-body-width 72)
-  (setq olivetti-recall-visual-line-mode-entry-state t)
-  (define-minor-mode prot/olivetti-mode
-    "Toggle buffer-local `olivetti-mode' with additional parameters.
-Fringes are disabled.  The modeline is hidden, except for
-`prog-mode' buffers (see `prot/hidden-mode-line-mode').  The
-default typeface is set to a proportionately-spaced family,
-except for programming modes (see `prot/variable-pitch-mode').
-The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
-    :init-value nil
-    :global nil
-    (if prot/olivetti-mode
-        (progn
-          (olivetti-mode 1)
-          (set-window-fringes (selected-window) 0 0)
-          (prot/variable-pitch-mode 1)
-          (prot/cursor-type-mode 1)
-          (unless (derived-mode-p 'prog-mode)
-            (prot/hidden-mode-line-mode 1)))
-      (olivetti-mode -1)
-      (set-window-fringes (selected-window) nil) ; Use default width
-      (prot/variable-pitch-mode -1)
-      (prot/cursor-type-mode -1)
-      (unless (derived-mode-p 'prog-mode)
-        (prot/hidden-mode-line-mode -1))))
-  :bind ("C-c o" . prot/olivetti-mode))
+  :ensure t
+  :hook
+  (olivetti-mode . olivetti-mode-setup))
+;; (use-package olivetti
+;;   :ensure
+;;   :defer
+;;   :diminish
+;;   :config
+;;   (setq olivetti-body-width 0.65)
+;;   (setq olivetti-minimum-body-width 72)
+;;   (setq olivetti-recall-visual-line-mode-entry-state t)
+;;   (define-minor-mode prot/olivetti-mode
+;;     "Toggle buffer-local `olivetti-mode' with additional parameters.
+;; Fringes are disabled.  The modeline is hidden, except for
+;; `prog-mode' buffers (see `prot/hidden-mode-line-mode').  The
+;; default typeface is set to a proportionately-spaced family,
+;; except for programming modes (see `prot/variable-pitch-mode').
+;; The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
+;;     :init-value nil
+;;     :global nil
+;;     (if prot/olivetti-mode
+;;         (progn
+;;           (olivetti-mode 1)
+;;           (set-window-fringes (selected-window) 0 0)
+;;           ;; (prot/variable-pitch-mode 1)
+;;           (prot/cursor-type-mode 1)
+;;           (unless (derived-mode-p 'prog-mode)
+;;             (prot/hidden-mode-line-mode 1)))
+;;       (olivetti-mode -1)
+;;       (set-window-fringes (selected-window) nil) ; Use default width
+;;       ;; (prot/variable-pitch-mode -1)
+;;       (prot/cursor-type-mode -1)
+;;       (unless (derived-mode-p 'prog-mode)
+;;         (prot/hidden-mode-line-mode -1))))
+;;   :bind ("C-c o" . prot/olivetti-mode))
 
 ;; copy from [Saving persistent undo to a single directory, alist format](https://emacs.stackexchange.com/questions/26993/saving-persistent-undo-to-a-single-directory-alist-format)
 ;;(use-package undo-tree
@@ -460,11 +465,11 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
         (vterm-send-return)))))
 
 (use-package emacs
-  :commands prot/hidden-mode-line-mode
+  ;; :commands prot/hidden-mode-line-mode
 
   ;; C-c l is used for `org-store-link'.  The mnemonic for this is to
   ;; focus the Line and also works as a variant of C-l.
-  :bind ("C-c L" . prot/scroll-centre-cursor-mode)
+  ;; :bind ("C-c L" . prot/scroll-centre-cursor-mode)
 
   :init
   ;; TAB cycle if there are only few candidates
@@ -573,28 +578,28 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (setq-default scroll-conservatively 1) ; affects `scroll-step'
   (setq-default scroll-margin 0)
 
-  (define-minor-mode prot/scroll-centre-cursor-mode
-    "Toggle centred cursor scrolling behaviour."
-    :init-value nil
-    :lighter " S="
-    :global nil
-    (if prot/scroll-centre-cursor-mode
-        (setq-local scroll-margin (* (frame-height) 2)
-                    scroll-conservatively 0
-                    maximum-scroll-margin 0.5)
-      (dolist (local '(scroll-preserve-screen-position
-                       scroll-conservatively
-                       maximum-scroll-margin
-                       scroll-margin))
-        (kill-local-variable `,local))))
-  (define-minor-mode prot/hidden-mode-line-mode
-    "Toggle modeline visibility in the current buffer."
-    :init-value nil
-    :global nil
-    (if prot/hidden-mode-line-mode
-        (setq-local mode-line-format nil)
-      (kill-local-variable 'mode-line-format)
-      (force-mode-line-update)))
+  ;; (define-minor-mode prot/scroll-centre-cursor-mode
+  ;;   "Toggle centred cursor scrolling behaviour."
+  ;;   :init-value nil
+  ;;   :lighter " S="
+  ;;   :global nil
+  ;;   (if prot/scroll-centre-cursor-mode
+  ;;       (setq-local scroll-margin (* (frame-height) 2)
+  ;;                   scroll-conservatively 0
+  ;;                   maximum-scroll-margin 0.5)
+  ;;     (dolist (local '(scroll-preserve-screen-position
+  ;;                      scroll-conservatively
+  ;;                      maximum-scroll-margin
+  ;;                      scroll-margin))
+  ;;       (kill-local-variable `,local))))
+  ;; (define-minor-mode prot/hidden-mode-line-mode
+  ;;   "Toggle modeline visibility in the current buffer."
+  ;;   :init-value nil
+  ;;   :global nil
+  ;;   (if prot/hidden-mode-line-mode
+  ;;       (setq-local mode-line-format nil)
+  ;;     (kill-local-variable 'mode-line-format)
+  ;;     (force-mode-line-update)))
   ;; copy from [Emacs on Mac OS X - To Alt or Command?](https://apple.stackexchange.com/questions/12087/emacs-on-mac-os-x-to-alt-or-command)
   ;; copy from [emacs-mac-port的command key能不能改回系统默认的command功能？](https://emacs-china.org/t/emacs-mac-port-command-key-command/8845)
   ;; check OS type
@@ -2408,6 +2413,8 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
          ;; Minibuffer history
          :map minibuffer-local-map
          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ;; (global-set-key (kbd "C-s") 'my-isearch-or-consult)
+         ("C-s" . my-isearch-or-consult)
          ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
@@ -2479,24 +2486,22 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
                 :action   ,#'projectile-switch-project-by-name
                 :items    ,projectile-known-projects))
   (add-to-list 'consult-buffer-sources my-consult-source-projectile-projects 'append)
+  ;; copy from https://tam5917.hatenablog.com/entry/2021/05/01/063232
+  (defun consult-line-symbol-at-point ()
+    (interactive)
+    (consult-line (thing-at-point 'symbol)))
+
+  (defun my-isearch-or-consult (use-consult)
+    (interactive "p")
+    (cond ((eq use-consult 1)
+           (call-interactively 'isearch-forward))
+          ((eq use-consult 4)
+           (call-interactively 'consult-line-symbol-at-point))
+          ((eq use-consult 16)
+           (call-interactively 'consult-line-migemo))))
   )
 
 ;; (global-set-key (kbd "C-s") 'consult-line)
-;; copy from https://tam5917.hatenablog.com/entry/2021/05/01/063232
-(defun consult-line-symbol-at-point ()
-  (interactive)
-  (consult-line (thing-at-point 'symbol)))
-
-(defun my-isearch-or-consult (use-consult)
-  (interactive "p")
-  (cond ((eq use-consult 1)
-         (call-interactively 'isearch-forward))
-        ((eq use-consult 4)
-         (call-interactively 'consult-line-symbol-at-point))
-        ((eq use-consult 16)
-         (call-interactively 'consult-line-migemo))))
-
-(global-set-key (kbd "C-s") 'my-isearch-or-consult)
 
 (use-package consult-flycheck)
 
@@ -3035,8 +3040,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
   (custom-set-faces
    '(aw-leading-char-face
      ((t (:inherit ace-jump-face-foreground :height 5.0)))))
-  :bind
-  ("M-o" . ace-window))
+  ;; :bind
+  ;; ("M-o" . ace-window)
+  )
 
 ;; How to delete consecutive space at once
 (use-package smart-hungry-delete
@@ -3620,17 +3626,17 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;
 ;; 老王的使用中提到了 https://manateelazycat.github.io/emacs/2022/11/07/how-i-use-emacs.html
 ;; 用 Emacs 的都少不了 isearch, 但是 isearch 不方便的地方是每次都要手动输入或者 yank 当前 symbol 给 isearch， 同时要批量替换的按键流程也很繁琐。 在使用 symbol-overlay 之前我一直用我自己开发的 lazy-search, 这两个项目的目标都是启动后立即选中光标处的 symbol, 再按单按键比如按 n/p 后， 快速跳转上一个和下一个匹配项， 节省了大量选中当前 symbol 启动 isearch 再粘贴 symbol 的操作时间。 用了 symbol-overlay 后， 发现比我的 lazy-search 实现的更加简洁和强大， 包括搜索后快速按 r 键可以对所有匹配的 symbol 进行快速重命名操作， symbol-overlay 基本上是单文件重构场景下最好用的插件， 强烈推荐大家使用。
-;;
-(use-package symbol-overlay
-  :defer 2
-  :config
-  (setq symbol-overlay-idle-time 0.1)
-  (global-set-key (kbd "M-i") 'symbol-overlay-put)
-  (global-set-key (kbd "M-n") 'symbol-overlay-switch-forward)
-  (global-set-key (kbd "M-p") 'symbol-overlay-switch-backward)
-  (global-set-key (kbd "<f7>") 'symbol-overlay-mode)
-  (global-set-key (kbd "<f8>") 'symbol-overlay-remove-all)
-  )
+;; 被embark替代
+;; (use-package symbol-overlay
+;;   :defer 2
+;;   :config
+;;   (setq symbol-overlay-idle-time 0.1)
+;;   (global-set-key (kbd "M-i") 'symbol-overlay-put)
+;;   (global-set-key (kbd "M-n") 'symbol-overlay-switch-forward)
+;;   (global-set-key (kbd "M-p") 'symbol-overlay-switch-backward)
+;;   (global-set-key (kbd "<f7>") 'symbol-overlay-mode)
+;;   (global-set-key (kbd "<f8>") 'symbol-overlay-remove-all)
+;;   )
 
 ;; 高亮当前字符
 (use-package idle-highlight-mode
@@ -3775,9 +3781,9 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 ;;   ("C-c l o" . link-hint-open-link)
 ;;   ("C-c l c" . link-hint-copy-link))
 
-(use-package lin
-  :config (lin-global-mode 1)
-  (setq lin-face 'lin-blue))
+;; (use-package lin
+;;   :config (lin-global-mode 1)
+;;   (setq lin-face 'lin-blue))
 
 (use-package pulsar
   :custom

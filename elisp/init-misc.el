@@ -305,21 +305,21 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (setq-default blink-cursor-interval nil) ; 0.75 would be my choice
 (setq-default blink-cursor-delay 0.2)
 (blink-cursor-mode -1)
-(define-minor-mode prot/cursor-type-mode
-  "Toggle between static block and pulsing bar cursor."
-  :init-value nil
-  :global t
-  (if prot/cursor-type-mode
-      (progn
-        (setq-local blink-cursor-interval 0.75
-                    cursor-type '(bar . 2)
-                    cursor-in-non-selected-windows 'hollow)
-        (blink-cursor-mode 1))
-    (dolist (local '(blink-cursor-interval
-                     cursor-type
-                     cursor-in-non-selected-windows))
-      (kill-local-variable `,local))
-    (blink-cursor-mode -1)))
+;; (define-minor-mode prot/cursor-type-mode
+;;   "Toggle between static block and pulsing bar cursor."
+;;   :init-value nil
+;;   :global t
+;;   (if prot/cursor-type-mode
+;;       (progn
+;;         (setq-local blink-cursor-interval 0.75
+;;                     cursor-type '(bar . 2)
+;;                     cursor-in-non-selected-windows 'hollow)
+;;         (blink-cursor-mode 1))
+;;     (dolist (local '(blink-cursor-interval
+;;                      cursor-type
+;;                      cursor-in-non-selected-windows))
+;;       (kill-local-variable `,local))
+;;     (blink-cursor-mode -1)))
 ;; copy from https://emacsredux.com/blog/2020/12/04/maximize-the-emacs-frame-on-startup/
 ;; start the initial frame maximized
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))

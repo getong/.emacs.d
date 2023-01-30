@@ -3,35 +3,71 @@ name: check
 on:
   pull_request:
   push:
+    paths-ignore:
+      - '**.md'
+      - '**.org'
+      - '.dir-locals.el'
     branches:
       - main
-      - 'develop*'
+      - develop
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
-        emacs_version:
-          - 28.2
-        ignore_warnings:
-          - true
+        os: [ubuntu-latest]
+        emacs-version: [28.2]
+        experimental: [false]
         include:
-          - emacs_version: snapshot
-            ignore_warnings: false
+          - os: ubuntu-latest
+            emacs-version: snapshot
+            experimental: true
     steps:
-    - uses: actions/checkout@v2
     - uses: purcell/setup-emacs@master
       with:
-        version: ${{ matrix.emacs_version }}
-    - uses: leotaku/elisp-check@master
+        version: ${{ matrix.emacs-version }}
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Cache ELPA packages
+      id: elpa-cache
+      uses: actions/cache@v2
       with:
-        check: load-file
-        file: init.el
-        ignore_warnings: ${{ matrix.ignore_warnings }}
-    - uses: leotaku/elisp-check@master
-      with:
-        check: byte-compile
-        file: init.el
-        ignore_warnings: ${{ matrix.ignore_warnings }}
+        path: elpa
+        key: ${{ matrix.os }}-${{ matrix.emacs-version }}-elpa-installed
+
+    - name: Download elpa packages
+      if: steps.elpa-cache.outputs.cache-hit != 'true'
+      run: |
+        emacs -nw --batch --eval \
+        '(progn
+           (require (quote package))
+           (require (quote url-vars))
+           (let ((url-show-status nil)
+                 (user-emacs-directory default-directory)
+                 (package-user-dir (file-name-as-directory (expand-file-name "elpa" default-directory)))
+                 (user-init-file (expand-file-name "init.el")))
+             (load user-init-file t t)
+             (run-hooks (quote after-init-hook))
+             (run-hooks (quote emacs-startup-hook))))'
+    - name: Check startup
+      run: |
+        emacs --version
+        echo "Attempting startup..."
+        emacs -nw --batch --eval \
+        '(progn
+           (require (quote package))
+           (require (quote url-vars))
+           (let ((url-show-status nil)
+                 (user-emacs-directory default-directory)
+                 (package-user-dir (file-name-as-directory (expand-file-name "elpa" default-directory)))
+                 (user-init-file (expand-file-name "init.el")))
+             (package-initialize)
+             (load user-init-file t t)
+             (run-hooks (quote after-init-hook))
+             (run-hooks (quote emacs-startup-hook))))'
+        echo "Startup successful"

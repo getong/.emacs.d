@@ -2800,7 +2800,7 @@ Activate this advice with:
   :bind
   ("C-;" . tiny-expand))
 
-(use-package company-tabnine :ensure t)
+;; (use-package company-tabnine :ensure t)
 
 (use-package lsp-docker
   :ensure t

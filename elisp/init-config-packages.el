@@ -2191,24 +2191,74 @@ Activate this advice with:
 ;; setting up debugging support with dap-mode
 ;; (when (executable-find "lldb-mi")
 (use-package dap-mode
-  :ensure
+  :commands rgr/dap-debug
+  :custom
+  (dap-auto-configure-features '(locals  tooltip))
   :config
-  (dap-ui-mode)
-  (dap-ui-controls-mode 1)
+  (setq dap-ui-buffer-configurations
+        `((,"*Dap-ui-locals*"  . ((side . right) (slot . 1) (window-width . 0.50))) ;; changed this to 0.50
+          (,"*dap-ui-expressions*" . ((side . right) (slot . 2) (window-width . 0.50)))
+          (,"*dap-ui-sessions*" . ((side . right) (slot . 3) (window-width . 0.50)))
+          (,"*dap-ui-breakpoints*" . ((side . left) (slot . 2) (window-width . , 0.20)))
+          (,"*debug-window*" . ((side . bottom) (slot . 3) (window-width . 0.20)))))
+  (defun rgr/dap-debug()
+    (interactive)
+    (if current-prefix-arg
+        (call-interactively 'dap-debug)
+      (dap-debug-last)))
+  ;;(require 'dap-gdb-lldb)
+  ;;(dap-gdb-lldb-setup)
+  ;;(require 'dap-codelldb)
+  ;;(dap-codelldb-setup)
+  (require 'dap-cpptools)
+  ;;(dap-cpptools-setup)
+  ;; (require 'dap-lldb)
+  (add-hook 'dap-stopped-hook
+            (lambda (arg)
+              (call-interactively #'dap-hydra)))
+  :config
+  (require 'dap-chrome)
+  :bind
+  (:map lsp-mode-map
+        ("C-<f9>" . 'rgr/dap-debug))
+  (:map dap-mode-map
+        ("<f8>" . dap-continue)
+        ("C-S-<f8>" . dap-delete-session)
+        ("<f9>" . dap-hydra)
+        ("<f10>" . dap-next)
+        ("<f11>" . dap-step-in)
+        ("S-<f11>" . dap-step-out)
+        ))
+;; (use-package dap-mode
+;;   :ensure
+;;   :config
+;;   (dap-ui-mode)
+;;   (dap-ui-controls-mode 1)
 
-  (require 'dap-lldb)
-  (require 'dap-gdb-lldb)
-  ;; installs .extension/vscode
-  (dap-gdb-lldb-setup)
-  (dap-register-debug-template
-   "Rust::LLDB Run Configuration"
-   (list :type "lldb"
-         :request "launch"
-         :name "LLDB::Run"
-	     :gdbpath "rust-lldb"
-         ;; uncomment if lldb-mi is not in PATH
-         ;; :lldbmipath "path/to/lldb-mi"
-         )))
+;;   (require 'dap-lldb)
+;;   (require 'dap-gdb-lldb)
+;;   ;; installs .extension/vscode
+;;   (dap-gdb-lldb-setup)
+;;   (dap-register-debug-template
+;;    "Rust::LLDB Run Configuration"
+;;    (list :type "lldb"
+;;          :request "launch"
+;;          :name "LLDB::Run"
+;; 	     :gdbpath "rust-lldb"
+;;          ;; uncomment if lldb-mi is not in PATH
+;;          ;; :lldbmipath "path/to/lldb-mi"
+;;          )))
+
+(use-package dap-lldb
+  :ensure nil
+  :after dap-mode
+  :config
+  ;; (setq dap-lldb-debug-program '("/usr/local/opt/llvm/bin/lldb-vscode"))
+  (setq dap-lldb-debug-program '((executable-find "lldb-vscode")))
+  ;; ask user for executable to debug if not specified explicitly (c++)
+  (setq dap-lldb-debugged-program-function
+	    (lambda () (read-file-name "Select file to debug: "))))
+
 
 ;; Load rust-mode when you open `.rs` files
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
@@ -3931,6 +3981,39 @@ Activate this advice with:
 ;;   :ensure t
 ;;   :config
 ;;   (explain-pause-mode))
+
+;; (use-package pyim
+;;   :demand t
+;;   :bind (:map pyim-mode-map
+;;               ("," . pyim-previous-page)
+;;               ("." . pyim-next-page))
+;;   :config
+;;   (setq pyim-page-tooltip 'minibuffer
+;;         pyim-default-scheme 'quanpin
+;;         pyim-page-style 'two-lines
+;;         pyim-page-length 8
+;;         pyim-cloudim 'google)
+;;   (global-set-key (kbd "C-\\") 'toggle-input-method)
+;;   ;; vertico search pinyin
+;;   (defun pyim-orderless-regexp (orig-func component)
+;;     (let ((result (funcall orig-func component)))
+;;       (pyim-cregexp-build result)))
+;;   (advice-add 'orderless-regexp :around #'pyim-orderless-regexp))
+
+;; (use-package pyim-basedict
+;;   :after pyim
+;;   :config
+;;   (pyim-basedict-enable))
+;; 中文输入法
+;; (use-package rime
+;;   :custom (default-input-method "rime")
+;;   :config
+;;   (setq rime-show-candidate 'posframe)
+;;   (setq rime-disable-predicates '(rime-predicate-after-alphabet-char-p
+;; 				                  rime-predicate-ace-window-p
+;; 				                  rime-predicate-hydra-p
+;; 				                  rime-predicate-in-code-string-p
+;; 				                  rime-predicate-tex-math-or-command-p)))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

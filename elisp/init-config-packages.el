@@ -2451,7 +2451,6 @@ Activate this advice with:
          ("M-s G" . consult-git-grep)
          ("M-s r" . consult-ripgrep)
          ("M-s l" . consult-line)
-         ("M-s L" . consult-line-multi)
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
          ;; Isearch integration
@@ -2465,7 +2464,8 @@ Activate this advice with:
          :map minibuffer-local-map
          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
          ;; (global-set-key (kbd "C-s") 'my-isearch-or-consult)
-         ("C-s" . my-isearch-or-consult)
+         ;; ("C-s" . my-isearch-or-consult)
+         ("C-s" . consult-line-multi)
          ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
@@ -2542,14 +2542,14 @@ Activate this advice with:
     (interactive)
     (consult-line (thing-at-point 'symbol)))
 
-  (defun my-isearch-or-consult (use-consult)
-    (interactive "p")
-    (cond ((eq use-consult 1)
-           (call-interactively 'isearch-forward))
-          ((eq use-consult 4)
-           (call-interactively 'consult-line-symbol-at-point))
-          ((eq use-consult 16)
-           (call-interactively 'consult-line-migemo))))
+  ;; (defun my-isearch-or-consult (use-consult)
+  ;;   (interactive "p")
+  ;;   (cond ((eq use-consult 1)
+  ;;          (call-interactively 'isearch-forward))
+  ;;         ((eq use-consult 4)
+  ;;          (call-interactively 'consult-line-symbol-at-point))
+  ;;         ((eq use-consult 16)
+  ;;          (call-interactively 'consult-line-migemo))))
   )
 
 ;; (global-set-key (kbd "C-s") 'consult-line)

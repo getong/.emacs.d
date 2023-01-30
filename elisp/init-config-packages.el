@@ -1,11 +1,11 @@
 ;; -*- coding: utf-8; lexical-binding: t -*-
 
 ;; copy from https://sachachua.com/dotemacs/index.html
-(defvar my-laptop-p (equal (system-name) "MacBook-Pro.lan"))
-(defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "getong")))
-(defvar my-phone-p (not (null (getenv "ANDROID_ROOT")))
-  "If non-nil, GNU Emacs is running on Termux.")
-(when my-phone-p (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+;; (defvar my-laptop-p (equal (system-name) "MacBook-Pro.lan"))
+;; (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "getong")))
+;; (defvar my-phone-p (not (null (getenv "ANDROID_ROOT")))
+;;   "If non-nil, GNU Emacs is running on Termux.")
+;; (when my-phone-p (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 ;; (global-auto-revert-mode)  ; simplifies syncingr
 
 (use-package esup
@@ -368,8 +368,8 @@
   (keymap-set vundo-mode-map "d" #'my/vundo-diff)
   )
 
-(use-package iedit
-  :ensure t)
+;; (use-package iedit
+;;   :ensure t)
 
 ;;
 ;; Multiple cursors
@@ -890,7 +890,6 @@ Activate this advice with:
   (global-set-key (kbd "C-c p o") 'xcode-open-current-file)
   )
 
-
 (use-package openwith
   :config
   (setq openwith-associations
@@ -1343,6 +1342,7 @@ Activate this advice with:
 
 ;; copy from [Highlight current active window](https://stackoverflow.com/questions/33195122/highlight-current-active-window)
 (use-package auto-dim-other-buffers
+  :ensure t
   :config
   (auto-dim-other-buffers-mode))
 
@@ -1379,7 +1379,6 @@ Activate this advice with:
 (use-package lsp-dart
   :init (setq lsp-dart-sdk-dir (concat (file-name-directory (file-truename (executable-find "flutter"))) "cache/dart-sdk"))
   :hook (dart-mode . lsp))
-
 
 (use-package dart-mode
   :ensure t
@@ -1531,6 +1530,7 @@ Activate this advice with:
 
 
 (use-package diredfl
+  :ensure t
   :commands diredfl-global-mode
   :init
   (diredfl-global-mode)
@@ -1701,6 +1701,7 @@ Activate this advice with:
 (use-package winner-mode
   :ensure nil
   :hook (after-init . winner-mode))
+
 ;; 它也可以应用在 ediff 上，恢复由 ediff 导致的窗体变动。
 (use-package ediff
   :ensure nil
@@ -1988,6 +1989,15 @@ Activate this advice with:
   (setq rustic-lsp-server 'rust-analyzer)
   (setq rustic-lsp-client 'lsp-mode)
   ;;(setq rustic-lsp-client 'eglot)
+  (defun rk/rustic-mode-hook ()
+    ;; so that run C-c C-c C-r works without having to confirm, but don't try to
+    ;; save rust buffers that are not file visiting. Once
+    ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
+    ;; no longer be necessary.
+    (when buffer-file-name
+      (setq-local buffer-save-without-query t))
+    ;; (add-hook 'before-save-hook 'lsp-format-buffer nil t)
+    )
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
 ;;(use-package eglot
@@ -1996,17 +2006,6 @@ Activate this advice with:
 ;;  (add-to-list 'eglot-server-programs '(rustic-mode . ("rust-analyzer")))
 ;;  (add-hook 'rustic-mode-hook 'eglot-ensure)
 ;;  (define-key eglot-mode-map (kbd "C-c r") 'eglot-rename))
-
-(defun rk/rustic-mode-hook ()
-  ;; so that run C-c C-c C-r works without having to confirm, but don't try to
-  ;; save rust buffers that are not file visiting. Once
-  ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
-  ;; no longer be necessary.
-  (when buffer-file-name
-    (setq-local buffer-save-without-query t))
-  ;; (add-hook 'before-save-hook 'lsp-format-buffer nil t)
-  )
-
 
 ;; (use-package tide
 ;;   :ensure t
@@ -2062,7 +2061,7 @@ Activate this advice with:
                     :major-modes '(python-mode)
                     :server-id 'pyls))
   (setq company-minimum-prefix-length 1
-    company-idle-delay 0.500) ;; default is 0.2
+        company-idle-delay 0.500) ;; default is 0.2
   ;;(require 'lsp-clients)
   (setq lsp-completion-provider :none) ;; 阻止 lsp 重新设置 company-backend 而覆盖我们 yasnippet 的设置
   (setq lsp-headerline-breadcrumb-enable t)
@@ -2190,27 +2189,26 @@ Activate this advice with:
          ("/Pipfile\\'" . toml-mode)))
 
 ;; setting up debugging support with dap-mode
-(when (executable-find "lldb-mi")
-  (use-package dap-mode
-    :ensure
-    :config
-    (dap-ui-mode)
-    (dap-ui-controls-mode 1)
+;; (when (executable-find "lldb-mi")
+(use-package dap-mode
+  :ensure
+  :config
+  (dap-ui-mode)
+  (dap-ui-controls-mode 1)
 
-    (require 'dap-lldb)
-    (require 'dap-gdb-lldb)
-    ;; installs .extension/vscode
-    (dap-gdb-lldb-setup)
-    (dap-register-debug-template
-     "Rust::LLDB Run Configuration"
-     (list :type "lldb"
-           :request "launch"
-           :name "LLDB::Run"
-	       :gdbpath "rust-lldb"
-           ;; uncomment if lldb-mi is not in PATH
-           ;; :lldbmipath "path/to/lldb-mi"
-           ))))
-
+  (require 'dap-lldb)
+  (require 'dap-gdb-lldb)
+  ;; installs .extension/vscode
+  (dap-gdb-lldb-setup)
+  (dap-register-debug-template
+   "Rust::LLDB Run Configuration"
+   (list :type "lldb"
+         :request "launch"
+         :name "LLDB::Run"
+	     :gdbpath "rust-lldb"
+         ;; uncomment if lldb-mi is not in PATH
+         ;; :lldbmipath "path/to/lldb-mi"
+         )))
 
 ;; Load rust-mode when you open `.rs` files
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
@@ -3082,17 +3080,18 @@ Activate this advice with:
          ("C-c D" . crux-delete-file-and-buffer)
          ))
 
+;; switch-window
 ;; How to navigate between windows
-(use-package ace-window
-  :ensure t
-  :config
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  (custom-set-faces
-   '(aw-leading-char-face
-     ((t (:inherit ace-jump-face-foreground :height 5.0)))))
-  ;; :bind
-  ;; ("M-o" . ace-window)
-  )
+;; (use-package ace-window
+;;   :ensure t
+;;   :config
+;;   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+;;   (custom-set-faces
+;;    '(aw-leading-char-face
+;;      ((t (:inherit ace-jump-face-foreground :height 5.0)))))
+;;   ;; :bind
+;;   ;; ("M-o" . ace-window)
+;;   )
 
 ;; How to delete consecutive space at once
 (use-package smart-hungry-delete
@@ -3113,8 +3112,8 @@ Activate this advice with:
 
 
 ;; In some case I want to hide the mode line
-(use-package hide-mode-line
-  :ensure t)
+;; (use-package hide-mode-line
+;;   :ensure t)
 
 ;; Nyan Cat is lovely, it can live on mode line
 (use-package nyan-mode
@@ -3926,6 +3925,12 @@ Activate this advice with:
   (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
   (bind-key "C-c C--" 'php-current-class php-mode-map)
   (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
+
+;; (use-package explain-pause-mode
+;;   ;; :straight (explain-pause-mode :type git :host github :repo "lastquestion/explain-pause-mode")
+;;   :ensure t
+;;   :config
+;;   (explain-pause-mode))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

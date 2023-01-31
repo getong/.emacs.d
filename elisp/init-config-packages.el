@@ -1249,12 +1249,11 @@ Activate this advice with:
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; 默认的 mode-line 不是很好看，用 doom-modeline 好一些。
 (use-package all-the-icons
-  :ensure t
-  :config
-  (set-fontset-font t 'symbol "Apple Color Emoji")
-  (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
-  (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
-  (set-fontset-font t 'symbol "Symbola" nil 'append)
+  :if (display-graphic-p)
+  ;; (set-fontset-font t 'symbol "Apple Color Emoji")
+  ;; (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
+  ;; (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
+  ;; (set-fontset-font t 'symbol "Symbola" nil 'append)
   )
 
 (use-package all-the-icons-completion
@@ -1262,6 +1261,11 @@ Activate this advice with:
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init
   (all-the-icons-completion-mode))
+
+(use-package all-the-icons-dired
+  :ensure t
+  :defer t
+  :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; https://www.emacswiki.org/emacs/KeyCast
 ;; copy from https://book.emacs-china.org/#org737719a
@@ -1282,15 +1286,17 @@ Activate this advice with:
 
 ;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
 (use-package doom-modeline
+  :ensure t
   :demand
   :init
+  (doom-modeline-mode 1)
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-env-enable-python nil)
   (setq doom-modeline-height 15)
   (setq doom-modeline-project-detection 'projectile)
   :config
   (setq doom-modeline-battery nil)
-  (doom-modeline-mode 1)
+  ;; (doom-modeline-mode 1)
   (set-face-attribute 'doom-modeline-evil-insert-state nil :foreground "orange")
   )
 
@@ -1350,11 +1356,6 @@ Activate this advice with:
   :ensure t
   :config
   (unicode-fonts-setup))
-
-(use-package all-the-icons-dired
-  :ensure t
-  :defer t
-  :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; (use-package dired-subtree
 ;;   :ensure t
@@ -2044,6 +2045,7 @@ Activate this advice with:
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'rust-mode-hook #'lsp)
   (add-hook 'html-mode-hook #'lsp)
+  (add-hook ' php-mode-hook #'lsp)
   ;;(add-hook 'js-mode-hook #'lsp)
   ;;(add-hook 'typescript-mode-hook #'lsp)
   (add-hook 'json-mode-hook #'lsp)
@@ -3947,34 +3949,146 @@ Activate this advice with:
   :bind (("C-x ;" . goto-last-change)))
 
 ;; copy from https://qiita.com/tadsan/items/a76768439869f00a4e89
+;; (use-package php-mode
+;;   :hook ((php-mode . my-php-mode-setup))
+;;   :init
+;;   (require 'php-mode)
+;;   :custom
+;;   ;; (php-manual-url 'ja)
+;;   (php-mode-coding-style 'psr2)
+;;   (php-mode-template-compatibility nil)
+;;   :config
+;;   (defun my-php-mode-setup ()
+;;     "My PHP-mode hook."
+;;     (subword-mode 1)
+;;     (setq show-trailing-whitespace t)
+
+;;     (setq-local page-delimiter "\\_<\\(class\\|function\\|namespace\\)\\_>.+$")
+
+;;     (require 'flycheck-phpstan)
+;;     (flycheck-mode t)
+;;     (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
+;;     (add-to-list 'flycheck-disabled-checkers 'php-phpcs))
+;;   ;; (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
+;;   ;; (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
+;;   ;; (bind-key "C-}" 'cedit-barf php-mode-map)
+;;   ;; (bind-key "C-)" 'cedit-slurp php-mode-map)
+;;   (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
+;;   (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
+;;   (bind-key "C-c C--" 'php-current-class php-mode-map)
+;;   (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
 (use-package php-mode
-  :hook ((php-mode . my-php-mode-setup))
-  :init
-  (require 'php-mode)
-  :custom
-  ;; (php-manual-url 'ja)
-  (php-mode-coding-style 'psr2)
-  (php-mode-template-compatibility nil)
+  ;; (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
+  :mode
+  (("[^.][^t][^p][^l]\\.php$" . php-mode))
   :config
-  (defun my-php-mode-setup ()
-    "My PHP-mode hook."
-    (subword-mode 1)
-    (setq show-trailing-whitespace t)
+  (add-hook 'php-mode-hook
+	        '(lambda ()
+	       ;;; PHP-mode settings:
+               (setq indent-tabs-mode nil
+		             c-basic-offset 4
+                     php-template-compatibility nil)
 
-    (setq-local page-delimiter "\\_<\\(class\\|function\\|namespace\\)\\_>.+$")
+               (php-enable-psr2-coding-style)
 
-    (require 'flycheck-phpstan)
-    (flycheck-mode t)
-    (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
-    (add-to-list 'flycheck-disabled-checkers 'php-phpcs))
-  ;; (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
-  ;; (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
-  ;; (bind-key "C-}" 'cedit-barf php-mode-map)
-  ;; (bind-key "C-)" 'cedit-slurp php-mode-map)
-  (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
-  (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
-  (bind-key "C-c C--" 'php-current-class php-mode-map)
-  (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
+	       ;;; PHP_CodeSniffer settings:
+               ;; (use-package phpcbf
+		       ;; :init
+		       ;; (setq phpcbf-executable "~/.composer/vendor/squizlabs/php_codesniffer/scripts/phpcbf"
+		       ;; phpcbf-standard "PSR2"))
+
+	       ;;; Company-mode settings:
+	           ;; Using :with and company-sort-by-backend-importance makes
+	           ;; it so that company-lsp entries will always appear before
+	           ;; company-dabbrev-code.
+               ;; TODO Add in support for company-gtags/capf
+	           (use-package company-php)
+	           (ac-php-core-eldoc-setup)
+               (setq-local company-dabbrev-char-regexp "\\\`$sw")
+               (setq-local company-dabbrev-code-everywhere t)
+                                        ;(setq-local company-transformers '(company-sort-by-backend-importance))
+	           (set (make-local-variable 'company-backends)
+		            ;;'((company-ac-php-backend company-dabbrev-code)))
+		            ;;'((company-ac-php-backend company-dabbrev-code :separate)))
+		            '((company-dabbrev-code company-ac-php-backend)))
+		       ;;'((company-ac-php-backend :with company-dabbrev-code)))
+               ;; '((company-lsp :with company-dabbrev-code)))
+
+	       ;;; LSP (Language Server Protocol) Settings:
+               ;; (add-to-list 'load-path "~/.emacs.d/lsp-php")
+               ;; (require 'lsp-php)
+	           ;; (custom-set-variables
+	           ;; Composer.json detection after Projectile.
+	           ;; 	'(lsp-php-workspace-root-detectors (quote (lsp-php-root-projectile lsp-php-root-composer-json lsp-php-root-vcs)))
+	           ;; )
+               ;; (lsp-php-enable)
+
+	       ;;; Flycheck Settings:
+	           (defvar-local flycheck-checker 'php-phpcs)
+               (setq-local flycheck-check-syntax-automatically '(save))
+
+	       ;;; Key Bindings:
+	           ;; (dumb-jump-mode)
+	           ;; (ggtags-mode 1)
+	           ;; [J]ump to a function definition (at point)
+               (local-set-key (kbd "C-c j") 'ac-php-find-symbol-at-point)
+	           ;; (local-set-key (kbd "C-c j") 'dumb-jump-go)
+	           ;; (local-set-key (kbd "C-c j") 'ggtags-find-definition)
+
+	           ;; Find [r]eferences (at point)
+	           ;; (local-set-key (kbd "C-c r") 'ggtags-find-reference)
+
+               ;; Go [b]ack, after jumping
+	           ;; (local-set-key (kbd "C-c b") 'dumb-jump-back)
+               (local-set-key (kbd "C-c b") 'ac-php-location-stack-back)
+	           ;; (local-set-key (kbd "C-c b") 'ggtags-prev-mark)
+
+               ;; Go [f]orward
+               (local-set-key (kbd "C-c f") 'ac-php-location-stack-forward)
+	           ;; (local-set-key (kbd "C-c f") 'ggtags-next-mark)
+
+               ;; [S]how a function definition (at point)
+               (local-set-key (kbd "C-c s") 'ac-php-show-tip)
+	           ;; (local-set-key (kbd "C-c q") 'dumb-jump-quick-look)
+
+               ;; Re[m]ake the tags (after a source has changed)
+               (local-set-key (kbd "C-c m") 'ac-php-remake-tags)
+
+               ;; Show [p]roject info
+               (local-set-key (kbd "C-c p") 'ac-php-show-cur-project-info)
+
+	           ;; Bring up [i]menu
+	           (local-set-key (kbd "C-c i") 'helm-imenu))))
+
+
+	       ;; (require 'bind-key)
+	       ;; (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+               ;; (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+
+               ;; ;; [j]ump to definition
+               ;; (bind-key "C-c j" 'lsp-ui-peek-find-definitions)
+	       ;; ;; jump [f]oward
+	       ;; (bind-key "C-c f" 'lsp-ui-peek-jump-forward)
+	       ;; ;; jump [b]ack
+	       ;; (bind-key "C-c b" 'lsp-ui-peek-jump-backward)
+               ;; ;; find all [r]eferences
+               ;; (bind-key "C-c r" 'lsp-ui-peek-find-references)
+               ;; ;; [r]ename
+               ;; (bind-key "C-c r" 'lsp-rename)
+               ;; ;; [d]escribe thing at point
+               ;; (bind-key "C-c d" 'lsp-describe-thing-at-point)
+               ;; ;; show documentation [u]nder point
+               ;; (bind-key "C-c u" 'lsp-info-under-point)
+               ;; ;; [h]ighlight all relevant references to the symbol under point
+               ;; (bind-key "C-c h" 'lsp-symbol-highlight))))
+
+(use-package flycheck-phpstan
+  :ensure t
+  :hook ((php-mode) . flycheck-mode)
+  :commands (flycheck-mode)
+  :config
+  (setq-default phpstan-executable 'docker)
+  )
 
 ;; (use-package explain-pause-mode
 ;;   ;; :straight (explain-pause-mode :type git :host github :repo "lastquestion/explain-pause-mode")
@@ -4046,6 +4160,8 @@ Activate this advice with:
 ;; corfu capf
 ;; eglot or lsp-bridge
 ;; project
+
+;; #f(advice-wrapper :after command-error-default-function help-command-error-confusable-suggestions)((quit) "" nil)
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

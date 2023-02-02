@@ -380,7 +380,7 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 
 ;; copy from https://emacs.stackexchange.com/questions/6065/how-to-display-time-in-seconds-in-the-mode-line
 (setq display-time-format "%Y-%m-%d %H:%M:%S")
-(setq display-time-interval 1)
+;(setq display-time-interval 1)
 ;; copy from https://codeantenna.com/a/ng3kV0ML9U
 (display-time-mode 1) ;; 常显
 (setq display-time-24hr-format t) ;;格式

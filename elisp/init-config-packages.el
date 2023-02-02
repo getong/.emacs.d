@@ -25,7 +25,10 @@
   :config
   (setq async-bytecomp-allowed-packages '(all))
   (dired-async-mode 1)
-  (async-bytecomp-package-mode 1))
+  (async-bytecomp-package-mode 1)
+  (if (featurep 'no-littering)
+      (setq async-byte-compile-log-file (no-littering-expand-var-file-name "async-bytecomp.log")))
+  )
 
 ;; benchmark-init records startup time by package so we can debug. It only records things after it's initialised, so put as early in config as possible.
 (use-package benchmark-init
@@ -1290,6 +1293,7 @@ Activate this advice with:
   :demand
   :init
   (doom-modeline-mode 1)
+  (setq doom-moeline-time nil)
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-env-enable-python nil)
   (setq doom-modeline-height 15)
@@ -2027,6 +2031,10 @@ Activate this advice with:
   (lsp-enable-xref t)
   (lsp-enable-imenu t)
   (lsp-enable-completion-at-point t)
+  ;; copy from https://github.com/emacs-lsp/lsp-mode/issues/3231
+  (if (featurep 'no-littering)
+      (abbreviate-file-name (no-littering-expand-var-file-name "lsp"))
+    (locate-user-emacs-file (f-join ".cache" "lsp")))
   ;; This controls the overlays that display type and other hints inline. Enable
   ;; / disable as you prefer. Well require a `lsp-workspace-restart' to have an
   ;; effect on open projects.

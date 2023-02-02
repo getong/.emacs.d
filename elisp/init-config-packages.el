@@ -2032,9 +2032,6 @@ Activate this advice with:
   (lsp-enable-imenu t)
   (lsp-enable-completion-at-point t)
   ;; copy from https://github.com/emacs-lsp/lsp-mode/issues/3231
-  (if (featurep 'no-littering)
-      (abbreviate-file-name (no-littering-expand-var-file-name "lsp"))
-    (locate-user-emacs-file (f-join ".cache" "lsp")))
   ;; This controls the overlays that display type and other hints inline. Enable
   ;; / disable as you prefer. Well require a `lsp-workspace-restart' to have an
   ;; effect on open projects.
@@ -2053,7 +2050,7 @@ Activate this advice with:
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'rust-mode-hook #'lsp)
   (add-hook 'html-mode-hook #'lsp)
-  (add-hook ' php-mode-hook #'lsp)
+  (add-hook 'php-mode-hook #'lsp)
   ;;(add-hook 'js-mode-hook #'lsp)
   ;;(add-hook 'typescript-mode-hook #'lsp)
   (add-hook 'json-mode-hook #'lsp)
@@ -2065,7 +2062,34 @@ Activate this advice with:
   ;; copy from https://sagot.dev/en/articles/emacs-typescript/
   (add-hook 'typescript-mode-hook 'lsp-deferred)
   ;;(add-hook 'javascript-mode-hook 'lsp-deferred)
-
+  (with-eval-after-load "lsp-rust"
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-stdio-connection
+                       (lambda ()
+                         `(,(or (executable-find
+                                 (cl-first lsp-rust-analyzer-server-command))
+                                (lsp-package-path 'rust-analyzer)
+                                "rust-analyzer")
+                           ,@(cl-rest lsp-rust-analyzer-server-args))))
+      :remote? t
+      :major-modes '(rust-mode rustic-mode)
+      :initialization-options 'lsp-rust-analyzer--make-init-options
+      :notification-handlers (ht<-alist lsp-rust-notification-handlers)
+      :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
+      :library-folders-fn (lambda (_workspace) lsp-rust-library-directories)
+      :after-open-fn (lambda ()
+                       (when lsp-rust-analyzer-server-display-inlay-hints
+                         (lsp-rust-analyzer-inlay-hints-mode)))
+      :ignore-messages nil
+      :server-id 'rust-analyzer-remote)))
+  (with-eval-after-load "lsp-php"
+    (if (featurep 'no-littering)
+        (setq
+         lsp-intelephense-storage-path (no-littering-expand-var-file-name "lsp-cache")
+         lsp-intelephense-global-storage-path (no-littering-expand-var-file-name "intelephense"))
+      )
+    )
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
                     :major-modes '(python-mode)
@@ -2329,28 +2353,6 @@ Activate this advice with:
   (when buffer-file-name
     (setq-local compilation-ask-about-save nil)))
 (add-hook 'rustic-mode-hook 'rustic-mode-auto-save-hook)
-
-(with-eval-after-load "lsp-rust"
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-stdio-connection
-                     (lambda ()
-                       `(,(or (executable-find
-                               (cl-first lsp-rust-analyzer-server-command))
-                              (lsp-package-path 'rust-analyzer)
-                              "rust-analyzer")
-                         ,@(cl-rest lsp-rust-analyzer-server-args))))
-    :remote? t
-    :major-modes '(rust-mode rustic-mode)
-    :initialization-options 'lsp-rust-analyzer--make-init-options
-    :notification-handlers (ht<-alist lsp-rust-notification-handlers)
-    :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
-    :library-folders-fn (lambda (_workspace) lsp-rust-library-directories)
-    :after-open-fn (lambda ()
-                     (when lsp-rust-analyzer-server-display-inlay-hints
-                       (lsp-rust-analyzer-inlay-hints-mode)))
-    :ignore-messages nil
-    :server-id 'rust-analyzer-remote)))
 
 ;; 正在从ivy、swiper、counsel、hydra转向vertico、consult、embark、orderless。
 ;; 增强 minibuffer 补全：vertico 和 Orderless, 垂直补全

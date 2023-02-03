@@ -1,4 +1,4 @@
-;; -*- coding: utf-8; lexical-binding: t -*-
+;;; -*- coding: utf-8; lexical-binding: t -*-
 
 ;; copy from https://sachachua.com/dotemacs/index.html
 ;; (defvar my-laptop-p (equal (system-name) "MacBook-Pro.lan"))
@@ -1290,7 +1290,7 @@ Activate this advice with:
 ;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
 (use-package doom-modeline
   :ensure t
-  :demand
+  :defer t
   :init
   (doom-modeline-mode 1)
   (setq doom-moeline-time nil)
@@ -4249,15 +4249,15 @@ Activate this advice with:
 
 ;; 支持驼峰书写的光标移动
 ;;--------------------------------------------------------
-;; (use-package syntax-subword
-;;   :ensure nil
-;;   :defer t
-;;   :diminish syntax-subword-mode
-;;   :init
-;;   (add-hook 'prog-mode-hook 'syntax-subword-mode)
-;;   (add-hook 'org-mode-hook 'syntax-subword-mode)
-;;   (add-hook 'text-mode-hook 'syntax-subword-mode)
-;;   )
+(use-package syntax-subword
+  :ensure nil
+  :defer t
+  :diminish syntax-subword-mode
+  :init
+  (add-hook 'prog-mode-hook 'syntax-subword-mode)
+  (add-hook 'org-mode-hook 'syntax-subword-mode)
+  (add-hook 'text-mode-hook 'syntax-subword-mode)
+  )
 
 (use-package mmm-mode
   :ensure t
@@ -4300,6 +4300,15 @@ Activate this advice with:
 
 ;; expand-region
 
+;; 将不同类型的buffer分组切换
+(use-package centaur-tabs
+  :ensure t
+  :config (setq centaur-tabs-set-bar 'over
+		        centaur-tabs-set-icons t
+		        centaur-tabs-gray-out-icons 'buffer
+		        centaur-tabs-set-modified-marker t
+		        centaur-tabs-modifier-marker ".")
+  (centaur-tabs-mode t))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

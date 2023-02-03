@@ -43,9 +43,10 @@
   (dired-async-mode 1)
   (async-bytecomp-package-mode 1)
   )
-(use-package bytecomp
-  :ensure nil
+(use-package async-bytecomp
+  :ensure async
   :custom
+  (async-bytecomp-allowed-packages '(all))
   (byte-compile-verbose        nil)
   (byte-compile-warnings       '(not free-vars unresolved noruntime lexical make-local cl-functions))
   (async-byte-compile-log-file (no-littering-expand-var-file-name "async-bytecomp.log")))
@@ -1657,6 +1658,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :custom
   (dired-kill-when-opening-new-dired-buffer t)
   :config
+  (put 'dired-find-alternate-file 'disabled nil)
   (setq
    dired-dwim-target t
    dired-clean-up-buffers-too t

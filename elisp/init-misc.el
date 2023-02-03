@@ -291,8 +291,6 @@
 ;; start every frame maximized
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(put 'dired-find-alternate-file 'disabled nil)
-(setq dired-dwim-target t)
 ;; (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; (setq user-emacs-directory (file-truename "~/.emacs.d/"))

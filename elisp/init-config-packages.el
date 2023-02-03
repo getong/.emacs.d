@@ -2894,11 +2894,50 @@ Activate this advice with:
 
 ;; copy from https://se30.xyz/conf.html
 ;; Turn on ansi in shells
-(use-package ansi-color
-  :ensure ansi-color
-  :commands shell
-  :config
-  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
+;; (use-package ansi-color
+;;   :ensure ansi-color
+;;   :commands shell
+;;   :config
+;;   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
+
+;; ANSI & XTERM 256 color support
+(use-package xterm-color
+;;   :defines (compilation-environment
+;;             eshell-preoutput-filter-functions
+;;             eshell-output-filter-functions)
+;;   :functions (compilation-filter my-advice-compilation-filter)
+  :init
+  ;; For shell and interpreters
+  (setenv "TERM" "xterm-256color")
+  (setq comint-output-filter-functions
+        (remove 'ansi-color-process-output comint-output-filter-functions))
+  (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter)
+  (add-hook 'shell-mode-hook
+            (lambda ()
+              ;; Disable font-locking to improve performance
+              (font-lock-mode -1)
+              ;; Prevent font-locking from being re-enabled
+              (make-local-variable 'font-lock-function)
+              (setq font-lock-function #'ignore)))
+
+  ;; For eshell
+  (with-eval-after-load 'esh-mode
+    (add-hook 'eshell-before-prompt-hook
+              (lambda ()
+                (setq xterm-color-preserve-properties t)))
+    (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+    (setq eshell-output-filter-functions
+          (remove 'eshell-handle-ansi-color eshell-output-filter-functions)))
+
+  ;; For compilation buffers
+  (setq compilation-environment '("TERM=xterm-256color"))
+  (defun my-advice-compilation-filter (f proc string)
+    (funcall f proc
+             (if (eq major-mode 'rg-mode) ; compatible with `rg'
+                 string
+               (xterm-color-filter string))))
+  (advice-add 'compilation-filter :around #'my-advice-compilation-filter)
+  (advice-add 'gud-filter :around #'my-advice-compilation-filter))
 
 ;; theme
 ;; (use-package spacemacs-theme
@@ -4172,6 +4211,95 @@ Activate this advice with:
 ;; project
 
 ;; #f(advice-wrapper :after command-error-default-function help-command-error-confusable-suggestions)((quit) "" nil)
+
+;; lentic-mode.el --- minor mode for lentic buffers
+(use-package lentic
+  :ensure t
+  :config (global-lentic-mode))
+
+
+(use-package focus
+  :ensure t
+  :config
+  (progn
+    (setq focus-mode-to-thing '((prog-mode . defun)
+                                (text-mode . line)))))
+
+(use-package fontaine
+  :ensure t
+  :commands (fontaine-store-latest-preset)
+  :hook (kill-emacs-hook fontaine-store-latest-preset))
+
+;;smart-hungry-delete 删除多个空格
+;;-------------------------------
+(use-package smart-hungry-delete
+  :ensure t
+  :bind (("<backspace>" . smart-hungry-delete-backward-char)
+		 ("C-d" . smart-hungry-delete-forward-char))
+  :defer nil ;; dont defer so we can add our functions to hooks
+  :config (smart-hungry-delete-add-default-hooks)
+  )
+
+;;行首行尾优化(备选:smart C-a and C-e)
+;;-----------------------------------------------
+(use-package mwim
+  :defer t
+  :bind (("C-a" . mwim-beginning-of-code-or-line)
+         ("C-e" . mwim-end-of-code-or-line)))
+
+;; 支持驼峰书写的光标移动
+;;--------------------------------------------------------
+;; (use-package syntax-subword
+;;   :ensure nil
+;;   :defer t
+;;   :diminish syntax-subword-mode
+;;   :init
+;;   (add-hook 'prog-mode-hook 'syntax-subword-mode)
+;;   (add-hook 'org-mode-hook 'syntax-subword-mode)
+;;   (add-hook 'text-mode-hook 'syntax-subword-mode)
+;;   )
+
+(use-package mmm-mode
+  :ensure t
+  :hook ((mmm-mode . company-mode)
+         (mmm-mdoe . flycheck-mode)
+         (mmm-mode . eldoc-mode))
+  :config
+  ;; (set-face-background 'mmm-default-submode-face "gray13")
+  (setq indent-tab-mode nil)
+  (setq mmm-submode-decoration-level 2)
+  (setq tab-width 2))
+
+;; One-frame-per-action GIF recording for optimal quality/size ratio
+;; https://gitlab.com/ambrevar/emacs-gif-screencast
+(use-package gif-screencast
+  :ensure t
+  :bind (("M-g r" . gif-screencast-start-or-stop)
+         ("M-g p" . gif-screencast-pause)
+         ("M-g s" . gif-screencast-stop)))
+
+;;; [ realgud ] -- A modular GNU Emacs front-end for interacting with external debuggers.
+
+(use-package realgud
+  :ensure t
+  :defer t)
+
+;;; [ realgud-lldb ] -- realgud front-end to lldb.
+
+(use-package realgud-lldb
+  :ensure t
+  :defer t)
+
+;;; [ GDB ]
+
+(use-package gdb-mi
+  :ensure t
+  :defer t
+  :init (setq gdb-many-windows t
+              gdb-show-main t))
+
+;; expand-region
+
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

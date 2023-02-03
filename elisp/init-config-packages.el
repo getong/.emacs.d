@@ -26,18 +26,23 @@
   (setq async-bytecomp-allowed-packages '(all))
   (dired-async-mode 1)
   (async-bytecomp-package-mode 1)
-  (if (featurep 'no-littering)
-      (setq async-byte-compile-log-file (no-littering-expand-var-file-name "async-bytecomp.log")))
   )
+(use-package bytecomp
+  :ensure nil
+  :custom
+  (byte-compile-verbose        nil)
+  (byte-compile-warnings       '(not free-vars unresolved noruntime lexical make-local cl-functions))
+  (async-byte-compile-log-file (no-littering-expand-var-file-name "async-bytecomp.log")))
+
 
 ;; benchmark-init records startup time by package so we can debug. It only records things after it's initialised, so put as early in config as possible.
 (use-package benchmark-init
-    :config
-    ;; To disable collection of benchmark data after init is done.
-    (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-  (add-hook 'after-init-hook
-            (lambda () (message "loaded in %s" (emacs-init-time))))
+(add-hook 'after-init-hook
+          (lambda () (message "loaded in %s" (emacs-init-time))))
 
 (use-package async-await
   :config

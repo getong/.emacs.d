@@ -8,7 +8,7 @@
 (push '(vertical-scroll-bars) default-frame-alist)
 
 ;; (setq-default indent-tabs-mode nil)
-(setq default-tab-width 4)
+;; (setq default-tab-width 4)
 
 ;; (setq dart-server-sdk-path "~/flutter/bin/cache/dart-sdk/")
 ;; (setq dart-server-enable-analysis-server t)
@@ -70,19 +70,19 @@
 ;; (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
 
 
-(defun switch-to-frame (frame-name)
-  (interactive "sFrame name:")
-  (let ((frames (frame-list)))
-    (catch 'break
-      (while frames (let ((frame (car frames)))
-                      (if (equal (frame-parameter frame 'name) frame-name)
-                          (throw 'break (select-frame-set-input-focus frame))
-                        (setq frames (cdr frames))))))))
+;; (defun switch-to-frame (frame-name)
+;;   (interactive "sFrame name:")
+;;   (let ((frames (frame-list)))
+;;     (catch 'break
+;;       (while frames (let ((frame (car frames)))
+;;                       (if (equal (frame-parameter frame 'name) frame-name)
+;;                           (throw 'break (select-frame-set-input-focus frame))
+;;                         (setq frames (cdr frames))))))))
 
-(global-set-key [f9] 'toggle-menu-bar-mode-from-frame)
+;; (global-set-key [f9] 'toggle-menu-bar-mode-from-frame)
 
-
-(setq x-underline-at-descent-line t)
+;; tabs 底下显示 bar
+;; (setq x-underline-at-descent-line t)
 
 ;;文本解码设置默认为 UTF-8
 ;; (setq locale-coding-system 'utf-8)
@@ -118,13 +118,13 @@
 ;;   "Major mode for editing GitHub Flavored Markdown files" t)
 ;; (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
 
-(setq debug-on-error nil)
+;; (setq debug-on-error nil)
 
 ;; copy from [Undo Tree](https://www.emacswiki.org/emacs/UndoTree)
 ;;(global-undo-tree-mode)
 
 ;; (savehist-mode 1)
-(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+
 ;; (setq savehist-file "~/.emacs.d/var/savehist")
 
 ;; copy from https://github.com/dimitri/switch-window
@@ -156,146 +156,111 @@
 
 ;; (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
-;; copy from [Aligning columns in Emacs](https://blog.lambda.cx/posts/emacs-align-columns/)
-(defun align-non-space (BEG END)
-  "Align non-space columns in region BEG END."
-  (interactive "r")
-  (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
+
 
 ;; copy from [Emacs and symbolic links](https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links)
 (setq vc-follow-symlinks t)
 
-;; copy from [How to configure dired to update instantly when files/folders change?](https://www.reddit.com/r/emacs/comments/1acg6q/how_to_configure_dired_to_update_instantly_when/)
-(setq global-auto-revert-non-file-buffers t)
 
-;; copy from https://christiantietze.de/posts/2021/06/emacs-trash-file-macos/
-(setq delete-by-moving-to-trash t)
-(cond
- ((string-equal system-type "windows-nt") ; Microsoft Windows
-  (progn
-    (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
-    ))
- ((string-equal system-type "darwin") ; Mac OS X
-  (progn
-    (setq trash-directory (expand-file-name "~/.Trash"))  ;; fallback for `move-file-to-trash'
-    ))
- ((string-equal system-type "gnu/linux") ; linux
-  (progn
-    (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
-    )))
 
-(when (memq window-system '(mac ns))
-  (defun system-move-file-to-trash (path)
-    "Moves file at PATH to the macOS Trash according to `move-file-to-trash' convention.
-Relies on the command-line utility 'trash' to be installed.
-Get it from:  <http://hasseg.org/trash/>"
-    (shell-command (concat "trash -vF \"" path "\""
-                           "| sed -e 's/^/Trashed: /'")
-                   nil ;; Name of output buffer
-                   "*Trash Error Buffer*")))
-
-(defun insert-todo-comment ()
-  (interactive)
-  (indent-for-tab-command)
-  (insert "TODO: ")
-  (back-to-indentation)
-  (set-mark-command nil)
-  (move-end-of-line nil)
-  (comment-dwim nil))
-(defun todo-comment-on-next-line ()
-  "Insert a TODO comment on the next line at the proper indentation"
-  (interactive)
-  (move-end-of-line nil)
-  (newline)
-  (insert-todo-comment))
-(add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "") #'todo-comment-on-next-line)))
+;; (defun insert-todo-comment ()
+;;   (interactive)
+;;   (indent-for-tab-command)
+;;   (insert "TODO: ")
+;;   (back-to-indentation)
+;;   (set-mark-command nil)
+;;   (move-end-of-line nil)
+;;   (comment-dwim nil))
+;; (defun todo-comment-on-next-line ()
+;;   "Insert a TODO comment on the next line at the proper indentation"
+;;   (interactive)
+;;   (move-end-of-line nil)
+;;   (newline)
+;;   (insert-todo-comment))
+;; (add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "") #'todo-comment-on-next-line)))
 
 ;; copy from https://xenodium.com/emacs-create-a-swift-packageproject/
-(defun ar/swift-package-init ()
-  "Execute `swift package init', with optional name and completing type."
-  (interactive)
-  (let* ((name (read-string "name (default): "))
-         (type (completing-read
-                "project type: "
-                ;; Splits "--type empty|library|executable|system-module|manifest"
-                (split-string
-                 (nth 1 (split-string
-                         (string-trim
-                          (seq-find
-                           (lambda (line)
-                             (string-match "--type" line))
-                           (process-lines "swift" "package" "init" "--help")))
-                         "   "))
-                 "|")))
-         (command (format "swift package init --type %s" type)))
-    (unless (string-empty-p name)
-      (append command "--name " name))
-    (shell-command command))
-  (dired default-directory)
-  (revert-buffer))
+;; (defun ar/swift-package-init ()
+;;   "Execute `swift package init', with optional name and completing type."
+;;   (interactive)
+;;   (let* ((name (read-string "name (default): "))
+;;          (type (completing-read
+;;                 "project type: "
+;;                 ;; Splits "--type empty|library|executable|system-module|manifest"
+;;                 (split-string
+;;                  (nth 1 (split-string
+;;                          (string-trim
+;;                           (seq-find
+;;                            (lambda (line)
+;;                              (string-match "--type" line))
+;;                            (process-lines "swift" "package" "init" "--help")))
+;;                          "   "))
+;;                  "|")))
+;;          (command (format "swift package init --type %s" type)))
+;;     (unless (string-empty-p name)
+;;       (append command "--name " name))
+;;     (shell-command command))
+;;   (dired default-directory)
+;;   (revert-buffer))
 
-(defun start-file-process-shell-command@around (start-file-process-shell-command name buffer &rest args)
-  "Start a program in a subprocess.  Return the process object for it. Similar to `start-process-shell-command', but calls `start-file-process'."
-  ;; On remote hosts, the local `shell-file-name' might be useless.
-  (let ((command (mapconcat 'identity args " ")))
-    (funcall start-file-process-shell-command name buffer command)))
-(advice-add 'start-file-process-shell-command :around #'start-file-process-shell-command@around)
+;; (defun start-file-process-shell-command@around (start-file-process-shell-command name buffer &rest args)
+;;   "Start a program in a subprocess.  Return the process object for it. Similar to `start-process-shell-command', but calls `start-file-process'."
+;;   ;; On remote hosts, the local `shell-file-name' might be useless.
+;;   (let ((command (mapconcat 'identity args " ")))
+;;     (funcall start-file-process-shell-command name buffer command)))
+;; (advice-add 'start-file-process-shell-command :around #'start-file-process-shell-command@around)
 
 ;; copy from http://xahlee.info/emacs/emacs/emacs_set_default_font_size.html
-(defun xah-set-default-font-size ()
-  "Set default font globally.
-Note, this command change font size only for current session, not in init file.
-This command useful for making font large when you want to do video livestream.
-URL `http://xahlee.info/emacs/emacs/emacs_set_default_font_size.html'
-Version: 2021-07-26 2021-08-21 2022-08-05"
-  (interactive)
-  (let (($fSize (read-string "size:" "16" nil "16")))
-    (if (> (string-to-number $fSize) 51)
-        (user-error "Max font size allowed is 51. You gave %s " $fSize)
-      (progn
-        (set-frame-font
-         (cond
-          ((string-equal system-type "windows-nt")
-           (if (member "Consolas" (font-family-list)) (format "Consolas-%s" $fSize) nil))
-          ((string-equal system-type "darwin")
-           ;; (if (member "LXGW WenKai Mono" (font-family-list)) "LXGW WenKai Mono" nil))
-           (if (member "EB Garamond" (font-family-list)) (format "EB Garamond 12 Italic %s" $fSize) nil))
-          ((string-equal system-type "gnu/linux")
-           (if (member "DejaVu Sans Mono" (font-family-list)) "DejaVu Sans Mono" nil))
-          (t nil))
-         t t)
-        (set-face-attribute 'default nil :font  (format "EB Garamond 12 Italic %s" $fSize))
-        (set-fontset-font "fontset-default"
-                          'han (font-spec :family "LXGW WenKai Mono"
-                                          :size (string-to-number $fSize)))
-        (set-fontset-font "fontset-default"
-                          'unicode (font-spec :family "LXGW WenKai Mono"
-                                              :size (string-to-number $fSize)))
-        (set-fontset-font "fontset-default"
-                          'unicode-bmp (font-spec :family "LXGW WenKai Mono"
-                                                  :size (string-to-number $fSize)))
-        )
-      )))
-
+;; (defun xah-set-default-font-size ()
+;;   "Set default font globally.
+;; Note, this command change font size only for current session, not in init file.
+;; This command useful for making font large when you want to do video livestream.
+;; URL `http://xahlee.info/emacs/emacs/emacs_set_default_font_size.html'
+;; Version: 2021-07-26 2021-08-21 2022-08-05"
+;;   (interactive)
+;;   (let (($fSize (read-string "size:" "16" nil "16")))
+;;     (if (> (string-to-number $fSize) 51)
+;;         (user-error "Max font size allowed is 51. You gave %s " $fSize)
+;;       (progn
+;;         (set-frame-font
+;;          (cond
+;;           ((string-equal system-type "windows-nt")
+;;            (if (member "Consolas" (font-family-list)) (format "Consolas-%s" $fSize) nil))
+;;           ((string-equal system-type "darwin")
+;;            ;; (if (member "LXGW WenKai Mono" (font-family-list)) "LXGW WenKai Mono" nil))
+;;            (if (member "EB Garamond" (font-family-list)) (format "EB Garamond 12 Italic %s" $fSize) nil))
+;;           ((string-equal system-type "gnu/linux")
+;;            (if (member "DejaVu Sans Mono" (font-family-list)) "DejaVu Sans Mono" nil))
+;;           (t nil))
+;;          t t)
+;;         (set-face-attribute 'default nil :font  (format "EB Garamond 12 Italic %s" $fSize))
+;;         (set-fontset-font "fontset-default"
+;;                           'han (font-spec :family "LXGW WenKai Mono"
+;;                                           :size (string-to-number $fSize)))
+;;         (set-fontset-font "fontset-default"
+;;                           'unicode (font-spec :family "LXGW WenKai Mono"
+;;                                               :size (string-to-number $fSize)))
+;;         (set-fontset-font "fontset-default"
+;;                           'unicode-bmp (font-spec :family "LXGW WenKai Mono"
+;;                                                   :size (string-to-number $fSize)))
+;;         )
+;;       ))
+;;   )
 ;; copy from https://www.emacswiki.org/emacs/SystemTrash
-(setq delete-by-moving-to-trash t)
-(defun system-move-file-to-trash (file)
-  "Use \"trash\" to move FILE to the system trash.
-When using Homebrew, install it using \"brew install trash-cli\"."
-  (call-process (executable-find "trash-put")
-		        nil 0 nil
-		        file))
+;; (setq delete-by-moving-to-trash t)
+;; (defun system-move-file-to-trash (file)
+;;   "Use \"trash\" to move FILE to the system trash.
+;; When using Homebrew, install it using \"brew install trash-cli\"."
+;;   (call-process (executable-find "trash-put")
+;; 		        nil 0 nil
+;; 		        file))
 
-;; copy from https://github.com/d12frosted/homebrew-emacs-plus/issues/383
-(when (eq system-type 'darwin)
-  (setq insert-directory-program "/usr/local/bin/gls"))
-;; (setq insert-directory-program "gls" dired-use-ls-dired t)
-(setq dired-listing-switches "-al --group-directories-first")
+
 
 ;; copy from https://github.com/NapoleonWils0n/ubuntu-dotfiles/blob/f061fa1b05c5ccba8f6b4a2d165660ab8ab3c56b/.config/emacs/init.el#L170
 ;; openwth
-(require 'mm-util)
-(add-to-list 'mm-inhibit-file-name-handlers 'openwith-file-handler)
+;; (require 'mm-util)
+;; (add-to-list 'mm-inhibit-file-name-handlers 'openwith-file-handler)
 
 
 
@@ -330,7 +295,7 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 (setq dired-dwim-target t)
 ;; (defalias 'yes-or-no-p 'y-or-n-p)
 
-(setq user-emacs-directory (file-truename "~/.emacs.d/"))
+;; (setq user-emacs-directory (file-truename "~/.emacs.d/"))
 
 ;; copy from https://blog.ginshio.org/2022/doom_emacs_configuration/#guix
 (setq-default
@@ -369,7 +334,7 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 
 
 (custom-set-variables '(delete-selection-mode t) ;; delete when you select region and modify
-                      '(delete-by-moving-to-trash t) ;; delete && move to transh
+                      ;; '(delete-by-moving-to-trash t) ;; delete && move to transh
                       '(inhibit-compacting-font-caches t) ;; don’t compact font caches during GC.
                       '(gc-cons-percentage 1))
 
@@ -378,55 +343,6 @@ When using Homebrew, install it using \"brew install trash-cli\"."
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 
-;; copy from https://emacs.stackexchange.com/questions/6065/how-to-display-time-in-seconds-in-the-mode-line
-(setq display-time-format "%Y-%m-%d %H:%M:%S")
-;(setq display-time-interval 1)
-;; copy from https://codeantenna.com/a/ng3kV0ML9U
-(display-time-mode 1) ;; 常显
-(setq display-time-24hr-format t) ;;格式
-(setq display-time-day-and-date t) ;;显示时间、星期、日期
-;; copy from https://www.reddit.com/r/emacs/comments/kf3tsq/what_is_this_number_after_the_time_in_the_modeline/
-(setq display-time-default-load-average nil)
-
-
-;; copy from [launch love2d app from Emacs](https://gist.github.com/legumbre/38ef323645f17a3c8033)
-(defvar love2d-program "/usr/local/bin/love")
-
-(defun love2d-launch-current ()
-  (interactive)
-  (let ((app-root (locate-dominating-file (buffer-file-name) "main.lua")))
-    (if app-root
-        (shell-command (format "%s %s &" love2d-program app-root))
-      (error "main.lua not found"))))
-
-
-;; copy from [Emacs + Company-Mode 配置多个补全后端](https://manateelazycat.github.io/emacs/2021/06/30/company-multiple-backends.html)
-;; Customize company backends.
-(setq company-backends
-      '(
-        (company-tabnine company-dabbrev company-keywords company-files company-capf)
-        ))
-
-;; Add yasnippet support for all company backends.
-(defvar company-mode/enable-yas t
-  "Enable yasnippet for all backends.")
-
-(defun company-mode/backend-with-yas (backend)
-  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-      backend
-    (append (if (consp backend) backend (list backend))
-            '(:with company-yasnippet))))
-
-(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-
-;; Add `company-elisp' backend for elisp.
-(add-hook 'emacs-lisp-mode-hook
-          #'(lambda ()
-              (require 'company-elisp)
-              (push 'company-elisp company-backends)))
-
-;; Remove duplicate candidate.
-(add-to-list 'company-transformers #'delete-dups)
 
 ;; (set-face-attribute 'hl-line nil :inherit nil :background "light yellow")
 ;; (set-face-attribute 'line-number nil :inherit nil :foreground "light green")

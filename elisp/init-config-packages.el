@@ -853,9 +853,50 @@ Activate this advice with:
         (proxy-socks-disable)
       (proxy-socks-enable)))
 
+  ;; copy from http://xahlee.info/emacs/emacs/emacs_set_default_font_size.html
+  (defun xah-set-default-font-size ()
+    "Set default font globally.
+Note, this command change font size only for current session, not in init file.
+This command useful for making font large when you want to do video livestream.
+URL `http://xahlee.info/emacs/emacs/emacs_set_default_font_size.html'
+Version: 2021-07-26 2021-08-21 2022-08-05"
+    (interactive)
+    (let (($fSize (read-string "size:" "16" nil "16")))
+      (if (> (string-to-number $fSize) 51)
+          (user-error "Max font size allowed is 51. You gave %s " $fSize)
+        (progn
+          (set-frame-font
+           (cond
+            ((string-equal system-type "windows-nt")
+             (if (member "Consolas" (font-family-list)) (format "Consolas-%s" $fSize) nil))
+            ((string-equal system-type "darwin")
+             ;; (if (member "LXGW WenKai Mono" (font-family-list)) "LXGW WenKai Mono" nil))
+             (if (member "EB Garamond" (font-family-list)) (format "EB Garamond 12 Italic %s" $fSize) nil))
+            ((string-equal system-type "gnu/linux")
+             (if (member "DejaVu Sans Mono" (font-family-list)) "DejaVu Sans Mono" nil))
+            (t nil))
+           t t)
+          (set-face-attribute 'default nil :font  (format "EB Garamond 12 Italic %s" $fSize))
+          (set-fontset-font "fontset-default"
+                            'han (font-spec :family "LXGW WenKai Mono"
+                                            :size (string-to-number $fSize)))
+          (set-fontset-font "fontset-default"
+                            'unicode (font-spec :family "LXGW WenKai Mono"
+                                                :size (string-to-number $fSize)))
+          (set-fontset-font "fontset-default"
+                            'unicode-bmp (font-spec :family "LXGW WenKai Mono"
+                                                    :size (string-to-number $fSize)))
+          )
+        )))
+
+  ;; copy from [Aligning columns in Emacs](https://blog.lambda.cx/posts/emacs-align-columns/)
+  (defun align-non-space (BEG END)
+    "Align non-space columns in region BEG END."
+    (interactive "r")
+    (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
   )
 
-;; copy from https://www.danielde.dev/blog/emacs-for-swift-development
+;; Copy from https://www.danielde.dev/blog/emacs-for-swift-development
 (use-package swift-mode
   :bind (("C-c l" . print-swift-var-under-point))
   :config
@@ -898,6 +939,17 @@ Activate this advice with:
     (shell-command-to-string
      "open keysmith://run-shortcut/796BB627-5433-48E4-BB54-1AA6C54A14E8"))
   (global-set-key (kbd "C-c p o") 'xcode-open-current-file)
+
+  ;; copy from [launch love2d app from Emacs](https://gist.github.com/legumbre/38ef323645f17a3c8033)
+  (defvar love2d-program "/usr/local/bin/love")
+
+  (defun love2d-launch-current ()
+    (interactive)
+    (let ((app-root (locate-dominating-file (buffer-file-name) "main.lua")))
+      (if app-root
+          (shell-command (format "%s %s &" love2d-program app-root))
+        (error "main.lua not found"))))
+
   )
 
 (use-package openwith
@@ -1582,7 +1634,60 @@ Activate this advice with:
 (use-package dired
   :ensure nil
   :custom
-  (dired-kill-when-opening-new-dired-buffer t))
+  (dired-kill-when-opening-new-dired-buffer t)
+  :config
+  (setq
+   dired-dwim-target t
+   dired-clean-up-buffers-too t
+   dired-recursive-copies 'always
+   dired-recursive-deletes 'top
+   ;; dired-listing-switches "lhvA"
+   dired-omit-verbose nil
+   dired-hide-details-hide-symlink-targets nil)
+
+  (autoload 'dired-omit-mode "dired-x")
+
+  (add-hook 'dired-load-hook
+            (lambda ()
+              (interactive)
+              (dired-collapse)))
+
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (interactive)
+              ;; (dired-omit-mode 1)
+              (dired-hide-details-mode 1)
+              (hl-line-mode 1)))
+  ;; copy from https://christiantietze.de/posts/2021/06/emacs-trash-file-macos/
+  (setq delete-by-moving-to-trash t)
+  (cond
+   ((string-equal system-type "windows-nt") ; Microsoft Windows
+    (progn
+      (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
+      ))
+   ((string-equal system-type "darwin") ; Mac OS X
+    (progn
+      (setq trash-directory (expand-file-name "~/.Trash"))  ;; fallback for `move-file-to-trash'
+      ))
+   ((string-equal system-type "gnu/linux") ; linux
+    (progn
+      (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
+      )))
+  (when (memq window-system '(mac ns))
+    (defun system-move-file-to-trash (path)
+      "Moves file at PATH to the macOS Trash according to `move-file-to-trash' convention.
+Relies on the command-line utility 'trash' to be installed.
+Get it from:  <http://hasseg.org/trash/>"
+      (shell-command (concat "trash -vF \"" path "\""
+                             "| sed -e 's/^/Trashed: /'")
+                     nil ;; Name of output buffer
+                     "*Trash Error Buffer*")))
+  ;; copy from https://github.com/d12frosted/homebrew-emacs-plus/issues/383
+  (when (eq system-type 'darwin)
+    (setq insert-directory-program "/usr/local/bin/gls"))
+  ;; (setq insert-directory-program "gls" dired-use-ls-dired t)
+  (setq dired-listing-switches "-al --group-directories-first")
+  )
 ;; 基于 Dired 的极简、一站式文件管理器
 (use-package dirvish
   :init
@@ -2175,6 +2280,35 @@ Activate this advice with:
   ;; 根据选择的频率进行排序，读者如果不喜欢可以去掉
   (setq company-transformers '(company-sort-by-occurrence))
   (setq company-tooltip-align-annotations t)
+
+  ;; copy from [Emacs + Company-Mode 配置多个补全后端](https://manateelazycat.github.io/emacs/2021/06/30/company-multiple-backends.html)
+  ;; Customize company backends.
+  (setq company-backends
+        '(
+          (company-tabnine company-dabbrev company-keywords company-files company-capf)
+          ))
+
+  ;; Add yasnippet support for all company backends.
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+  ;; Add `company-elisp' backend for elisp.
+  (add-hook 'emacs-lisp-mode-hook
+            #'(lambda ()
+                (require 'company-elisp)
+                (push 'company-elisp company-backends)))
+
+  ;; Remove duplicate candidate.
+  (add-to-list 'company-transformers #'delete-dups)
+
   :bind
   (:map company-active-map
         ("C-n". company-select-next)
@@ -2715,6 +2849,7 @@ Activate this advice with:
 					                          extended-command-history)
 	          savehist-autosave-interval 300)
   :config
+  ;; (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
   (setq savehist-file (concat user-emacs-directory "var/savehist")
         savehist-save-minibuffer-history 1
         )
@@ -4039,73 +4174,73 @@ Activate this advice with:
   (("[^.][^t][^p][^l]\\.php$" . php-mode))
   :config
   (add-hook 'php-mode-hook
-	        '(lambda ()
+	    '(lambda ()
 	       ;;; PHP-mode settings:
                (setq indent-tabs-mode nil
-		             c-basic-offset 4
+		     c-basic-offset 4
                      php-template-compatibility nil)
 
                (php-enable-psr2-coding-style)
 
 	       ;;; PHP_CodeSniffer settings:
                ;; (use-package phpcbf
-		       ;; :init
-		       ;; (setq phpcbf-executable "~/.composer/vendor/squizlabs/php_codesniffer/scripts/phpcbf"
-		       ;; phpcbf-standard "PSR2"))
+	       ;; :init
+	       ;; (setq phpcbf-executable "~/.composer/vendor/squizlabs/php_codesniffer/scripts/phpcbf"
+	       ;; phpcbf-standard "PSR2"))
 
 	       ;;; Company-mode settings:
-	           ;; Using :with and company-sort-by-backend-importance makes
-	           ;; it so that company-lsp entries will always appear before
-	           ;; company-dabbrev-code.
+	       ;; Using :with and company-sort-by-backend-importance makes
+	       ;; it so that company-lsp entries will always appear before
+	       ;; company-dabbrev-code.
                ;; TODO Add in support for company-gtags/capf
-	           (use-package company-php)
-	           (ac-php-core-eldoc-setup)
+	       (use-package company-php)
+	       (ac-php-core-eldoc-setup)
                (setq-local company-dabbrev-char-regexp "\\\`$sw")
                (setq-local company-dabbrev-code-everywhere t)
-                                        ;(setq-local company-transformers '(company-sort-by-backend-importance))
-	           (set (make-local-variable 'company-backends)
-		            ;;'((company-ac-php-backend company-dabbrev-code)))
-		            ;;'((company-ac-php-backend company-dabbrev-code :separate)))
-		            '((company-dabbrev-code company-ac-php-backend)))
-		       ;;'((company-ac-php-backend :with company-dabbrev-code)))
+               ;; (setq-local company-transformers '(company-sort-by-backend-importance))
+	       (set (make-local-variable 'company-backends)
+		    ;;'((company-ac-php-backend company-dabbrev-code)))
+		    ;;'((company-ac-php-backend company-dabbrev-code :separate)))
+		    '((company-dabbrev-code company-ac-php-backend)))
+	       ;;'((company-ac-php-backend :with company-dabbrev-code)))
                ;; '((company-lsp :with company-dabbrev-code)))
 
 	       ;;; LSP (Language Server Protocol) Settings:
                ;; (add-to-list 'load-path "~/.emacs.d/lsp-php")
                ;; (require 'lsp-php)
-	           ;; (custom-set-variables
-	           ;; Composer.json detection after Projectile.
-	           ;; 	'(lsp-php-workspace-root-detectors (quote (lsp-php-root-projectile lsp-php-root-composer-json lsp-php-root-vcs)))
-	           ;; )
+	       ;; (custom-set-variables
+	       ;; Composer.json detection after Projectile.
+	       ;; 	'(lsp-php-workspace-root-detectors (quote (lsp-php-root-projectile lsp-php-root-composer-json lsp-php-root-vcs)))
+	       ;; )
                ;; (lsp-php-enable)
 
 	       ;;; Flycheck Settings:
-	           (defvar-local flycheck-checker 'php-phpcs)
+	       (defvar-local flycheck-checker 'php-phpcs)
                (setq-local flycheck-check-syntax-automatically '(save))
 
 	       ;;; Key Bindings:
-	           ;; (dumb-jump-mode)
-	           ;; (ggtags-mode 1)
-	           ;; [J]ump to a function definition (at point)
+	       ;; (dumb-jump-mode)
+	       ;; (ggtags-mode 1)
+	       ;; [J]ump to a function definition (at point)
                (local-set-key (kbd "C-c j") 'ac-php-find-symbol-at-point)
-	           ;; (local-set-key (kbd "C-c j") 'dumb-jump-go)
-	           ;; (local-set-key (kbd "C-c j") 'ggtags-find-definition)
+	       ;; (local-set-key (kbd "C-c j") 'dumb-jump-go)
+	       ;; (local-set-key (kbd "C-c j") 'ggtags-find-definition)
 
-	           ;; Find [r]eferences (at point)
-	           ;; (local-set-key (kbd "C-c r") 'ggtags-find-reference)
+	       ;; Find [r]eferences (at point)
+	       ;; (local-set-key (kbd "C-c r") 'ggtags-find-reference)
 
                ;; Go [b]ack, after jumping
-	           ;; (local-set-key (kbd "C-c b") 'dumb-jump-back)
+	       ;; (local-set-key (kbd "C-c b") 'dumb-jump-back)
                (local-set-key (kbd "C-c b") 'ac-php-location-stack-back)
-	           ;; (local-set-key (kbd "C-c b") 'ggtags-prev-mark)
+	       ;; (local-set-key (kbd "C-c b") 'ggtags-prev-mark)
 
                ;; Go [f]orward
                (local-set-key (kbd "C-c f") 'ac-php-location-stack-forward)
-	           ;; (local-set-key (kbd "C-c f") 'ggtags-next-mark)
+	       ;; (local-set-key (kbd "C-c f") 'ggtags-next-mark)
 
                ;; [S]how a function definition (at point)
                (local-set-key (kbd "C-c s") 'ac-php-show-tip)
-	           ;; (local-set-key (kbd "C-c q") 'dumb-jump-quick-look)
+	       ;; (local-set-key (kbd "C-c q") 'dumb-jump-quick-look)
 
                ;; Re[m]ake the tags (after a source has changed)
                (local-set-key (kbd "C-c m") 'ac-php-remake-tags)
@@ -4113,8 +4248,8 @@ Activate this advice with:
                ;; Show [p]roject info
                (local-set-key (kbd "C-c p") 'ac-php-show-cur-project-info)
 
-	           ;; Bring up [i]menu
-	           (local-set-key (kbd "C-c i") 'helm-imenu))))
+	       ;; Bring up [i]menu
+	       (local-set-key (kbd "C-c i") 'helm-imenu))))
 
 
 	       ;; (require 'bind-key)
@@ -4401,6 +4536,24 @@ deletion, or > if it is flagged for displaying."
       (add-hook 'tabulated-list-revert-hook #'bookmark-bmenu--revert nil t)'
       (setq revert-buffer-function #'bookmark-bmenu--revert)
       (tabulated-list-init-header))))
+
+(use-package time
+  :config
+  (setq display-time-default-load-average nil
+        ;; display-time-use-mail-icon t
+        ;; display-time-24hr-format t
+        )
+  ;; (display-time-mode t)
+  ;; copy from https://emacs.stackexchange.com/questions/6065/how-to-display-time-in-seconds-in-the-mode-line
+  (setq display-time-format "%Y-%m-%d %H:%M:%S")
+                                        ;(setq display-time-interval 1)
+  ;; copy from https://codeantenna.com/a/ng3kV0ML9U
+  (display-time-mode 1) ;; 常显
+  (setq display-time-24hr-format t) ;;格式
+  (setq display-time-day-and-date t) ;;显示时间、星期、日期
+  ;; copy from https://www.reddit.com/r/emacs/comments/kf3tsq/what_is_this_number_after_the_time_in_the_modeline/
+  (setq display-time-default-load-average nil)
+  )
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

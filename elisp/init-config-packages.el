@@ -2897,9 +2897,13 @@ Get it from:  <http://hasseg.org/trash/>"
   )
 
 (use-package sync-recentf
+  :ensure t
   :config
   (setq recentf-auto-cleanup 60)
   (recentf-mode 1)
+  :init
+  ;; defvar 必须在init修改，才起效
+  (setq sync-recentf-marker (no-littering-expand-var-file-name "sync-recentf-marker"))
   )
 
 ;; (defun suppress-messages (func &rest args)
@@ -2982,11 +2986,16 @@ Get it from:  <http://hasseg.org/trash/>"
   (setq dashboard-banner-logo-title "Welcome to Emacs!") ;; 个性签名，随读者喜好设置
   (setq dashboard-projects-backend 'projectile) ;; 读者可以暂时注释掉这一行，等安装了 projectile 后再使用
   (setq dashboard-startup-banner 'official) ;; 也可以自定义图片
+  ;; Content is not centered by default. To center, set
+  (setq dashboard-center-content t)
   (setq dashboard-items '((recents  . 20)   ;; 显示多少个最近文件
 			              (bookmarks . 10)  ;; 显示多少个最近书签
 			              (projects . 12) ;; 显示多少个最近项目
                           (agenda . 5)
                           ))
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-navigator t)
   (dashboard-setup-startup-hook))
 
 ;; (use-package highlight-symbol

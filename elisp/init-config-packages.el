@@ -8,6 +8,22 @@
 ;; (when my-phone-p (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 ;; (global-auto-revert-mode)  ; simplifies syncingr
 
+;;auto-compile
+(use-package auto-compile
+  :ensure t
+  :demand t
+  :config
+  (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode)
+  (setq auto-compile-display-buffer               nil)
+  (setq load-prefer-newer t)
+  (setq auto-compile-mode-line-counter            t)
+  (setq auto-compile-source-recreate-deletes-dest t)
+  (setq auto-compile-toggle-deletes-nonlib-dest   t)
+  (setq auto-compile-update-autoloads             t)
+  (add-hook 'auto-compile-inhibit-compile-hook
+            'auto-compile-inhibit-compile-detached-git-head))
+
 (use-package esup
   :ensure t
   ;; To use MELPA Stable use ":pin melpa-stable",

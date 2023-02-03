@@ -4402,11 +4402,5 @@ deletion, or > if it is flagged for displaying."
       (setq revert-buffer-function #'bookmark-bmenu--revert)
       (tabulated-list-init-header))))
 
-
-(use-package git-timemachine
-  :commands git-timemachine git-timemachine-toggle
-  :bind (("C-x t" . git-timemachine)
-         ("C-x T" . git-timemchine-provide)))
-
-(toggle 'init-config-packages)
+(provide 'init-config-packages)
 ;;;; init-config-packages ends here

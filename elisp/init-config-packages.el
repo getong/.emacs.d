@@ -2058,7 +2058,7 @@ Activate this advice with:
   (add-hook 'dockerfile-mode-hook #'lsp)
   (add-hook 'shell-mode-hook #'lsp)
   (add-hook 'css-mode-hook #'lsp)
-  (add-hook 'lua-mode-hook 'lsp)
+  (add-hook 'lua-mode-hook #'lsp)
   ;; copy from https://sagot.dev/en/articles/emacs-typescript/
   (add-hook 'typescript-mode-hook 'lsp-deferred)
   ;;(add-hook 'javascript-mode-hook 'lsp-deferred)

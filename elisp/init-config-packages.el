@@ -77,6 +77,13 @@
   :init
   ;; (setq transient-history nil)
   (setq transient-history-file "~/.emacs.d/var/transient/history.el")
+  :config
+  ;; 执行 Mx outline-navigate 时，会出现一个菜单，你可以通过 p 和 n 键在 outline-mode（包括 org-mode！）中前进和后退，这个状态会一直持续到你停止它随着 Cg. 增加。
+  (transient-define-prefix outline-navigate ()
+    :transient-suffix     'transient--do-stay
+    :transient-non-suffix 'transient--do-warn
+    [("p" "previous visible heading" outline-previous-visible-heading)
+     ("n" "next visible heading" outline-next-visible-heading)])
   )
 
 ;; 显示行号
@@ -4310,5 +4317,96 @@ Activate this advice with:
 		        centaur-tabs-modifier-marker ".")
   (centaur-tabs-mode t))
 
-(provide 'init-config-packages)
+;; Bookmark
+(use-package bookmark
+  :ensure nil
+  :config
+  (with-no-warnings
+    ;; Display icons for bookmarks
+    (defun my-bookmark-bmenu--revert ()
+      "Re-populate `tabulated-list-entries'."
+      (let (entries)
+        (dolist (full-record (bookmark-maybe-sort-alist))
+          (let* ((name       (bookmark-name-from-full-record full-record))
+                 (annotation (bookmark-get-annotation full-record))
+                 (location   (bookmark-location full-record))
+                 (file       (file-name-nondirectory location))
+                 (type       (let ((fmt "%-8.8s"))
+                               (cond ((null location)
+                                      (propertize (format fmt "NOFILE") 'face 'warning))
+                                     ((file-remote-p location)
+                                      (propertize (format fmt "REMOTE") 'face 'mode-line-buffer-id))
+                                     ((not (file-exists-p location))
+                                      (propertize (format fmt "NOTFOUND") 'face 'error))
+                                     ((file-directory-p location)
+                                      (propertize (format fmt "DIRED") 'face 'warning))
+                                     (t (propertize (format fmt "FILE") 'face 'success)))))
+                 (icon       (if (icon-displayable-p)
+                                 (cond
+                                  ((file-remote-p location)
+                                   (all-the-icons-octicon "radio-tower" :height 0.8 :v-adjust 0.0))
+                                  ((file-directory-p location)
+                                   (all-the-icons-icon-for-dir location :height 0.9 :v-adjust 0.01))
+                                  ((not (string-empty-p file))
+                                   (all-the-icons-icon-for-file file :height 0.9 :v-adjust 0.0)))
+                               "")))
+            (push (list
+                   full-record
+                   `[,(if (and annotation (not (string-equal annotation "")))
+                          "*" "")
+                     ,icon
+                     ,(if (display-mouse-p)
+                          (propertize name
+                                      'font-lock-face 'bookmark-menu-bookmark
+                                      'mouse-face 'highlight
+                                      'follow-link t
+                                      'help-echo "mouse-2: go to this bookmark in other window")
+                        name)
+                     ,type
+                     ,@(if bookmark-bmenu-toggle-filenames
+                           (list (propertize location 'face 'completions-annotations)))])
+                  entries)))
+        (tabulated-list-init-header)
+        (setq tabulated-list-entries entries))
+      (tabulated-list-print t))
+    (advice-add #'bookmark-bmenu--revert :override #'my-bookmark-bmenu--revert)
+
+    (defun my-bookmark-bmenu-list ()
+      "Display a list of existing bookmarks.
+The list is displayed in a buffer named `*Bookmark List*'.
+The leftmost column displays a D if the bookmark is flagged for
+deletion, or > if it is flagged for displaying."
+      (interactive)
+      (bookmark-maybe-load-default-file)
+      (let ((buf (get-buffer-create bookmark-bmenu-buffer)))
+        (if (called-interactively-p 'interactive)
+            (pop-to-buffer buf)
+          (set-buffer buf)))
+      (bookmark-bmenu-mode)
+      (bookmark-bmenu--revert))
+    (advice-add #'bookmark-bmenu-list :override #'my-bookmark-bmenu-list)
+
+    (define-derived-mode bookmark-bmenu-mode tabulated-list-mode "Bookmark Menu"
+      (setq truncate-lines t)
+      (setq buffer-read-only t)
+      (setq tabulated-list-format
+            `[("" 1) ;; Space to add "*" for bookmark with annotation
+              ("" ,(if (icon-displayable-p) 2 0)) ;; Icons
+              ("Bookmark" ,bookmark-bmenu-file-column bookmark-bmenu--name-predicate)
+              ("Type" 9)
+              ,@(if bookmark-bmenu-toggle-filenames
+                    '(("File" 0 bookmark-bmenu--file-predicate)))])
+      (setq tabulated-list-padding bookmark-bmenu-marks-width)
+      (setq tabulated-list-sort-key '("Bookmark" . nil))
+      (add-hook 'tabulated-list-revert-hook #'bookmark-bmenu--revert nil t)'
+      (setq revert-buffer-function #'bookmark-bmenu--revert)
+      (tabulated-list-init-header))))
+
+
+(use-package git-timemachine
+  :commands git-timemachine git-timemachine-toggle
+  :bind (("C-x t" . git-timemachine)
+         ("C-x T" . git-timemchine-provide)))
+
+(toggle 'init-config-packages)
 ;;;; init-config-packages ends here

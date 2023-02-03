@@ -438,4 +438,6 @@ When using Homebrew, install it using \"brew install trash-cli\"."
 ;; https://emacs.stackexchange.com/questions/18677/prevent-auto-save-list-directory-to-be-created
 (setq auto-save-list-file-prefix nil)
 
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
 (provide 'init-misc)

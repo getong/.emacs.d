@@ -6,19 +6,29 @@
 (package-initialize)
 
 ;; 设置软件源
-(setq package-archives '(("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
+(setq package-archives '(
+			 ("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
                          ("org" . "http://mirrors.ustc.edu.cn/elpa/org/")
                          ("stable-melpa" . "http://mirrors.ustc.edu.cn/elpa/stable-melpa/")
                          ("gnu" . "http://mirrors.ustc.edu.cn/elpa/gnu/")
                          ("gnu-devel" . "http://mirrors.ustc.edu.cn/elpa/gnu-devel/")
                          ("nongnu" . "http://mirrors.ustc.edu.cn/elpa/nongnu/")
                          ("nongnu-devel" . "http://mirrors.ustc.edu.cn/elpa/nongnu-devel/")
+                         ("marmalade" . "http://mirrors.cloud.tencent.com/elpa/marmalade/")
+                         ;; ("melpa" . "http://mirrors.cloud.tencent.com/elpa/melpa/")
+                         ;; ("org" . "http://mirrors.cloud.tencent.com/elpa/org/")
+                         ;; ("stable-melpa" . "http://mirrors.cloud.tencent.com/elpa/melpa-stable/")
+                         ;; ("gnu" . "http://mirrors.cloud.tencent.com/elpa/gnu/")
+                         ;; ("gnu-devel" . "http://mirrors.ustc.edu.cn/elpa/gnu-devel/")
+                         ;; ("nongnu" . "http://mirrors.ustc.edu.cn/elpa/nongnu/")
+                         ;; ("nongnu-devel" . "http://mirrors.ustc.edu.cn/elpa/nongnu-devel/")
                          ))
 
 ;; 设置软件源优先级
 (setq package-archive-priorities '(("melpa"  . 10)
                                    ("org"  . 5)
                                    ("stable-melpa"  . 5)
+                                   ("marmalade"  . 5)
                                    ("gnu"  . 3)
                                    ("gnu-devel"  . 3)
                                    ("nongnu"    . 1)
@@ -59,4 +69,3 @@
 
 ;; copy from https://www.reddit.com/r/emacs/comments/siuvpu/isnt_there_a_better_way_to_set_utf8/
 (set-locale-environment "zh_CN.UTF-8")
-

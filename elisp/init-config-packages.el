@@ -1350,10 +1350,10 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :init
   (all-the-icons-completion-mode))
 
-(use-package all-the-icons-dired
-  :ensure t
-  :defer t
-  :hook (dired-mode . all-the-icons-dired-mode))
+;; (use-package all-the-icons-dired
+;;   :ensure t
+;;   :defer t
+;;   :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; https://www.emacswiki.org/emacs/KeyCast
 ;; copy from https://book.emacs-china.org/#org737719a
@@ -1663,6 +1663,8 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :custom
   (dired-kill-when-opening-new-dired-buffer t)
   :config
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired nil))
   (put 'dired-find-alternate-file 'disabled nil)
   (setq
    dired-dwim-target t
@@ -2883,9 +2885,6 @@ Get it from:  <http://hasseg.org/trash/>"
 ;;         ("C-x t B"   . treemacs-bookmark)
 ;;         ("C-x t C-t" . treemacs-find-file)
 ;;         ("C-x t M-t" . treemacs-find-tag)))
-
-(when (string= system-type "darwin")
-  (setq dired-use-ls-dired nil))
 
 ;; (use-package treemacs-projectile
 ;;   :after treemacs projectile

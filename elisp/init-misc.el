@@ -325,7 +325,7 @@
 ;;                                                 (funcall battery-status-function)))))
 ;;   (display-battery-mode 1))         ; 知道还剩多少 ⚡️ 很重要
 
-(global-subword-mode 1)             ; 识别驼峰，而不是傻瓜前进
+;; (global-subword-mode 1)             ; 识别驼峰，而不是傻瓜前进
 (global-unset-key (kbd "C-z"))      ; 关闭 "C-z" 最小化
 ;;(define-key global-map "C-s" #'+default/search-buffer)
 ;;(map (:leader (:desc "load a saved workspace" :g "wr" #'+workspace/load))) ;; workspace load keybind

@@ -1969,8 +1969,8 @@ Get it from:  <http://hasseg.org/trash/>"
   (lazy-highlight-cleanup nil))
 
 ;; 打开这个 mode 以后就能正确地处理驼峰命名中的单词了。
-(use-package subword
-  :hook (after-init . global-subword-mode))
+;; (use-package subword
+;;   :hook (after-init . global-subword-mode))
 
 ;; 如果你想要一个足够简单的注释与反注释功能，那么自带的newcomment就可以做到。
 ;; 当用户选中区间时，在对应区间上注释或者反注释

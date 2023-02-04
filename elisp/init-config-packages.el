@@ -1167,6 +1167,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 ;;   (indent-guide-global-mode)
 ;;   )
 (use-package highlight-indent-guides
+  :ensure t
   :custom (highlight-indent-guides-method 'character)
   (highlight-indent-guides-responsive 'top)
   :hook (prog-mode . highlight-indent-guides-mode))
@@ -1403,6 +1404,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
     (setq
      projectile-enable-caching t
      projectile-sort-order 'recently-active
+     projectile-completion-system 'default
      ))
   (setq-default projectile-mode-line-prefix " Proj")
   (projectile-global-mode))
@@ -2052,6 +2054,7 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; Setup is pretty simple - we just enable globally and turn on a custom eslint function, and also add a custom checker for proselint.
 (use-package flycheck
   :ensure t
+  :diminish flycheck-mode
   :init
   (setq flycheck-indication-mode 'right-fringe)
   ;; only check on save
@@ -2177,6 +2180,33 @@ Get it from:  <http://hasseg.org/trash/>"
   (lsp-rust-analyzer-display-closure-return-type-hints t)
   (lsp-rust-analyzer-display-parameter-hints nil)
   (lsp-rust-analyzer-display-reborrow-hints nil)
+  (lsp-headerline-breadcrumb-segments '(file symbols))
+  (lsp-modeline-diagnostics-enable  t)
+  (lsp-modeline-diagnostics-scope  :project)
+  (lsp-completion-provider  :capf)
+  ;; Disable "use" statement insertion.
+  (lsp-intelephense-completion-insert-use-declaration nil)
+  ;; Decrease completion suggestions to 25.
+  (lsp-intelephense-completion-max-items 25)
+  ;; Disable breadcrumbs for all modes.
+  (lsp-headerline-breadcrumb-enable nil)
+  ;; Setup licence key.
+  (lsp-intelephense-licence-key "KEY-GOES-HERE")
+  ;; Disable multi-root server.
+  (lsp-intelephense-multi-root nil)
+  (lsp-intelephense-storage-path (no-littering-expand-var-file-name "lsp-cache"))
+  (lsp-intelephense-global-storage-path (no-littering-expand-var-file-name "intelephense"))
+  ;; Disable telemetry.
+  (lsp-intelephense-telemetry-enabled nil)
+  ;; Show verbose output from the intelephense server.
+  (lsp-intelephense-trace-server "verbose")
+  ;; Add "exclude_me" directory to list of excluded directories.
+  ;; (setq lsp-intelephense-files-exclude
+  ;; (vconcat ["**/exclude_me/**"] lsp-intelephense-files-exclude))
+  ;; Reduce max file size to 100kb
+  (lsp-intelephense-files-max-size 100000)
+  :hook
+  (php-mode . lsp)
   :config
   ;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
   (add-hook 'go-mode-hook #'lsp)
@@ -2185,7 +2215,7 @@ Get it from:  <http://hasseg.org/trash/>"
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'rust-mode-hook #'lsp)
   (add-hook 'html-mode-hook #'lsp)
-  (add-hook 'php-mode-hook #'lsp)
+  ;; (add-hook 'php-mode-hook #'lsp)
   ;;(add-hook 'js-mode-hook #'lsp)
   ;;(add-hook 'typescript-mode-hook #'lsp)
   (add-hook 'json-mode-hook #'lsp)
@@ -2218,13 +2248,13 @@ Get it from:  <http://hasseg.org/trash/>"
                          (lsp-rust-analyzer-inlay-hints-mode)))
       :ignore-messages nil
       :server-id 'rust-analyzer-remote)))
-  (with-eval-after-load "lsp-php"
-    (if (featurep 'no-littering)
-        (setq
-         lsp-intelephense-storage-path (no-littering-expand-var-file-name "lsp-cache")
-         lsp-intelephense-global-storage-path (no-littering-expand-var-file-name "intelephense"))
-      )
-    )
+  ;; (with-eval-after-load "lsp-php"
+  ;;   (if (featurep 'no-littering)
+  ;;       (setq
+  ;;        lsp-intelephense-storage-path (no-littering-expand-var-file-name "lsp-cache")
+  ;;        lsp-intelephense-global-storage-path (no-littering-expand-var-file-name "intelephense"))
+  ;;     )
+  ;;   )
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
                     :major-modes '(python-mode)
@@ -3462,10 +3492,29 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; Web mode handles html/css/js.
 (use-package web-mode
   :ensure t
-  :mode (("\\.html\\'" . web-mode)
-         ("\\.erb\\'" . web-mode))
+  :mode
+  (("\\.html\\'" . web-mode)
+   ("\\.erb\\'" . web-mode)
+   ("\\.phtml\\'"  . web-mode)
+   ("\\.tpl\\.php\\'" . web-mode)
+   ("\\.html\\.twig\\'" . web-mode)
+   )
+  :custom
+  (indent-tabs-mode nil)
+  (web-mode-code-indent-offset 2)
+  (web-mode-markup-indent-offset 2)
   :config
-  (setq web-mode-markup-indent-offset 2))
+  (setq web-mode-markup-indent-offset 2)
+  ;; Set PHP as the embedded language for phtml/tpl.php files.
+  (add-to-list 'web-mode-engines-alist
+               '(("php" . "\\.phtml\\'")
+                 ("php" . "\\.tpl\\.php\\'")))
+
+  ;; Set Django as the embedded language for Twig files.
+  (add-to-list 'web-mode-engines-alist
+               '("django" . "\\.html\\.twig\\'"))
+  )
+
 
 ;; Web beautify prettifies html / css / js using js-beautify - install with npm install -g js-beautify.
 (use-package web-beautify
@@ -4203,76 +4252,84 @@ Get it from:  <http://hasseg.org/trash/>"
 (use-package php-mode
   ;; (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
   :mode
-  (("[^.][^t][^p][^l]\\.php$" . php-mode))
+  ;; (("[^.][^t][^p][^l]\\.php$" . php-mode))
+  (("\\.php\\'" . php-mode)
+   ("\\.inc\\'" . php-mode)
+   ("\\.module\\'" . php-mode))
+  :custom
+  (indent-tabs-mode nil)
+  (tab-width 2)
+  (c-basic-offset 2)
+  :hook (php-mode . flycheck)
   :config
   (add-hook 'php-mode-hook
-	    '(lambda ()
+	          '(lambda ()
 	       ;;; PHP-mode settings:
                (setq indent-tabs-mode nil
-		     c-basic-offset 4
+		                 c-basic-offset 4
                      php-template-compatibility nil)
 
                (php-enable-psr2-coding-style)
 
 	       ;;; PHP_CodeSniffer settings:
                ;; (use-package phpcbf
-	       ;; :init
-	       ;; (setq phpcbf-executable "~/.composer/vendor/squizlabs/php_codesniffer/scripts/phpcbf"
-	       ;; phpcbf-standard "PSR2"))
+	             ;; :init
+	             ;; (setq phpcbf-executable "~/.composer/vendor/squizlabs/php_codesniffer/scripts/phpcbf"
+	             ;; phpcbf-standard "PSR2"))
 
 	       ;;; Company-mode settings:
-	       ;; Using :with and company-sort-by-backend-importance makes
-	       ;; it so that company-lsp entries will always appear before
-	       ;; company-dabbrev-code.
+	             ;; Using :with and company-sort-by-backend-importance makes
+	             ;; it so that company-lsp entries will always appear before
+	             ;; company-dabbrev-code.
                ;; TODO Add in support for company-gtags/capf
-	       (use-package company-php)
-	       (ac-php-core-eldoc-setup)
+	             (use-package company-php)
+	             (ac-php-core-eldoc-setup)
                (setq-local company-dabbrev-char-regexp "\\\`$sw")
                (setq-local company-dabbrev-code-everywhere t)
                ;; (setq-local company-transformers '(company-sort-by-backend-importance))
-	       (set (make-local-variable 'company-backends)
-		    ;;'((company-ac-php-backend company-dabbrev-code)))
-		    ;;'((company-ac-php-backend company-dabbrev-code :separate)))
-		    '((company-dabbrev-code company-ac-php-backend)))
-	       ;;'((company-ac-php-backend :with company-dabbrev-code)))
+	             (set (make-local-variable 'company-backends)
+		                ;;'((company-ac-php-backend company-dabbrev-code)))
+		                ;;'((company-ac-php-backend company-dabbrev-code :separate)))
+		                '((company-dabbrev-code company-ac-php-backend)))
+	             ;;'((company-ac-php-backend :with company-dabbrev-code)))
                ;; '((company-lsp :with company-dabbrev-code)))
 
 	       ;;; LSP (Language Server Protocol) Settings:
                ;; (add-to-list 'load-path "~/.emacs.d/lsp-php")
                ;; (require 'lsp-php)
-	       ;; (custom-set-variables
-	       ;; Composer.json detection after Projectile.
-	       ;; 	'(lsp-php-workspace-root-detectors (quote (lsp-php-root-projectile lsp-php-root-composer-json lsp-php-root-vcs)))
-	       ;; )
+	             ;; (custom-set-variables
+	             ;; Composer.json detection after Projectile.
+	             ;; 	'(lsp-php-workspace-root-detectors (quote (lsp-php-root-projectile lsp-php-root-composer-json lsp-php-root-vcs)))
+	             ;; )
                ;; (lsp-php-enable)
 
 	       ;;; Flycheck Settings:
-	       (defvar-local flycheck-checker 'php-phpcs)
+	             (defvar-local flycheck-checker 'php-phpcs)
                (setq-local flycheck-check-syntax-automatically '(save))
 
 	       ;;; Key Bindings:
-	       ;; (dumb-jump-mode)
-	       ;; (ggtags-mode 1)
-	       ;; [J]ump to a function definition (at point)
+	             ;; (dumb-jump-mode)
+	             ;; (ggtags-mode 1)
+	             ;; [J]ump to a function definition (at point)
                (local-set-key (kbd "C-c j") 'ac-php-find-symbol-at-point)
-	       ;; (local-set-key (kbd "C-c j") 'dumb-jump-go)
-	       ;; (local-set-key (kbd "C-c j") 'ggtags-find-definition)
+	             ;; (local-set-key (kbd "C-c j") 'dumb-jump-go)
+	             ;; (local-set-key (kbd "C-c j") 'ggtags-find-definition)
 
-	       ;; Find [r]eferences (at point)
-	       ;; (local-set-key (kbd "C-c r") 'ggtags-find-reference)
+	             ;; Find [r]eferences (at point)
+	             ;; (local-set-key (kbd "C-c r") 'ggtags-find-reference)
 
                ;; Go [b]ack, after jumping
-	       ;; (local-set-key (kbd "C-c b") 'dumb-jump-back)
+	             ;; (local-set-key (kbd "C-c b") 'dumb-jump-back)
                (local-set-key (kbd "C-c b") 'ac-php-location-stack-back)
-	       ;; (local-set-key (kbd "C-c b") 'ggtags-prev-mark)
+	             ;; (local-set-key (kbd "C-c b") 'ggtags-prev-mark)
 
                ;; Go [f]orward
                (local-set-key (kbd "C-c f") 'ac-php-location-stack-forward)
-	       ;; (local-set-key (kbd "C-c f") 'ggtags-next-mark)
+	             ;; (local-set-key (kbd "C-c f") 'ggtags-next-mark)
 
                ;; [S]how a function definition (at point)
                (local-set-key (kbd "C-c s") 'ac-php-show-tip)
-	       ;; (local-set-key (kbd "C-c q") 'dumb-jump-quick-look)
+	             ;; (local-set-key (kbd "C-c q") 'dumb-jump-quick-look)
 
                ;; Re[m]ake the tags (after a source has changed)
                (local-set-key (kbd "C-c m") 'ac-php-remake-tags)
@@ -4280,8 +4337,9 @@ Get it from:  <http://hasseg.org/trash/>"
                ;; Show [p]roject info
                (local-set-key (kbd "C-c p") 'ac-php-show-cur-project-info)
 
-	       ;; Bring up [i]menu
-	       (local-set-key (kbd "C-c i") 'helm-imenu))))
+	             ;; Bring up [i]menu
+	             (local-set-key (kbd "C-c i") 'helm-imenu)))
+  )
 
 
 	       ;; (require 'bind-key)
@@ -4586,6 +4644,14 @@ deletion, or > if it is flagged for displaying."
   ;; copy from https://www.reddit.com/r/emacs/comments/kf3tsq/what_is_this_number_after_the_time_in_the_modeline/
   (setq display-time-default-load-average nil)
   )
+
+;; emmet is a minor-mode that generates html using shorthand, rather than from a pre-existing
+;; template.
+(use-package emmet-mode
+  :hook web-mode)
+;; Dash is a documentation manager for Mac OS that provides a single place to quickly search over
+;; 200 documentation sets
+(use-package dash-docs)
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

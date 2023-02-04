@@ -88,6 +88,9 @@
   (unless (file-directory-p (no-littering-expand-var-file-name "auto-save/"))
     (make-directory (no-littering-expand-var-file-name "auto-save/"))
     )
+  (unless (file-directory-p (no-littering-expand-var-file-name "docsets/"))
+    (make-directory (no-littering-expand-var-file-name "docsets/"))
+    )
   (when (fboundp 'startup-redirect-eln-cache)
     (startup-redirect-eln-cache
      (convert-standard-filename
@@ -4651,7 +4654,20 @@ deletion, or > if it is flagged for displaying."
   :hook web-mode)
 ;; Dash is a documentation manager for Mac OS that provides a single place to quickly search over
 ;; 200 documentation sets
-(use-package dash-docs)
+(use-package dash-docs
+  :config
+  (setq
+   dash-docs-enable-debugging init-file-debug
+   dash-docs-min-length 2
+   dash-docs-browser-func #'eww)
+  (setq dash-docs-docsets-path (no-littering-expand-var-file-name "docsets"))
+  (setq installed-langs (dash-docs-installed-docsets))
+  ;;figure out to convert spaces into underscores when installing the docs
+  (setq docset-langs '("Rust" "Emacs_Lisp" "JavaScript" "C" "Bash" "Vim" "SQLite" "PostgreSQL" "LaTeX" "Docker" "C++" "HTML" "SVG" "CSS"))
+  (dolist (lang docset-langs)
+	  (when (null (member lang installed-langs))
+	    (dash-docs-install-docset lang))))
+
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

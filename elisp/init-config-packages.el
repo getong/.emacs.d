@@ -1173,7 +1173,12 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :ensure t
   :custom (highlight-indent-guides-method 'character)
   (highlight-indent-guides-responsive 'top)
-  :hook (prog-mode . highlight-indent-guides-mode))
+  :hook
+  (prog-mode . highlight-indent-guides-mode)
+  (elisp-mode . highlight-indent-guides-mode)
+  (rust-mode . highlight-indent-guides-mode)
+  (rustic-mode . highlight-indent-guides-mode)
+  )
 
 (use-package switch-window
   :config
@@ -2492,31 +2497,27 @@ Get it from:  <http://hasseg.org/trash/>"
   (setq dap-lldb-debugged-program-function
 	    (lambda () (read-file-name "Select file to debug: "))))
 
-
-;; Load rust-mode when you open `.rs` files
-(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
-
-(eval-after-load "rust-mode"
-  '(setq-default rust-format-on-save t))
-(add-hook 'rust-mode-hook (lambda ()
-                            (flycheck-rust-setup)
-                            (lsp)
-                            (flycheck-mode)
-			                (yas-minor-mode)
-                            ))
-
 ;; copy from https://gitter.im/emacs-lsp/lsp-mode?at=5f7fea9824a20801a8d60649
 (use-package rust-mode
   :ensure t
-  :mode "\\.rs\\'"
-  :hook (rust-mode . flycheck-mode)
+  :mode
+  ("\\.rs\\'" . rust-mode)
+  :hook
+  (rust-mode . flycheck-mode)
+  (rust-mode . lsp)
   :init (setq lsp-rust-server 'rust-analyzer)
   :config
   (setq rust-format-on-save t)
   (setq lsp-completion-provider :capf)
   (setq lsp-progress-via-spinner t)
   (require 'lsp-mode)
-  :hook ((rust-mode . lsp)))
+  (add-hook 'rust-mode-hook (lambda ()
+                              (flycheck-rust-setup)
+                              (lsp)
+                              (flycheck-mode)
+                              (yas-minor-mode)
+                              ))
+  )
 
 (use-package cargo
   :ensure t
@@ -4662,11 +4663,28 @@ deletion, or > if it is flagged for displaying."
   (setq dash-docs-docsets-path (no-littering-expand-var-file-name "docsets"))
   (setq installed-langs (dash-docs-installed-docsets))
   ;;figure out to convert spaces into underscores when installing the docs
-  (setq docset-langs '("Rust" "Emacs_Lisp" "JavaScript" "C" "Bash" "Vim" "SQLite" "PostgreSQL" "LaTeX" "Docker" "C++" "HTML" "SVG" "CSS"))
+   ;; (setq docset-langs '("Rust" "Emacs_Lisp" "JavaScript" "C" "Bash" "Vim" "SQLite" "PostgreSQL" "LaTeX" "Docker" "C++" "HTML" "SVG" "CSS"))
+  (setq docset-langs '("Rust" "Emacs_Lisp"))
   (dolist (lang docset-langs)
 	  (when (null (member lang installed-langs))
 	    (dash-docs-install-docset lang))))
 
+
+;; (use-package centered-cursor-mode
+;;   :demand
+;;   :config
+;;   ;; Optional, enables centered-cursor-mode in all buffers.
+;;   (global-centered-cursor-mode))
+
+;; transpose spit windows
+(use-package transpose-frame
+  :bind ("C-x %". #'transpose-frame))
+
+(use-package syntax-subword
+  :ensure t
+  :init
+  (global-syntax-subword-mode)
+  (setq syntax-subword-skip-spaces nil))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

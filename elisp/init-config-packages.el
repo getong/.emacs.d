@@ -2395,6 +2395,33 @@ Get it from:  <http://hasseg.org/trash/>"
   :ensure t
   :init (global-company-mode)
   :config
+  (defun company-yasnippet-or-completion ()
+    (interactive)
+    (or (do-yas-expand)
+        (company-complete-common)))
+
+  (defun check-expansion ()
+    (save-excursion
+      (if (looking-at "\\_>") t
+        (backward-char 1)
+        (if (looking-at "\\.") t
+          (backward-char 1)
+          (if (looking-at "::") t nil)))))
+
+  (defun do-yas-expand ()
+    (let ((yas/fallback-behavior 'return-nil))
+      (yas/expand)))
+
+  (defun tab-indent-or-complete ()
+    (interactive)
+    (if (minibufferp)
+        (minibuffer-complete)
+      (if (or (not yas/minor-mode)
+              (null (do-yas-expand)))
+          (if (check-expansion)
+              (company-complete-common)
+            (indent-for-tab-command)))))
+
   ;; setq 可以像这样连着设置多个变量的值
   (setq
    ;; 注释贴右侧对齐
@@ -2456,33 +2483,6 @@ Get it from:  <http://hasseg.org/trash/>"
 (use-package company-tabnine
   :ensure t
   :init (add-to-list 'company-backends #'company-tabnine))
-
-(defun company-yasnippet-or-completion ()
-  (interactive)
-  (or (do-yas-expand)
-      (company-complete-common)))
-
-(defun check-expansion ()
-  (save-excursion
-    (if (looking-at "\\_>") t
-      (backward-char 1)
-      (if (looking-at "\\.") t
-        (backward-char 1)
-        (if (looking-at "::") t nil)))))
-
-(defun do-yas-expand ()
-  (let ((yas/fallback-behavior 'return-nil))
-    (yas/expand)))
-
-(defun tab-indent-or-complete ()
-  (interactive)
-  (if (minibufferp)
-      (minibuffer-complete)
-    (if (or (not yas/minor-mode)
-            (null (do-yas-expand)))
-        (if (check-expansion)
-            (company-complete-common)
-          (indent-for-tab-command)))))
 
 ;; Create / cleanup rust scratch projects quickly
 (use-package rust-playground :ensure)
@@ -4840,22 +4840,22 @@ deletion, or > if it is flagged for displaying."
             (eyebrowse-mode t)
             (setq eyebrowse-new-workspace t)))
 
-(use-package winum
-  :ensure t
-  :config
-  (setq winum-auto-setup-mode-line nil)
-  (define-key winum-keymap (kbd "C-`") 'winum-select-window-by-number)
-  (define-key winum-keymap (kbd "C-²") 'winum-select-window-by-number)
-  (define-key winum-keymap (kbd "M-0") 'winum-select-window-0-or-10)
-  (define-key winum-keymap (kbd "M-1") 'winum-select-window-1)
-  (define-key winum-keymap (kbd "M-2") 'winum-select-window-2)
-  (define-key winum-keymap (kbd "M-3") 'winum-select-window-3)
-  (define-key winum-keymap (kbd "M-4") 'winum-select-window-4)
-  (define-key winum-keymap (kbd "M-5") 'winum-select-window-5)
-  (define-key winum-keymap (kbd "M-6") 'winum-select-window-6)
-  (define-key winum-keymap (kbd "M-7") 'winum-select-window-7)
-  (define-key winum-keymap (kbd "M-8") 'winum-select-window-8)
-  (winum-mode))
+;; (use-package winum
+;;   :ensure t
+;;   :config
+;;   (setq winum-auto-setup-mode-line nil)
+;;   (define-key winum-keymap (kbd "C-`") 'winum-select-window-by-number)
+;;   (define-key winum-keymap (kbd "C-²") 'winum-select-window-by-number)
+;;   (define-key winum-keymap (kbd "M-0") 'winum-select-window-0-or-10)
+;;   (define-key winum-keymap (kbd "M-1") 'winum-select-window-1)
+;;   (define-key winum-keymap (kbd "M-2") 'winum-select-window-2)
+;;   (define-key winum-keymap (kbd "M-3") 'winum-select-window-3)
+;;   (define-key winum-keymap (kbd "M-4") 'winum-select-window-4)
+;;   (define-key winum-keymap (kbd "M-5") 'winum-select-window-5)
+;;   (define-key winum-keymap (kbd "M-6") 'winum-select-window-6)
+;;   (define-key winum-keymap (kbd "M-7") 'winum-select-window-7)
+;;   (define-key winum-keymap (kbd "M-8") 'winum-select-window-8)
+;;   (winum-mode))
 
 (use-package edwina
   :ensure t

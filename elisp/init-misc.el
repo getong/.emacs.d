@@ -43,12 +43,12 @@
 
 ;; (add-to-list 'auto-mode-alist '("\\.dart\\'" . dart-mode))
 
-(setq backup-directory-alist (quote (("." . "~/.backups"))))
+;; (setq backup-directory-alist (quote (("." . "~/.backups"))))
 (setq version-control t)
 (setq kept-old-versions 2)
 (setq kept-new-versions 5)
 (setq delete-old-versions t)
-(setq backup-by-copying t)
+;; (setq backup-by-copying t)
 
 
 (setq initial-scratch-message nil)
@@ -350,7 +350,7 @@
 (setq max-lisp-eval-depth 10000)
 
 ;; https://emacs.stackexchange.com/questions/18677/prevent-auto-save-list-directory-to-be-created
-(setq auto-save-list-file-prefix nil)
+;; (setq auto-save-list-file-prefix nil)
 
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 

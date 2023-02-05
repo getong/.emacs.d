@@ -82,12 +82,12 @@
   (load custom-file)
 
   ;; https://eshelyaron.com/esy.html
-  (setq auto-save-file-name-transforms
-        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  ;; (setq auto-save-file-name-transforms
+  ;;       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   ;; 检查auto-save目录是否存在，不存在就创建
-  (unless (file-directory-p (no-littering-expand-var-file-name "auto-save/"))
-    (make-directory (no-littering-expand-var-file-name "auto-save/"))
-    )
+  ;; (unless (file-directory-p (no-littering-expand-var-file-name "auto-save/"))
+  ;;   (make-directory (no-littering-expand-var-file-name "auto-save/"))
+  ;;   )
   (unless (file-directory-p (no-littering-expand-var-file-name "docsets/"))
     (make-directory (no-littering-expand-var-file-name "docsets/"))
     )
@@ -2152,10 +2152,10 @@ Get it from:  <http://hasseg.org/trash/>"
   (push 'rustic-clippy flycheck-checkers)
   (setq lsp-rust-analyzer-cargo-watch-command "clippy")
   ;; (setq lsp-rust-analyzer-cargo-watch-enable nil)
-  (setq rustic-format-on-save t)
-  (setq rustic-lsp-format t)
-
   ;; comment to disable rustfmt on save
+  (setq rustic-format-on-save nil)
+  (setq rustic-lsp-format nil)
+
   (setq rustic-lsp-server 'rust-analyzer)
   (setq rustic-lsp-client 'lsp-mode)
   ;;(setq rustic-lsp-client 'eglot)
@@ -2346,7 +2346,7 @@ Get it from:  <http://hasseg.org/trash/>"
   )
 
 (use-package lsp-ui
-  :ensure
+  :ensure t
   ;; 仅在某软件包被加载后再加载
   :after (lsp-mode)
   ;; :requires use-package-hydra
@@ -2362,26 +2362,46 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; 当 lsp 被激活时自动激活 lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
   :config
-  (setq lsp-print-io nil
-        lsp-prefer-flymake :none
-        flycheck-checker-error-threshold 10000
-        lsp-ui-flycheck-enable t
-        lsp-ui-flycheck-list-position 'right
-        lsp-ui-flycheck-live-reporting t
-        lsp-ui-peek-enable t
-        lsp-ui-peek-list-width 60
-        lsp-ui-peek-peek-height 25
-        lsp-ui-imenu-enable t
-        lsp-ui-sideline-ignore-duplicate t)
-  (setq-local flycheck-checker 'python-flake8)
-  ;; (lsp-ui-peek-always-show t)
   ;; copy from [A guide on disabling/enabling lsp-mode features](https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/)
-  :custom
-  (lsp-ui-doc-enable t)
-  (lsp-ui-doc-show-with-cursor t)
-  (lsp-ui-doc-show-with-mouse nil)
-  (lsp-ui-sideline-enable t)
-  (lsp-ui-sideline-show-hover nil)
+  (setq
+   ;; Symbol highlighting
+   lsp-enable-symbol-highlighting t
+   lsp-print-io nil
+   lsp-prefer-flymake :none
+   flycheck-checker-error-threshold 10000
+   lsp-ui-flycheck-enable t
+   lsp-ui-flycheck-list-position 'right
+   lsp-ui-flycheck-live-reporting t
+   lsp-ui-peek-enable t
+   lsp-ui-peek-list-width 60
+   lsp-ui-peek-peek-height 25
+   lsp-ui-imenu-enable t
+   ;; you could manually request them via `lsp-signature-activate`
+   lsp-signature-auto-activate nil
+   ;; Signature help documentation (keep the signatures)
+   lsp-signature-render-documentation nil
+   ;; lsp-ui-doc - on hover dialogs. * disable via
+   lsp-ui-doc-enable t
+   ;; Lenses
+   lsp-lens-enable t
+   ;; Headerline
+   lsp-headerline-breadcrumb-enable t
+   lsp-ui-doc-show-with-cursor t
+   lsp-ui-doc-show-with-mouse nil
+   ;; Sideline code actions * disable whole sideline via
+   lsp-ui-sideline-enable t
+   lsp-ui-sideline-show-code-actions t
+   ;; hover symbols
+   lsp-ui-sideline-show-hover t
+   lsp-completion-show-detail t
+   lsp-completion-show-kind t
+   lsp-ui-sideline-show-diagnostics t
+   lsp-modeline-code-actions-enable nil
+   lsp-eldoc-enable-hover nil
+   lsp-modeline-diagnostics-enable nil
+   lsp-ui-peek-always-show t
+   lsp-ui-sideline-ignore-duplicate t)
+  ;; (setq-local flycheck-checker 'python-flake8)
   )
 
 (use-package yasnippet
@@ -2431,7 +2451,7 @@ Get it from:  <http://hasseg.org/trash/>"
    ;; 显示编号（然后可以用 M-数字 快速选定某一项）
    company-show-numbers t
    ;; 延时多少秒后弹出
-   company-idle-delay 0.2
+   company-idle-delay 0
    ;; 至少几个字符后开始补全
    company-minimum-prefix-length 1
    company-selection-wrap-around t
@@ -2614,11 +2634,11 @@ Get it from:  <http://hasseg.org/trash/>"
     )))
 
 ;; copy from [Rust development environment for Emacs](https://rustrepo.com/repo/brotzeit-rustic-rust-ides)
-(defun rustic-mode-auto-save-hook ()
-  "Enable auto-saving in rustic-mode buffers."
-  (when buffer-file-name
-    (setq-local compilation-ask-about-save nil)))
-(add-hook 'rustic-mode-hook 'rustic-mode-auto-save-hook)
+;; (defun rustic-mode-auto-save-hook ()
+;;   "Enable auto-saving in rustic-mode buffers."
+;;   (when buffer-file-name
+;;     (setq-local compilation-ask-about-save nil)))
+;; (add-hook 'rustic-mode-hook 'rustic-mode-auto-save-hook)
 
 ;; 正在从ivy、swiper、counsel、hydra转向vertico、consult、embark、orderless。
 ;; 增强 minibuffer 补全：vertico 和 Orderless, 垂直补全
@@ -3007,7 +3027,7 @@ Get it from:  <http://hasseg.org/trash/>"
   ;;(setq recentf-max-menu-items 5000)
   (setq recentf-auto-cleanup 'never)  ;
   (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker" (expand-file-name "var/undohist/*" user-emacs-directory)))
-  (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
+  ;; (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
   (setq recentf-save-file "~/.emacs.d/var/recentf")
   ;; (bind-key "C-c っ" 'helm-recentf)
   ;; (bind-key "C-c t" 'helm-recentf)

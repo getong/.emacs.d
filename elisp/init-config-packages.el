@@ -2166,14 +2166,24 @@ Get it from:  <http://hasseg.org/trash/>"
 ;;   :hook ((typescript-mode . tide-setup)
 ;;          (typescript-mode . tide-hl-identifier-mode)
 ;;          (before-save . tide-format-before-save)))
-
+;; copy from https://nyk.ma/posts/emacs-write-your-own/
+;; 由于 lsp-mode 的一次大更新，把使用方式变成如今调用 (lsp) 即可，所以目前 eglot 竞争力不强了。
 (use-package lsp-mode
   :ensure t
   :commands lsp
+  :init ;; 在 (reuqire) 之前执行
+  (setq
+   ;; 尝试自动配置自己
+   lsp-auto-configure t
+   ;; 尝试自动猜测项目根文件夹
+   lsp-auto-guess-root t
+   ;; 多少时间idle后向服务器刷新信息
+   lsp-idle-delay 0.500
+   ;; 给缓存文件换一个位置
+   lsp-session-file (no-littering-expand-var-file-name "lsp-sessions"))
   :custom
   ;; what to use when checking on-save. "check" is default, I prefer clippy
   ;;(lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6)
   (lsp-enable-snippet t)
   (lsp-keep-workspace-alive t)
   (lsp-enable-xref t)
@@ -2215,9 +2225,10 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; (vconcat ["**/exclude_me/**"] lsp-intelephense-files-exclude))
   ;; Reduce max file size to 100kb
   (lsp-intelephense-files-max-size 100000)
-  (lsp-session-file (no-littering-expand-var-file-name "lsp-sessions"))
+
   :hook
   ;; (php-mode . lsp)
+  ;; 在哪些语言 major mode 下启用 LSP
   ((c-mode
     c++-mode
     python-mode
@@ -2319,21 +2330,33 @@ Get it from:  <http://hasseg.org/trash/>"
 
 (use-package lsp-ui
   :ensure
+  ;; 仅在某软件包被加载后再加载
+  :after (lsp-mode)
   ;; :requires use-package-hydra
   :commands lsp-ui-mode
+  :bind
+  (:map lsp-ui-mode-map
+        ;; 查询符号定义：使用 LSP 来查询。通常是 M-.
+        ([remap xref-find-references] . lsp-ui-peek-find-references)
+        ;; 查询符号引用：使用 LSP 来查询。通常是 M-?
+        ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+        ;; 该文件里的符号列表：类、方法、变量等。前提是语言服务支持本功能。
+        ("C-c u" . lsp-ui-imenu))
+  ;; 当 lsp 被激活时自动激活 lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
   :config
-  (setq lsp-print-io nil)
-  (setq lsp-prefer-flymake :none)
-  (setq flycheck-checker-error-threshold 10000)
-  (setq lsp-ui-flycheck-enable t)
+  (setq lsp-print-io nil
+        lsp-prefer-flymake :none
+        flycheck-checker-error-threshold 10000
+        lsp-ui-flycheck-enable t
+        lsp-ui-flycheck-list-position 'right
+        lsp-ui-flycheck-live-reporting t
+        lsp-ui-peek-enable t
+        lsp-ui-peek-list-width 60
+        lsp-ui-peek-peek-height 25
+        lsp-ui-imenu-enable t
+        lsp-ui-sideline-ignore-duplicate t)
   (setq-local flycheck-checker 'python-flake8)
-  (setq lsp-ui-flycheck-list-position 'right)
-  (setq lsp-ui-flycheck-live-reporting t)
-  (setq lsp-ui-peek-enable t)
-  (setq lsp-ui-peek-list-width 60)
-  (setq lsp-ui-peek-peek-height 25)
-  (setq lsp-ui-imenu-enable t)
-  (setq lsp-ui-sideline-ignore-duplicate t)
   ;; (lsp-ui-peek-always-show t)
   ;; copy from [A guide on disabling/enabling lsp-mode features](https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/)
   :custom

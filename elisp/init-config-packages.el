@@ -4857,13 +4857,6 @@ deletion, or > if it is flagged for displaying."
 ;;   (define-key winum-keymap (kbd "M-8") 'winum-select-window-8)
 ;;   (winum-mode))
 
-(use-package edwina
-  :ensure t
-  :config
-  (setq display-buffer-base-action '(display-buffer-below-selected))
-  (edwina-setup-dwm-keys)
-  (edwina-mode 1))
-
 ;; hydra 更接近于「功能菜单」：弹出一个「常用功能列表」.
 ;; 你可以用连续击键来连续触发若干个函数。
 (use-package hydra

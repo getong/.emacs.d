@@ -4663,8 +4663,7 @@ deletion, or > if it is flagged for displaying."
   (setq dash-docs-docsets-path (no-littering-expand-var-file-name "docsets"))
   (setq installed-langs (dash-docs-installed-docsets))
   ;;figure out to convert spaces into underscores when installing the docs
-   ;; (setq docset-langs '("Rust" "Emacs_Lisp" "JavaScript" "C" "Bash" "Vim" "SQLite" "PostgreSQL" "LaTeX" "Docker" "C++" "HTML" "SVG" "CSS"))
-  (setq docset-langs '("Rust" "Emacs_Lisp"))
+  (setq docset-langs '("Rust" "Emacs_Lisp" "JavaScript" "C" "Bash" "Vim" "SQLite" "PostgreSQL" "LaTeX" "Docker" "C++" "HTML" "SVG" "CSS"))
   (dolist (lang docset-langs)
 	  (when (null (member lang installed-langs))
 	    (dash-docs-install-docset lang))))

@@ -302,7 +302,7 @@
  )
 
 (setq undo-limit 104857600         ; 重置撤销限制到 100 MiB
-      auto-save-default t          ; 没有人喜欢丢失工作，我也是如此
+      ;; auto-save-default t          ; 没有人喜欢丢失工作，我也是如此
       truncate-string-ellipsis "…" ; Unicode 省略号相比 ascii 更好
       ;; 同时节省 /宝贵的/ 空间
       password-cache-expiry nil    ; 我能信任我的电脑 ... 或不能?

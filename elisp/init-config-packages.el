@@ -537,6 +537,8 @@
   ;; :bind ("C-c L" . prot/scroll-centre-cursor-mode)
 
   :init
+  ;; use super-save mode
+  (setq auto-save-default nil)
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
   ;; life is too short
@@ -3222,11 +3224,23 @@ Get it from:  <http://hasseg.org/trash/>"
 
 ;; 自动保存
 (use-package super-save
+  :ensure t
   :defer 1
   :diminish super-save-mode
   :config
   (super-save-mode +1)
-  (setq super-save-auto-save-when-idle t))
+  (setq super-save-auto-save-when-idle t)
+  ;; add integration with ace-window
+  (add-to-list 'super-save-triggers 'ace-window)
+  ;; save on find-file
+  (add-to-list 'super-save-hook-triggers 'find-file-hook)
+  ;;  exclude specific files from super-save, not save gpg files
+  (setq super-save-exclude '(".gpg"))
+  ;; predicates must not take arguments and return nil, when current buffer shouldn't save.
+  (add-to-list 'super-save-predicates
+               (lambda ()
+                 (not (eq major-mode 'markdown-mode))))
+  )
 
 (use-package magit
   :general

@@ -413,9 +413,20 @@
 ;;
 (use-package multiple-cursors
   :ensure t
-  :bind (("C->" . mc/mark-next-like-this)
-         ("C-<" . mc/mark-previous-like-this)
-         ("C-c C-SPC" . mc/mark-all-like-this)))
+  :bind (
+         ;; 每行一个光标
+         ("C-S-c" . mc/edit-lines)
+         ;; 全选光标所在单词并在下一个单词增加一个光标。通常用来启动一个流程
+         ("C->" . mc/mark-next-like-this-symbol)
+         ;; 跳过当前单词并跳到下一个单词，和上面在同一个流程里。
+         ("C-M->" . mc/skip-to-next-like-this)
+         ;; 同样是开启一个多光标流程，但是是「向上找」而不是向下找。
+         ("C-<" . mc/mark-previous-like-this-symbol)
+         ;; 跳过当前单词并跳到上一个单词，和上面在同一个流程里。
+         ("C-M-<" . mc/skip-to-previous-like-this)
+         ;; 直接多选本 buffer 所有这个单词
+         ("C-c C->" . mc/mark-all-symbols-like-this)
+         ))
 
 ;; (use-package multiple-cursors
 ;;   :ensure t
@@ -461,6 +472,10 @@
   :init
   (setq vterm-shell "zsh")
   :config
+  ;; shell 退出时 kill 掉这个 buffer
+  (setq vterm-kill-buffer-on-exit t)
+  ;; 使用 M-x vterm 新建一个 terminal
+  ;; 在 terminal 中使用 C-c C-t 进入「选择」模式（类似 Tmux 里的 C-b [ ）
   (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
   (setq vterm-max-scrollback 99999)
   (setq vterm-always-compile-module t)
@@ -2378,24 +2393,28 @@ Get it from:  <http://hasseg.org/trash/>"
   :ensure t
   :init (global-company-mode)
   :config
-
-  (setq company-idle-delay 0.0)
-  ;;; 给选项编号 (按快捷键 M-1、M-2 等等来进行选择).
-  (setq company-show-numbers t)
-  (setq company-selection-wrap-around t)
-  ;; 只需敲 1 个字母就开始进行自动补全
-  (setq company-minimum-prefix-length 1)
-  ;; 根据选择的频率进行排序，读者如果不喜欢可以去掉
-  (setq company-transformers '(company-sort-by-occurrence))
-  (setq company-tooltip-align-annotations t)
-
-  ;; copy from [Emacs + Company-Mode 配置多个补全后端](https://manateelazycat.github.io/emacs/2021/06/30/company-multiple-backends.html)
-  ;; Customize company backends.
-  (setq company-backends
-        '(
-          (company-tabnine company-dabbrev company-keywords company-files company-capf)
-          ))
-
+  ;; setq 可以像这样连着设置多个变量的值
+  (setq
+   ;; 注释贴右侧对齐
+   company-tooltip-align-annotations t
+   ;; 菜单里可选项数量
+   company-tooltip-limit 20
+   ;; 显示编号（然后可以用 M-数字 快速选定某一项）
+   company-show-numbers t
+   ;; 延时多少秒后弹出
+   company-idle-delay 0.2
+   ;; 至少几个字符后开始补全
+   company-minimum-prefix-length 1
+   company-selection-wrap-around t
+   ;; 根据选择的频率进行排序，读者如果不喜欢可以去掉
+   company-transformers '(company-sort-by-occurrence)
+   ;; copy from [Emacs + Company-Mode 配置多个补全后端](https://manateelazycat.github.io/emacs/2021/06/30/company-multiple-backends.html)
+   ;; Customize company backends.
+   company-backends
+   '(
+     (company-tabnine company-dabbrev company-keywords company-files company-capf)
+     )
+   )
   ;; Add yasnippet support for all company backends.
   (defvar company-mode/enable-yas t
     "Enable yasnippet for all backends.")
@@ -4143,29 +4162,42 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; (define-key corfu-map "\M-m" #'corfu-move-to-minibuffer)
 
 (use-package kind-icon
-  :after corfu
+  :ensure t
   :custom
   (kind-icon-use-icons t)
-  (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
+  ;; (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
   (kind-icon-blend-background nil)  ; Use midpoint color between foreground and background colors ("blended")?
   (kind-icon-blend-frac 0.08)
-
-  ;; NOTE 2022-02-05: `kind-icon' depends `svg-lib' which creates a cache
-  ;; directory that defaults to the `user-emacs-directory'. Here, I change that
-  ;; directory to a location appropriate to `no-littering' conventions, a
-  ;; package which moves directories of other packages to sane locations.
-  ;; (svg-lib-icons-dir (no-littering-expand-var-file-name "svg-lib/cache/")) ; Change cache dir
   :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
+  (add-hook 'my-completion-ui-mode-hook
+   	        (lambda ()
+   	          (setq completion-in-region-function
+   		            (kind-icon-enhance-completion
+   		             completion-in-region-function)))))
+;; (use-package kind-icon
+;;   ;; :after corfu
+;;   :custom
+;;   (kind-icon-use-icons t)
+;;   ;; (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
+;;   (kind-icon-blend-background nil)  ; Use midpoint color between foreground and background colors ("blended")?
+;;   (kind-icon-blend-frac 0.08)
 
-  ;; Add hook to reset cache so the icon colors match my theme
-  ;; NOTE 2022-02-05: This is a hook which resets the cache whenever I switch
-  ;; the theme using my custom defined command for switching themes. If I don't
-  ;; do this, then the backgound color will remain the same, meaning it will not
-  ;; match the background color corresponding to the current theme. Important
-  ;; since I have a light theme and dark theme I switch between. This has no
-  ;; function unless you use something similar
-  (add-hook 'kb/themes-hooks #'(lambda () (interactive) (kind-icon-reset-cache))))
+;;   ;; NOTE 2022-02-05: `kind-icon' depends `svg-lib' which creates a cache
+;;   ;; directory that defaults to the `user-emacs-directory'. Here, I change that
+;;   ;; directory to a location appropriate to `no-littering' conventions, a
+;;   ;; package which moves directories of other packages to sane locations.
+;;   ;; (svg-lib-icons-dir (no-littering-expand-var-file-name "svg-lib/cache/")) ; Change cache dir
+;;   :config
+;;   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
+
+;;   ;; Add hook to reset cache so the icon colors match my theme
+;;   ;; NOTE 2022-02-05: This is a hook which resets the cache whenever I switch
+;;   ;; the theme using my custom defined command for switching themes. If I don't
+;;   ;; do this, then the backgound color will remain the same, meaning it will not
+;;   ;; match the background color corresponding to the current theme. Important
+;;   ;; since I have a light theme and dark theme I switch between. This has no
+;;   ;; function unless you use something similar
+;;   (add-hook 'kb/themes-hooks #'(lambda () (interactive) (kind-icon-reset-cache))))
 
 ;; (use-package corfu-doc
 ;;   ;; NOTE 2022-02-05: At the time of writing, `corfu-doc' is not yet on melpa
@@ -4763,6 +4795,67 @@ deletion, or > if it is flagged for displaying."
   :commands (consult-projectile)
   :bind ("C-c C-t" . consult-projectile)
   ("C-x C-p" . consult-projectile))
+
+;; 可视范围内跳转
+(use-package avy
+  :bind (("C-'" . avy-goto-char-timer) ;; Control + 单引号
+         ;; 复用上一次搜索
+         ("C-c C-j" . avy-resume))
+  :config
+  (setq avy-background t ;; 打关键字时给匹配结果加一个灰背景，更醒目
+        avy-all-windows t ;; 搜索所有 window，即所有「可视范围」
+        avy-timeout-seconds 0.3)) ;; 「关键字输入完毕」信号的触发时间
+
+;; buffer 内正则替换
+;; 渐进式可视化
+(use-package anzu
+  :ensure t)
+;; 我都是手动调用它的，因为使用场景不多，但又不能没有……
+;; M-x anzu-query-replace-regexp
+
+;; Workspaces
+;; 保存和呼出窗口布局。
+(use-package eyebrowse
+  :ensure t
+  :diminish eyebrowse-mode
+  :config (progn
+            (define-key eyebrowse-mode-map (kbd "C-x m 1") 'eyebrowse-switch-to-window-config-1)
+            (define-key eyebrowse-mode-map (kbd  "C-x m 2") 'eyebrowse-switch-to-window-config-2)
+            (define-key eyebrowse-mode-map (kbd "C-x m 3") 'eyebrowse-switch-to-window-config-3)
+            (define-key eyebrowse-mode-map (kbd "C-x m 4") 'eyebrowse-switch-to-window-config-4)
+            (eyebrowse-mode t)
+            (setq eyebrowse-new-workspace t)))
+
+(use-package winum
+  :ensure t
+  :config
+  (setq winum-auto-setup-mode-line nil)
+  (define-key winum-keymap (kbd "C-`") 'winum-select-window-by-number)
+  (define-key winum-keymap (kbd "C-²") 'winum-select-window-by-number)
+  (define-key winum-keymap (kbd "M-0") 'winum-select-window-0-or-10)
+  (define-key winum-keymap (kbd "M-1") 'winum-select-window-1)
+  (define-key winum-keymap (kbd "M-2") 'winum-select-window-2)
+  (define-key winum-keymap (kbd "M-3") 'winum-select-window-3)
+  (define-key winum-keymap (kbd "M-4") 'winum-select-window-4)
+  (define-key winum-keymap (kbd "M-5") 'winum-select-window-5)
+  (define-key winum-keymap (kbd "M-6") 'winum-select-window-6)
+  (define-key winum-keymap (kbd "M-7") 'winum-select-window-7)
+  (define-key winum-keymap (kbd "M-8") 'winum-select-window-8)
+  (winum-mode))
+
+(use-package edwina
+  :ensure t
+  :config
+  (setq display-buffer-base-action '(display-buffer-below-selected))
+  (edwina-setup-dwm-keys)
+  (edwina-mode 1))
+
+;; hydra 更接近于「功能菜单」：弹出一个「常用功能列表」.
+;; 你可以用连续击键来连续触发若干个函数。
+(use-package hydra
+  :bind (("C-c m" . hydra-magit/body)
+         ("C-c o" . hydra-org/body)
+         ))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

@@ -2215,27 +2215,49 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; (vconcat ["**/exclude_me/**"] lsp-intelephense-files-exclude))
   ;; Reduce max file size to 100kb
   (lsp-intelephense-files-max-size 100000)
+  (lsp-session-file (no-littering-expand-var-file-name "lsp-sessions"))
   :hook
-  (php-mode . lsp)
+  ;; (php-mode . lsp)
+  ((c-mode
+    c++-mode
+    python-mode
+    sh-mode
+    rust-mode
+    rustic-mode
+    php-mode
+    lua-mode
+    html-mode
+    json-mode
+    dockerfile-mode
+    css-mode
+    yaml-mode
+    typescript-mode
+    go-mode) .
+    (lambda ()
+      (hack-local-variables)
+      (lsp)
+      (which-function-mode)
+      ))
+  (lsp-mode . lsp-enable-which-key-integration)
   :config
   ;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
-  (add-hook 'go-mode-hook #'lsp)
-  (add-hook 'python-mode-hook #'lsp)
-  (add-hook 'c++-mode-hook #'lsp)
-  (add-hook 'c-mode-hook #'lsp)
-  (add-hook 'rust-mode-hook #'lsp)
-  (add-hook 'html-mode-hook #'lsp)
+  ;; (add-hook 'go-mode-hook #'lsp)
+  ;; (add-hook 'python-mode-hook #'lsp)
+  ;; (add-hook 'c++-mode-hook #'lsp)
+  ;; (add-hook 'c-mode-hook #'lsp)
+  ;; (add-hook 'rust-mode-hook #'lsp)
+  ;; (add-hook 'html-mode-hook #'lsp)
   ;; (add-hook 'php-mode-hook #'lsp)
   ;;(add-hook 'js-mode-hook #'lsp)
   ;;(add-hook 'typescript-mode-hook #'lsp)
-  (add-hook 'json-mode-hook #'lsp)
-  (add-hook 'yaml-mode-hook #'lsp)
-  (add-hook 'dockerfile-mode-hook #'lsp)
-  (add-hook 'shell-mode-hook #'lsp)
-  (add-hook 'css-mode-hook #'lsp)
-  (add-hook 'lua-mode-hook #'lsp)
+  ;; (add-hook 'json-mode-hook #'lsp)
+  ;; (add-hook 'yaml-mode-hook #'lsp)
+  ;; (add-hook 'dockerfile-mode-hook #'lsp)
+  ;; (add-hook 'shell-mode-hook #'lsp)
+  ;; (add-hook 'css-mode-hook #'lsp)
+  ;; (add-hook 'lua-mode-hook #'lsp)
   ;; copy from https://sagot.dev/en/articles/emacs-typescript/
-  (add-hook 'typescript-mode-hook 'lsp-deferred)
+  ;; (add-hook 'typescript-mode-hook 'lsp-deferred)
   ;;(add-hook 'javascript-mode-hook 'lsp-deferred)
   (with-eval-after-load "lsp-rust"
     (lsp-register-client
@@ -2671,7 +2693,9 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; if you want to have consult previews as you move around an
   ;; auto-updating embark collect buffer
   :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  (embark-collect-mode . consult-preview-at-point-mode)
+  (embark-collect-mode . embark-consult-preview-minor-mode)
+  )
 
 ;; 增强文件内搜索和跳转函数定义：Consult
 ;; Example configuration for Consult
@@ -3033,6 +3057,8 @@ Get it from:  <http://hasseg.org/trash/>"
 
 (use-package dashboard
   :ensure t
+  :init
+  (dashboard-setup-startup-hook)
   :config
   (setq dashboard-banner-logo-title "Welcome to Emacs!") ;; 个性签名，随读者喜好设置
   (setq dashboard-projects-backend 'projectile) ;; 读者可以暂时注释掉这一行，等安装了 projectile 后再使用
@@ -3047,7 +3073,7 @@ Get it from:  <http://hasseg.org/trash/>"
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
   (setq dashboard-set-navigator t)
-  (dashboard-setup-startup-hook))
+  )
 
 ;; (use-package highlight-symbol
 ;;   :ensure t
@@ -4697,6 +4723,23 @@ deletion, or > if it is flagged for displaying."
   :bind (("<M-up>". drag-stuff-up)
          ("<M-down>" . drag-stuff-down)))
 
+;; *Gcmh* does garbage collection (GC) when the user is idle.
+(use-package gcmh
+  :diminish 'gcmh-mode
+  :init
+  (setq gcmh-idle-delay 5
+	    gcmh-high-cons-threshold (* 16 1024 1024))  ; 16mb
+  :config (gcmh-mode))
+
+(use-package recursion-indicator
+  :config
+  (recursion-indicator-mode))
+
+
+(use-package consult-projectile
+  :commands (consult-projectile)
+  :bind ("C-c C-t" . consult-projectile)
+  ("C-x C-p" . consult-projectile))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

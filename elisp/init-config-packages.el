@@ -4908,6 +4908,13 @@ deletion, or > if it is flagged for displaying."
   ;; )
   )
 
+(use-package explain-pause-mode
+  :ensure t
+  :straight (explain-pause-mode :type git :host github :repo "lastquestion/explain-pause-mode")
+  :defer 2
+  :config
+  (setq explain-pause-top-auto-refresh-interval 0.1)
+  (explain-pause-mode))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

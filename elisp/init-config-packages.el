@@ -4924,5 +4924,51 @@ deletion, or > if it is flagged for displaying."
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 
+(use-package ace-window
+  :ensure t
+  :defer t
+  :delight ace-window-mode
+  :bind ("C-x C-j" . ace-window)
+  :init (setq aw-background nil)
+  :custom
+  (aw-scope 'frame)
+  (aw-ignore-on t)
+  (aw-dispatch-when-more-than 3)
+  (aw-keys '(?h ?j ?k ?l ?u ?i ?o ?p))
+  (aw-ignored-buffers '("*NeoTree*"))
+  )
+
+;; kubernetes
+(use-package kele
+  :ensure t
+  ;; :straight t
+  :config
+  (kele-mode 1))
+
+(use-package paredit
+  :ensure t
+  :config
+  (define-key paredit-mode-map (kbd "C-M-]") 'paredit-forward-barf-sexp)
+  (define-key paredit-mode-map (kbd "C-M-[") 'paredit-backward-barf-sexp)
+  (define-key paredit-mode-map (kbd "M-]") 'paredit-forward-slurp-sexp)
+  (define-key paredit-mode-map (kbd "M-[") 'paredit-backward-slurp-sexp)
+  (add-hook 'cider-repl-mode-hook 'paredit-mode)
+  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+  (add-hook 'clojure-mode-hook 'paredit-mode)
+  (add-hook 'nrepl-mode-hook 'paredit-mode))
+
+;; nameframe
+(use-package nameframe
+  :ensure t
+  :config
+  (global-set-key (kbd "C-c :") 'nameframe-create-frame)
+  (global-set-key (kbd "C-c ;") 'nameframe-switch-frame))
+
+
+;; nameframe-projectile.el --- Nameframe integration with Projectile
+(use-package nameframe-projectile
+  :after (nameframe projectile)
+  :config (nameframe-projectile-mode t))
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

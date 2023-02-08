@@ -4916,5 +4916,13 @@ deletion, or > if it is flagged for displaying."
   (setq explain-pause-top-auto-refresh-interval 0.1)
   (explain-pause-mode))
 
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

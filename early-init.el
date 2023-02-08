@@ -7,14 +7,14 @@
 
 ;; 设置软件源
 (setq package-archives '(
-			 ("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
+                         ("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
                          ("org" . "http://mirrors.ustc.edu.cn/elpa/org/")
                          ("stable-melpa" . "http://mirrors.ustc.edu.cn/elpa/stable-melpa/")
                          ("gnu" . "http://mirrors.ustc.edu.cn/elpa/gnu/")
                          ("gnu-devel" . "http://mirrors.ustc.edu.cn/elpa/gnu-devel/")
                          ("nongnu" . "http://mirrors.ustc.edu.cn/elpa/nongnu/")
                          ("nongnu-devel" . "http://mirrors.ustc.edu.cn/elpa/nongnu-devel/")
-                         ("marmalade" . "http://mirrors.cloud.tencent.com/elpa/marmalade/")
+                         ;; ("marmalade" . "http://mirrors.cloud.tencent.com/elpa/marmalade/")
                          ;; ("melpa" . "http://mirrors.cloud.tencent.com/elpa/melpa/")
                          ;; ("org" . "http://mirrors.cloud.tencent.com/elpa/org/")
                          ;; ("stable-melpa" . "http://mirrors.cloud.tencent.com/elpa/melpa-stable/")
@@ -28,7 +28,7 @@
 (setq package-archive-priorities '(("melpa"  . 10)
                                    ("org"  . 5)
                                    ("stable-melpa"  . 5)
-                                   ("marmalade"  . 5)
+                                   ;; ("marmalade"  . 5)
                                    ("gnu"  . 3)
                                    ("gnu-devel"  . 3)
                                    ("nongnu"    . 1)
@@ -78,6 +78,20 @@
 (defconst *is-mac* (eq system-type 'darwin))
 (defconst *is-linux* (eq system-type 'gnu/linux))
 (defconst *is-windows* (or (eq system-type 'ms-dos) (eq system-type 'windows-nt)))
+
+;; 启用 straight
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 
 ;; copy from https://www.reddit.com/r/emacs/comments/siuvpu/isnt_there_a_better_way_to_set_utf8/

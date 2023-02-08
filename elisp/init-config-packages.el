@@ -1754,6 +1754,7 @@ Get it from:  <http://hasseg.org/trash/>"
   :config
   ;; 异步读取含 10000 个以上文件的文件夹
   (setq dirvish-async-listing-threshold 10000)
+  (setq dirvish-depth 0)
   ;; (dirvish-peek-mode) ; Preview files in minibuffer
   ;; (dirvish-side-follow-mode) ; similar to `treemacs-follow-mode'
   (setq dirvish-mode-line-format
@@ -4890,6 +4891,23 @@ deletion, or > if it is flagged for displaying."
   :bind (("C-c m" . hydra-magit/body)
          ("C-c o" . hydra-org/body)
          ))
+
+;; git clone https://github.com/manateelazycat/color-rg
+(use-package color-rg
+  :defer nil
+  ;; :load-path (lambda () (expand-file-name "elpa/color-rg" user-emacs-directory))
+  :straight '(color-rg :type git
+		               :host github
+		               :repo "manateelazycat/color-rg")
+  :commands (color-rg-search-input)
+  :if (executable-find "rg")
+  :bind
+  ;; (:map isearch-mode-map
+  ("M-s M-s" . isearch-toggle-color-rg)
+  ("C-M-s" . color-rg-search-input)
+  ;; )
+  )
+
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

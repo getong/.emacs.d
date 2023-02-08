@@ -28,3 +28,4 @@ etc
 .cache
 elisp/flycheck_*
 async-bytecomp.log
+straight

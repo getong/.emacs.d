@@ -1731,6 +1731,8 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
               ;; (dired-omit-mode 1)
               (dired-hide-details-mode 1)
               (hl-line-mode 1)))
+  ;; Auto-refresh dired on file change
+  (add-hook 'dired-mode-hook 'auto-revert-mode)
   ;; copy from https://christiantietze.de/posts/2021/06/emacs-trash-file-macos/
   (setq delete-by-moving-to-trash t)
   (cond

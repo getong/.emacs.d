@@ -485,8 +485,13 @@
     (kill-ring-save (point) (vterm-end-of-line))
     (vterm-send-key "k" nil nil t))
   (defun turn-off-chrome ()
+    ;; vterm 模式下禁用hl-line-mode
     (hl-line-mode -1)
-    (display-line-numbers-mode -1))
+    ;; vterm 模式下禁用display-line-numbers-mode
+    (display-line-numbers-mode -1)
+    ;; vterm 模式下禁用emojify-mode
+    (emojify-mode -1)
+    )
   :hook
   (vterm-mode . turn-off-chrome)
   ;; copy from https://erickgnavar.github.io/emacs-config/

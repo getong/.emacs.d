@@ -472,6 +472,11 @@
               ("C-y" . vterm-yank)
               ("M-y" . vterm-yank-pop)
               ("C-k" . vterm-send-C-k-and-kill))
+  :custom
+  ((vterm-buffer-name-string "*my-own-vterm*")
+   (vterm-use-vterm-prompt-detection-method t)
+   (vterm-max-scrollback 10000)
+   )
   :init
   (setq vterm-shell "zsh")
   :config
@@ -481,7 +486,7 @@
   ;; 使用 M-x vterm 新建一个 terminal
   ;; 在 terminal 中使用 C-c C-t 进入「选择」模式（类似 Tmux 里的 C-b [ ）
   (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-  (setq vterm-max-scrollback 99999)
+  ;; (setq vterm-max-scrollback 99999)
   (setq vterm-always-compile-module t)
   (defun vterm-send-C-k-and-kill ()
     "Send `C-k' to libvterm, and put content in kill-ring."
@@ -495,6 +500,7 @@
     (display-line-numbers-mode -1)
     ;; vterm 模式下禁用emojify-mode
     (emojify-mode -1)
+    (setq-local global-hl-line-mode nil)
     )
   :hook
   (vterm-mode . turn-off-chrome)

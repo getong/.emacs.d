@@ -472,6 +472,7 @@
   :init
   (setq vterm-shell "zsh")
   :config
+  ;; TODO disable c-] shortcut
   ;; shell 退出时 kill 掉这个 buffer
   (setq vterm-kill-buffer-on-exit t)
   ;; 使用 M-x vterm 新建一个 terminal
@@ -4955,6 +4956,8 @@ deletion, or > if it is flagged for displaying."
   :config
   (kele-mode 1))
 
+;; paredit-mode 启用自动补全括号
+;; 再一次paredit-mode 禁用自动补全括号
 (use-package paredit
   :ensure t
   :config
@@ -4965,7 +4968,8 @@ deletion, or > if it is flagged for displaying."
   (add-hook 'cider-repl-mode-hook 'paredit-mode)
   (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
   (add-hook 'clojure-mode-hook 'paredit-mode)
-  (add-hook 'nrepl-mode-hook 'paredit-mode))
+  (add-hook 'nrepl-mode-hook 'paredit-mode)
+  )
 
 ;; nameframe
 (use-package nameframe

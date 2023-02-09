@@ -1495,6 +1495,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 
 (use-package dart-mode
   :ensure t
+  :defines (projectile-project-root-files-bottom-up)
   :if (or (executable-find "dart") (executable-find "flutter"))
   :bind (:map dart-mode-map
               ("C-c C-f" . dart-format-buffer)
@@ -1508,7 +1509,11 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
     "Execute the code of the current file."
     (interactive)
     (compile (format "dart %s" (buffer-file-name))))
-  (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions))
+  (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions)
+  (with-eval-after-load "projectile"
+    (add-to-list 'projectile-project-root-files-bottom-up "pubspec.yaml")
+    (add-to-list 'projectile-project-root-files-bottom-up "BUILD"))
+  )
 
 (use-package flutter
   :ensure t

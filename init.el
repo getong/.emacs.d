@@ -27,4 +27,7 @@
 ;; copy from https://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory
 ;;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
-(message (emacs-init-time))
+;; (message (emacs-init-time))
+
+(provide 'init)
+;;; init.el ends here

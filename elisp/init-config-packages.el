@@ -70,6 +70,8 @@
 (use-package no-littering
   :ensure t
   :config
+  ;; (add-to-list 'recentf-exclude no-littering-var-directory)
+  ;; (add-to-list 'recentf-exclude no-littering-etc-directory)
   (with-eval-after-load 'recentf
     (set 'recentf-exclude
          '(no-littering-var-directory
@@ -95,6 +97,7 @@
     (startup-redirect-eln-cache
      (convert-standard-filename
       (expand-file-name  "var/eln-cache/" user-emacs-directory))))
+  ;; (setq recentf-max-menu-items 5)
   )
 
 ;; copy from [Error when running magit-status: run-hooks: Wrong number of arguments](https://github.com/magit/magit/issues/3837)
@@ -2007,7 +2010,9 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; 其他情况则对当前行注释或者反注释
 (use-package newcomment
   :ensure nil
-  :bind ([remap comment-dwim] . #'comment-or-uncomment)
+  :bind
+  ([remap comment-dwim] . #'comment-or-uncomment)
+  ("C-x C-;" . comment-dwim)
   :config
   (defun comment-or-uncomment ()
     (interactive)
@@ -4939,7 +4944,7 @@ deletion, or > if it is flagged for displaying."
   :ensure t
   :defer t
   :delight ace-window-mode
-  :bind ("C-x C-j" . ace-window)
+  :bind ("C-x x j" . ace-window)
   :init (setq aw-background nil)
   :custom
   (aw-scope 'frame)
@@ -4983,6 +4988,15 @@ deletion, or > if it is flagged for displaying."
 (use-package nameframe-projectile
   :after (nameframe projectile)
   :config (nameframe-projectile-mode t))
+
+;;; ue.el
+;; https://gitlab.com/unrealemacs/ue.el
+(use-package ue
+  :init
+  (ue-global-mode +1)
+  :config
+  (define-key ue-mode-map (kbd "C-c u") 'ue-command-map)
+  )
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

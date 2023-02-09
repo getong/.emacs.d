@@ -472,22 +472,27 @@
               ("C-y" . vterm-yank)
               ("M-y" . vterm-yank-pop)
               ("C-k" . vterm-send-C-k-and-kill))
+  ;; copy from https://erickgnavar.github.io/emacs-config/
   :custom
-  ((vterm-buffer-name-string "*my-own-vterm*")
-   (vterm-use-vterm-prompt-detection-method t)
-   (vterm-max-scrollback 10000)
-   )
-  :init
-  (setq vterm-shell "zsh")
+  (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
+  (vterm-always-compile-module t)
+  (vterm-buffer-name-string "*my-own-vterm*")
+  (vterm-use-vterm-prompt-detection-method t)
+  (vterm-max-scrollback 10000)
+  (vterm-copy-exclude-prompt t)
+  (vterm-shell "zsh")
+  (vterm-kill-buffer-on-exit t)
+  ;; 在 terminal 中使用 C-c C-t 进入「选择」模式（类似 Tmux 里的 C-b [ ）
+  (term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
   :config
   ;; TODO disable c-] shortcut
   ;; shell 退出时 kill 掉这个 buffer
-  (setq vterm-kill-buffer-on-exit t)
+  ;; (setq vterm-kill-buffer-on-exit t)
   ;; 使用 M-x vterm 新建一个 terminal
   ;; 在 terminal 中使用 C-c C-t 进入「选择」模式（类似 Tmux 里的 C-b [ ）
-  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+  ;; (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
   ;; (setq vterm-max-scrollback 99999)
-  (setq vterm-always-compile-module t)
+  ;; (setq vterm-always-compile-module t)
   (defun vterm-send-C-k-and-kill ()
     "Send `C-k' to libvterm, and put content in kill-ring."
     (interactive)
@@ -504,10 +509,6 @@
     )
   :hook
   (vterm-mode . turn-off-chrome)
-  ;; copy from https://erickgnavar.github.io/emacs-config/
-  :custom
-  (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
-  (vterm-always-compile-module t)
   )
 
 (use-package vterm-toggle
@@ -5003,6 +5004,19 @@ deletion, or > if it is flagged for displaying."
   :config
   (define-key ue-mode-map (kbd "C-c u") 'ue-command-map)
   )
+
+
+;; https://github.com/Wilfred/helpful
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . helpful-function)
+  ([remap describe-symbol] . helpful-symbol)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-key] . helpful-key))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

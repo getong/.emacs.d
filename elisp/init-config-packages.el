@@ -471,7 +471,10 @@
   :bind (:map vterm-mode-map
               ("C-y" . vterm-yank)
               ("M-y" . vterm-yank-pop)
-              ("C-k" . vterm-send-C-k-and-kill))
+              ("C-k" . vterm-send-C-k-and-kill)
+              ;; 回车启动和禁用vterm copy mode
+              ;; ("<return>" . vterm-copy-mode)
+              )
   :custom-face
   (vterm-color-black ((t (:foreground "#0f0f0f" :background "#707880"))))
   ;; copy from https://github.com/doomemacs/themes/blob/ae18b84e01496c4ebd572cad00a89516af089a94/doom-themes-base.el#L234
@@ -1679,6 +1682,10 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 (use-package diredfl
   :ensure t
   :commands diredfl-global-mode
+  :hook
+  ((dired-mode . diredfl-mode)
+   ;; highlight parent and preview as well
+   (dirvish-directory-view-mode . diredfl-mode))
   :init
   (diredfl-global-mode)
   (put 'diredp-tagged-autofile-name 'face-alias 'diredfl-tagged-autofile-name)
@@ -1783,6 +1790,9 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; pacman -S fd poppler ffmpegthumbnailer mediainfo imagemagick tar unzip
 ;; 基于 Dired 的极简、一站式文件管理器
 (use-package dirvish
+  :hook
+  (after-init . dirvish-override-dired-mode)
+  (dirvish-find-entry . (lambda (&rest _) (setq-local truncate-lines t)))
   :init
   (dirvish-override-dired-mode)
   :custom
@@ -1793,20 +1803,24 @@ Get it from:  <http://hasseg.org/trash/>"
      ("r" "~/Syncthings/org/roam/"      "Roam")))
   :after (diredfl all-the-icons)
   :config
-  ;; 异步读取含 10000 个以上文件的文件夹
-  (setq dirvish-async-listing-threshold 10000)
-  (setq dirvish-depth 0)
-  ;; (dirvish-peek-mode) ; Preview files in minibuffer
-  ;; (dirvish-side-follow-mode) ; similar to `treemacs-follow-mode'
-  (setq dirvish-mode-line-format
-        '(:left (sort symlink) :right (omit yank index)))
-  (setq dirvish-attributes
-        '(all-the-icons file-time file-size subtree-state vc-state git-msg))
-  (setq delete-by-moving-to-trash t)
-  (setq dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group")
   (dirvish-override-dired-mode +1)
-  (setq dirvish-attributes '(all-the-icons file-size))
+  ;; 异步读取含 10000 个以上文件的文件夹
+  (setq dirvish-async-listing-threshold 10000
+        dirvish-depth 0
+        ;; (dirvish-peek-mode) ; Preview files in minibuffer
+        ;; (dirvish-side-follow-mode) ; similar to `treemacs-follow-mode'
+        dirvish-mode-line-format
+        '(:left (sort symlink) :right (omit yank index))
+        dirvish-attributes '(all-the-icons file-time file-size subtree-state vc-state git-msg)
+        delete-by-moving-to-trash t
+        dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group"
+        dirvish-subtree-always-show-state t
+        dirvish-side-width 25
+        dirvish-use-mode-line nil
+        dirvish-use-header-line nil
+        dirvish-header-line-height 20
+        dirvish-side-window-parameters nil
+        )
   (set-face-attribute 'dirvish-hl-line nil
                       :foreground (face-attribute 'diredfl-flag-mark :foreground)
                       :background (face-attribute 'diredfl-flag-mark :background))
@@ -1834,11 +1848,11 @@ Get it from:  <http://hasseg.org/trash/>"
    ("M-j" . dirvish-fd-jump)))
 
 (dirvish-define-preview exa (file)
-                        "Use `exa' to generate directory preview."
-                        :require ("exa") ; tell Dirvish to check if we have the executable
-                        (when (file-directory-p file) ; we only interest in directories here
-                          `(shell . ("exa" "-al" "--color=always" "--icons"
-                                     "--group-directories-first" ,file))))
+  "Use `exa' to generate directory preview."
+  :require ("exa") ; tell Dirvish to check if we have the executable
+  (when (file-directory-p file) ; we only interest in directories here
+    `(shell . ("exa" "-al" "--color=always" "--icons"
+               "--group-directories-first" ,file))))
 
 (add-to-list 'dirvish-preview-dispatchers 'exa)
 
@@ -2694,22 +2708,62 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; 正在从ivy、swiper、counsel、hydra转向vertico、consult、embark、orderless。
 ;; 增强 minibuffer 补全：vertico 和 Orderless, 垂直补全
 (use-package vertico
+  :hook
+  (after-init . vertico-mode)
+  (vertico-mode . vertico-multiform-mode)
+  ;; Tidy shadowed file names
+  (rfn-eshadow-update-overlay . vertico-directory-tidy)
+  ;; More convenient directory navigation commands
+  :bind ((:map vertico-map
+               ("RET" . vertico-directory-enter)
+               ("M-RET" . vertico-exit-input)
+               ("DEL" . vertico-directory-delete-char)
+               ("M-DEL" . vertico-directory-delete-word)))
   :init
-  (vertico-mode)
+  (setq vertico-resize nil
+        vertico-scroll-margin 0
+        vertico-count 12
+        vertico-cycle t
+        read-file-name-completion-ignore-case t
+        read-buffer-completion-ignore-case t
+        completion-ignore-case t
+        vertico-preselect 'directory)
   :config
-  ;; (vertico-multiform-mode)
-  ;; Use `consult-completion-in-region' if Vertico is enabled.
-  ;; Otherwise use the default `completion--in-region' function.
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+  ;; use vertico as the interface for completion-at-point
   (setq completion-in-region-function
-	    (lambda (&rest args)
-	      (apply (if vertico-mode
-		             #'consult-completion-in-region
-		           #'completion--in-region)
-		         args)))
-  (setq read-file-name-completion-ignore-case t
-	    read-buffer-completion-ignore-case t
-	    completion-ignore-case t)
-  (setq vertico-cycle t))
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args)))
+  ;; Sort directories before files (vertico-multiform-mode)
+  (setq vertico-multiform-categories
+        '((file (vertico-sort-function . sort-directories-first))))
+  (defun sort-directories-first (files)
+    (setq files (vertico-sort-history-length-alpha files))
+    (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
+           (seq-remove (lambda (x) (string-suffix-p "/" x)) files))))
+
+(use-package vertico-posframe
+  :config
+  (defun zw/posframe-poshandler-bottom-center (info)
+    (cons (/ (- (plist-get info :parent-frame-width)
+                (plist-get info :posframe-width))
+             2)
+          (- (plist-get info :parent-frame-height)
+             (plist-get info :posframe-height))))
+  (defun vertico-posframe-set-cursor (&rest args)
+    (with-current-buffer vertico-posframe--buffer
+      (setq-local cursor-type 'bar)
+      (setq-local cursor-in-non-selected-windows 'bar)))
+  (advice-add 'vertico-posframe--show :after 'vertico-posframe-set-cursor)
+  (setq vertico-posframe-poshandler 'zw/posframe-poshandler-bottom-center
+        vertico-posframe-width (frame-width))
+  (vertico-posframe-mode 1))
 
 ;; minibuffer 模糊匹配
 (use-package orderless
@@ -2750,34 +2804,44 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; do not work properly with orderless. One can add basic as a fallback.
   ;; Basic will only be used when orderless fails, which happens only for
   ;; these special tables.
-  (setq completion-styles '(orderless basic)
-	    completion-category-defaults nil
+  (setq completion-styles '(orderless partial-completion basic)
+        completion-category-defaults nil
 	    ;;; Enable partial-completion for files.
 	    ;;; Either give orderless precedence or partial-completion.
 	    ;;; Note that completion-category-overrides is not really an override,
 	    ;;; but rather prepended to the default completion-styles.
-	    ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
-	    completion-category-overrides '((file (styles . (partial-completion))) ;; partial-completion is tried first
+        ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
+        completion-category-overrides '((file (styles . (partial-completion))) ;; partial-completion is tried first
 					                    ;; enable initialism by default for symbols
 					                    (command (styles +orderless-with-initialism))
 					                    (variable (styles +orderless-with-initialism))
 					                    (symbol (styles +orderless-with-initialism)))
-	    orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
-	    orderless-style-dispatchers '(+orderless-dispatch)))
+        orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
+        orderless-style-dispatchers '(+orderless-dispatch)))
 
 ;;配置 Marginalia 增强 minubuffer 的 annotation
 (use-package marginalia
-  ;; Either bind `marginalia-cycle' globally or only in the minibuffer
   :bind (("M-A" . marginalia-cycle)
          :map minibuffer-local-map
          ("M-A" . marginalia-cycle))
-
-  ;; The :init configuration is always executed (Not lazy!)
-  :init
-
-  ;; Must be in the :init section of use-package such that the mode gets
-  ;; enabled right away. Note that this forces loading the package.
-  (marginalia-mode))
+  :hook (vertico-mode . marginalia-mode)
+  :config
+  (setq marginalia-align 'center)
+  ;; show mode on/off
+  (defun marginalia-annotate-command (cand)
+    "Annotate command CAND with its documentation string.
+Similar to `marginalia-annotate-symbol', but does not show symbol class."
+    (when-let* ((sym (intern-soft cand)))
+      (concat
+       (let ((mode (if (and sym (boundp sym))
+                       sym
+                     nil)))
+         (when (and sym (boundp sym))
+           (if (and (boundp mode) (symbol-value mode))
+               (propertize " [On]" 'face 'marginalia-on)
+             (propertize " [Off]" 'face 'marginalia-off))))
+       (marginalia-annotate-binding cand)
+       (marginalia--documentation (marginalia--function-doc sym))))))
 
 (use-package embark
   :ensure t
@@ -2814,142 +2878,210 @@ Get it from:  <http://hasseg.org/trash/>"
 
 ;; 增强文件内搜索和跳转函数定义：Consult
 ;; Example configuration for Consult
+;; (use-package consult
+;;   ;; Replace bindings. Lazily loaded due by `use-package'.
+;;   :bind (;; C-c bindings (mode-specific-map)
+;;          ("C-c h" . consult-history)
+;;          ("C-c m" . consult-mode-command)
+;;          ("C-c k" . consult-kmacro)
+;;          ;; C-x bindings (ctl-x-map)
+;;          ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+;;          ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+;;          ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+;;          ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+;;          ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+;;          ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+;;          ;; Custom M-# bindings for fast register access
+;;          ("M-#" . consult-register-load)
+;;          ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+;;          ("C-M-#" . consult-register)
+;;          ;; Other custom bindings
+;;          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+;;          ;; M-g bindings (goto-map)
+;;          ("M-g e" . consult-compile-error)
+;;          ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+;;          ;; ("M-g g" . consult-goto-line)             ;; orig. goto-line
+;;          ;; ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+;;          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+;;          ("M-g m" . consult-mark)
+;;          ("M-g k" . consult-global-mark)
+;;          ("M-g i" . consult-imenu)
+;;          ("M-g I" . consult-imenu-multi)
+;;          ;; M-s bindings (search-map)
+;;          ("M-s d" . consult-find)
+;;          ("M-s D" . consult-locate)
+;;          ("M-s g" . consult-grep)
+;;          ("M-s G" . consult-git-grep)
+;;          ("M-s r" . consult-ripgrep)
+;;          ("M-s l" . consult-line)
+;;          ("M-s k" . consult-keep-lines)
+;;          ("M-s u" . consult-focus-lines)
+;;          ;; Isearch integration
+;;          ("M-s e" . consult-isearch-history)
+;;          :map isearch-mode-map
+;;          ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+;;          ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+;;          ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+;;          ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+;;          ;; Minibuffer history
+;;          :map minibuffer-local-map
+;;          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+;;          ;; (global-set-key (kbd "C-s") 'my-isearch-or-consult)
+;;          ;; ("C-s" . my-isearch-or-consult)
+;;          ("C-s" . consult-line-multi)
+;;          ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+;;   ;; Enable automatic preview at point in the *Completions* buffer. This is
+;;   ;; relevant when you use the default completion UI.
+;;   :hook (completion-list-mode . consult-preview-at-point-mode)
+
+;;   ;; The :init configuration is always executed (Not lazy)
+;;   :init
+
+;;   ;; Optionally configure the register formatting. This improves the register
+;;   ;; preview for `consult-register', `consult-register-load',
+;;   ;; `consult-register-store' and the Emacs built-ins.
+;;   (setq register-preview-delay 0.5
+;;         register-preview-function #'consult-register-format)
+
+;;   ;; Optionally tweak the register preview window.
+;;   ;; This adds thin lines, sorting and hides the mode line of the window.
+;;   (advice-add #'register-preview :override #'consult-register-window)
+
+;;   ;; Use Consult to select xref locations with preview
+;;   (setq xref-show-xrefs-function #'consult-xref
+;;         xref-show-definitions-function #'consult-xref)
+
+;;   ;; Configure other variables and modes in the :config section,
+;;   ;; after lazily loading the package.
+;;   :config
+
+;;   ;; Optionally configure preview. The default value
+;;   ;; is 'any, such that any key triggers the preview.
+;;   ;; (setq consult-preview-key 'any)
+;;   ;; (setq consult-preview-key (kbd "M-."))
+;;   ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
+;;   ;; For some commands and buffer sources it is useful to configure the
+;;   ;; :preview-key on a per-command basis using the `consult-customize' macro.
+;;   (consult-customize
+;;    consult-theme :preview-key '(:debounce 0.2 any)
+;;    consult-ripgrep consult-git-grep consult-grep
+;;    consult-bookmark consult-recent-file consult-xref
+;;    consult--source-bookmark consult--source-file-register
+;;    consult--source-recent-file consult--source-project-recent-file
+;;    ;; :preview-key (kbd "M-.")
+;;    :preview-key '(:debounce 0.4 any))
+
+;;   ;; Optionally configure the narrowing key.
+;;   ;; Both < and C-+ work reasonably well.
+;;   (setq consult-narrow-key "<") ;; (kbd "C-+")
+
+;;   ;; Optionally make narrowing help available in the minibuffer.
+;;   ;; You may want to use `embark-prefix-help-command' or which-key instead.
+;;   ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+;;   ;; By default `consult-project-function' uses `project-root' from project.el.
+;;   ;; Optionally configure a different project root function.
+;;   ;; There are multiple reasonable alternatives to chose from.
+;;   ;;;; 1. project.el (the default)
+;;   ;; (setq consult-project-function #'consult--default-project--function)
+;;   ;;;; 2. projectile.el (projectile-project-root)
+;;   ;; (autoload 'projectile-project-root "projectile")
+;;   (setq consult-project-function (lambda (_) (projectile-project-root)))
+;;   ;;;; 3. vc.el (vc-root-dir)
+;;   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+;;   ;;;; 4. locate-dominating-file
+;;   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+;;   (projectile-load-known-projects)
+;;   (setq my-consult-source-projectile-projects
+;;         `(:name "Projectile projects"
+;;                 :narrow   ?P
+;;                 :category project
+;;                 :action   ,#'projectile-switch-project-by-name
+;;                 :items    ,projectile-known-projects))
+;;   (add-to-list 'consult-buffer-sources my-consult-source-projectile-projects 'append)
+;;   ;; copy from https://tam5917.hatenablog.com/entry/2021/05/01/063232
+;;   (defun consult-line-symbol-at-point ()
+;;     (interactive)
+;;     (consult-line (thing-at-point 'symbol)))
+
+;;   ;; (defun my-isearch-or-consult (use-consult)
+;;   ;;   (interactive "p")
+;;   ;;   (cond ((eq use-consult 1)
+;;   ;;          (call-interactively 'isearch-forward))
+;;   ;;         ((eq use-consult 4)
+;;   ;;          (call-interactively 'consult-line-symbol-at-point))
+;;   ;;         ((eq use-consult 16)
+;;   ;;          (call-interactively 'consult-line-migemo))))
+;;   )
 (use-package consult
-  ;; Replace bindings. Lazily loaded due by `use-package'.
+  :demand
   :bind (;; C-c bindings (mode-specific-map)
          ("C-c h" . consult-history)
          ("C-c m" . consult-mode-command)
          ("C-c k" . consult-kmacro)
          ;; C-x bindings (ctl-x-map)
-         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
-         ;; Custom M-# bindings for fast register access
-         ("M-#" . consult-register-load)
-         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-         ("C-M-#" . consult-register)
+         ("C-x b" . consult-buffer)
+         ("C-x C-b" . consult-buffer)
+         ("C-x C-d" . consult-dir)
+         ("C-x C-t" . consult-tramp)
          ;; Other custom bindings
-         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ("M-y" . consult-yank-pop)
+         ("<help> a" . consult-apropos)
+         ("s-f" . consult-line)
+         ("s-F" . zw/consult-line-multi)
          ;; M-g bindings (goto-map)
-         ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-         ;; ("M-g g" . consult-goto-line)             ;; orig. goto-line
-         ;; ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-         ("M-g m" . consult-mark)
-         ("M-g k" . consult-global-mark)
+         ("M-g g" . consult-goto-line)
+         ("M-g o" . consult-outline)
          ("M-g i" . consult-imenu)
-         ("M-g I" . consult-imenu-multi)
          ;; M-s bindings (search-map)
          ("M-s d" . consult-find)
-         ("M-s D" . consult-locate)
          ("M-s g" . consult-grep)
-         ("M-s G" . consult-git-grep)
-         ("M-s r" . consult-ripgrep)
-         ("M-s l" . consult-line)
-         ("M-s k" . consult-keep-lines)
-         ("M-s u" . consult-focus-lines)
-         ;; Isearch integration
-         ("M-s e" . consult-isearch-history)
-         :map isearch-mode-map
-         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-         ;; Minibuffer history
-         :map minibuffer-local-map
-         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-         ;; (global-set-key (kbd "C-s") 'my-isearch-or-consult)
-         ;; ("C-s" . my-isearch-or-consult)
-         ("C-s" . consult-line-multi)
-         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
-
-  ;; Enable automatic preview at point in the *Completions* buffer. This is
-  ;; relevant when you use the default completion UI.
-  :hook (completion-list-mode . consult-preview-at-point-mode)
-
-  ;; The :init configuration is always executed (Not lazy)
+         ("M-s y" . consult-yasnippet)
+         ("M-s m" . consult-minor-mode-menu)
+         ("M-s f" . consult-flymake)
+         ("M-s s" . consult-flyspell)
+         (:map isearch-mode-map
+               ("M-s" . consult-isearch-history))
+         (:map minibuffer-local-completion-map
+               ("C-x C-d" . consult-dir)))
   :init
-
-  ;; Optionally configure the register formatting. This improves the register
-  ;; preview for `consult-register', `consult-register-load',
-  ;; `consult-register-store' and the Emacs built-ins.
-  (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
-
-  ;; Optionally tweak the register preview window.
-  ;; This adds thin lines, sorting and hides the mode line of the window.
-  (advice-add #'register-preview :override #'consult-register-window)
-
-  ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
+  (setq consult-preview-key "M-."
+        register-preview-delay 0.5
+        register-preview-function #'consult-register-format
+        xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
-
-  ;; Configure other variables and modes in the :config section,
-  ;; after lazily loading the package.
+  (advice-add #'register-preview :override #'consult-register-window)
   :config
-
-  ;; Optionally configure preview. The default value
-  ;; is 'any, such that any key triggers the preview.
-  ;; (setq consult-preview-key 'any)
-  ;; (setq consult-preview-key (kbd "M-."))
-  ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
-  ;; For some commands and buffer sources it is useful to configure the
-  ;; :preview-key on a per-command basis using the `consult-customize' macro.
-  (consult-customize
-   consult-theme :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-file-register
-   consult--source-recent-file consult--source-project-recent-file
-   ;; :preview-key (kbd "M-.")
-   :preview-key '(:debounce 0.4 any))
-
   ;; Optionally configure the narrowing key.
-  ;; Both < and C-+ work reasonably well.
-  (setq consult-narrow-key "<") ;; (kbd "C-+")
+  (setq consult-narrow-key "<" ;; (kbd "C-+")
+        consult-line-numbers-widen t
+        consult-async-min-input 2
+        consult-async-refresh-delay  0.15
+        consult-async-input-throttle 0.2
+        consult-async-input-debounce 0.1)
 
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+  ;; Preview consult commands
+  (consult-customize consult-goto-line :preview-key '(:debounce 0 any)
+                     consult-theme :preview-key '(:debounce 0.2 any))
 
-  ;; By default `consult-project-function' uses `project-root' from project.el.
-  ;; Optionally configure a different project root function.
-  ;; There are multiple reasonable alternatives to chose from.
-  ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
-  ;;;; 2. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  (setq consult-project-function (lambda (_) (projectile-project-root)))
-  ;;;; 3. vc.el (vc-root-dir)
-  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-  ;;;; 4. locate-dominating-file
-  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  (projectile-load-known-projects)
-  (setq my-consult-source-projectile-projects
-        `(:name "Projectile projects"
-                :narrow   ?P
-                :category project
-                :action   ,#'projectile-switch-project-by-name
-                :items    ,projectile-known-projects))
-  (add-to-list 'consult-buffer-sources my-consult-source-projectile-projects 'append)
-  ;; copy from https://tam5917.hatenablog.com/entry/2021/05/01/063232
-  (defun consult-line-symbol-at-point ()
+  ;; custom functions
+  (defun zw/consult-line-multi ()
     (interactive)
-    (consult-line (thing-at-point 'symbol)))
+    (consult-line-multi t)))
 
-  ;; (defun my-isearch-or-consult (use-consult)
-  ;;   (interactive "p")
-  ;;   (cond ((eq use-consult 1)
-  ;;          (call-interactively 'isearch-forward))
-  ;;         ((eq use-consult 4)
-  ;;          (call-interactively 'consult-line-symbol-at-point))
-  ;;         ((eq use-consult 16)
-  ;;          (call-interactively 'consult-line-migemo))))
-  )
+;; custom consult packages
+(use-package consult-yasnippet
+  :commands consult-yasnippet)
+(use-package consult-dir
+  :commands consult-dir)
+(use-package consult-tramp
+  :commands consult-tramp
+  :straight
+  (consult-tramp :type git :host github :repo "Ladicle/consult-tramp")
+  :init (setq consult-tramp-method "ssh"))
+(use-package consult-flyspell
+  :commands consult-flyspell)
 
 ;; (global-set-key (kbd "C-s") 'consult-line)
 
@@ -4859,6 +4991,7 @@ deletion, or > if it is flagged for displaying."
 ;; hydra 更接近于「功能菜单」：弹出一个「常用功能列表」.
 ;; 你可以用连续击键来连续触发若干个函数。
 (use-package hydra
+  :hook (emacs-lisp-mode . hydra-add-imenu)
   :bind (("C-c m" . hydra-magit/body)
          ("C-c o" . hydra-org/body)
          ))
@@ -4965,6 +5098,77 @@ deletion, or > if it is flagged for displaying."
   ([remap describe-variable] . helpful-variable)
   ([remap describe-command] . helpful-command)
   ([remap describe-key] . helpful-key))
+
+
+;; Highlight matching parens
+(use-package paren
+  :straight (:type built-in)
+  :hook (after-init . show-paren-mode)
+  :init (setq show-paren-when-point-inside-paren nil
+              show-paren-when-point-in-periphery nil)
+  :config
+  (with-no-warnings
+    ;; Display matching line for off-screen paren.
+    (defun display-line-overlay (pos str &optional face)
+      "Display line at POS as STR with FACE.
+FACE defaults to inheriting from default and highlight."
+      (let ((ol (save-excursion
+                  (goto-char pos)
+                  (make-overlay (line-beginning-position)
+                                (line-end-position)))))
+        (overlay-put ol 'display str)
+        (overlay-put ol 'face
+                     (or face '(:inherit highlight)))
+        ol))
+
+    (defvar-local show-paren--off-screen-overlay nil)
+    (defun show-paren-off-screen (&rest _args)
+      "Display matching line for off-screen paren."
+      (when (overlayp show-paren--off-screen-overlay)
+        (delete-overlay show-paren--off-screen-overlay))
+      ;; Check if it's appropriate to show match info,
+      (when (and (overlay-buffer show-paren--overlay)
+                 (not (or cursor-in-echo-area
+                          executing-kbd-macro
+                          noninteractive
+                          (minibufferp)
+                          this-command))
+                 (and (not (bobp))
+                      (memq (char-syntax (char-before)) '(?\) ?\$)))
+                 (= 1 (logand 1 (- (point)
+                                   (save-excursion
+                                     (forward-char -1)
+                                     (skip-syntax-backward "/\\")
+                                     (point))))))
+        ;; Rebind `minibuffer-message' called by `blink-matching-open'
+        ;; to handle the overlay display.
+        (cl-letf (((symbol-function #'minibuffer-message)
+                   (lambda (msg &rest args)
+                     (let ((msg (apply #'format-message msg args)))
+                       (setq show-paren--off-screen-overlay
+                             (display-line-overlay
+                              (window-start) msg ))))))
+          (blink-matching-open))))
+    (advice-add #'show-paren-function :after #'show-paren-off-screen)))
+
+;; Highlight uncommitted changes using VC
+(use-package diff-hl
+  :bind ((:map diff-hl-command-map
+               ("SPC" . diff-hl-mark-hunk)))
+  :hook ((after-init . global-diff-hl-mode)
+         (diff-hl-mode . diff-hl-flydiff-mode))
+  :init (setq diff-hl-side 'left
+              diff-hl-draw-borders nil
+              diff-hl-show-staged-changes nil)
+  :config
+  ;; Integration with magit
+  (with-eval-after-load 'magit
+    (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
+    (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)))
+
+(use-package sudo-edit
+  :ensure t
+  :commands (sudo-edit))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

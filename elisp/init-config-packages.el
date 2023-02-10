@@ -3322,8 +3322,31 @@ Get it from:  <http://hasseg.org/trash/>"
   (magit-log-date ((t (:foreground "#FF6E27"))))
   (magit-log-graph ((t (:foreground "#75715E"))))
   (magit-section-heading ((t (:foreground "#FF6E27" :weight bold))))
-  ;;(magit-section-highlight ((t (:background "gray9"))))
   (magit-tag ((t (:foreground "orange" :weight bold))))
+  (magit-diff-added
+   ((t (:extend t :background "gray20" :foreground "green"))))
+  (magit-diff-added-highlight
+   (
+    (t
+     (:extend
+      t
+      :background "gray20"
+      :foreground "green"
+      :weight bold))))
+  (magit-diff-context ((t (:extend t :foreground "blue"))))
+  (magit-diff-context-highlight
+   ((t (:extend t :background "grey20" :foreground "grey70"))))
+  (magit-diff-removed
+   ((t (:extend t :background "gray20" :foreground "red"))))
+  (magit-diff-removed-highlight
+   (
+    (t
+     (:extend
+      t
+      :background "gray20"
+      :foreground "red"
+      :weight bold))))
+  (magit-section-highlight ((t (:background "gray20"))))
   :init
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
   ;; (add-hook 'magit-mode-hook 'my-inhibit-global-linum-mode)

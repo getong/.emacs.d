@@ -1931,7 +1931,7 @@ Get it from:  <http://hasseg.org/trash/>"
   (setq hl-line-range-function #'my-hl-line-range-function)
 
   :custom-face
-  (hl-line ((nil (:background "light yellow"))))
+  (hl-line ((nil (:background "light green"))))
   )
 
 ;; 隐藏、显示结构化数据，如 { } 里的内容。对于单函数较长的情况比较有用。

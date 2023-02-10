@@ -1730,6 +1730,8 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
     (setq dired-use-ls-dired nil))
   (put 'dired-find-alternate-file 'disabled nil)
   (setq
+   ;; Copy and move files netween dired buffers
+   ;; C short for copy, R short for rename/move
    dired-dwim-target t
    dired-clean-up-buffers-too t
    dired-recursive-copies 'always
@@ -5169,6 +5171,29 @@ FACE defaults to inheriting from default and highlight."
 (use-package sudo-edit
   :ensure t
   :commands (sudo-edit))
+
+(use-package watch-other-window
+  ;; :quelpa (watch-other-window :fetcher github
+  ;; 		                      :repo "manateelazycat/watch-other-window"
+  ;; 		                      :files ("*.el"))
+  :straight (watch-other-window :type git :host github :repo "manateelazycat/watch-other-window")
+  ;; :init
+  ;; (require 'watch-other-window)
+  :bind
+  (:map prog-mode-map
+        ;; 隔壁窗口向下翻一行
+        ("C-x l d" . watch-other-window-up-line)
+        ;; 隔壁窗口向上翻一行
+        ("C-x l u" . watch-other-window-down-line)
+        ;; 隔壁窗口向上翻一屏
+        ("C-x w u" . watch-other-window-up)
+        ;; 隔壁窗口向下翻一屏
+        ("C-x w d" . watch-other-window-down)
+        ;; (define-key evil-motion-state-map (kbd "C-j") #'watch-other-window-up-line)
+        ;; (define-key evil-motion-state-map (kbd "C-k") #'watch-other-window-down-line)
+        ;; (define-key evil-motion-state-map (kbd "M-j") #'watch-other-window-up)
+        ;; (define-key evil-motion-state-map (kbd "M-k") #'watch-other-window-down)
+        ))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

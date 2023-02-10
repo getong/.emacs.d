@@ -22,7 +22,7 @@
 
 (require 'init-misc)
 
-(setq debug-on-quit t)
+;; (setq debug-on-quit t)
 
 ;; copy from https://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory
 ;;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)

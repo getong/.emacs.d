@@ -932,7 +932,7 @@ This command useful for making font large when you want to do video livestream.
 URL `http://xahlee.info/emacs/emacs/emacs_set_default_font_size.html'
 Version: 2021-07-26 2021-08-21 2022-08-05"
     (interactive)
-    (let (($fSize (read-string "size:" "16" nil "16")))
+    (let (($fSize (read-string "size:" "20" nil "20")))
       (if (> (string-to-number $fSize) 51)
           (user-error "Max font size allowed is 51. You gave %s " $fSize)
         (progn
@@ -1776,6 +1776,11 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; (setq insert-directory-program "gls" dired-use-ls-dired t)
   (setq dired-listing-switches "-al --group-directories-first")
   )
+
+;; macOS
+;; brew install coreutils fd poppler ffmpegthumbnailer mediainfo imagemagick
+;; Arch-based
+;; pacman -S fd poppler ffmpegthumbnailer mediainfo imagemagick tar unzip
 ;; 基于 Dired 的极简、一站式文件管理器
 (use-package dirvish
   :init

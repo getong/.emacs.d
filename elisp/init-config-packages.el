@@ -472,6 +472,19 @@
               ("C-y" . vterm-yank)
               ("M-y" . vterm-yank-pop)
               ("C-k" . vterm-send-C-k-and-kill))
+  :custom-face
+  (vterm-color-black ((t (:foreground "#0f0f0f" :background "#707880"))))
+  ;; copy from https://github.com/doomemacs/themes/blob/ae18b84e01496c4ebd572cad00a89516af089a94/doom-themes-base.el#L234
+  ;; ;; vterm
+  ;; (vterm               :foreground fg)
+  ;; (vterm-color-black   :background base0   :foreground base0)
+  ;; (vterm-color-red     :background red     :foreground red)
+  ;; (vterm-color-green   :background green   :foreground green)
+  ;; (vterm-color-yellow  :background yellow  :foreground yellow)
+  ;; (vterm-color-blue    :background blue    :foreground blue)
+  ;; (vterm-color-magenta :background magenta :foreground magenta)
+  ;; (vterm-color-cyan    :background cyan    :foreground cyan)
+  ;; (vterm-color-white   :background base8   :foreground base8)
   ;; copy from https://erickgnavar.github.io/emacs-config/
   :custom
   (vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
@@ -3295,132 +3308,29 @@ Get it from:  <http://hasseg.org/trash/>"
                  (not (eq major-mode 'markdown-mode))))
   )
 
+;; https://github.com/Abuelodelanada/pepe-emacs-config/blob/301a42b030f4774f831de30657215ba2b489d823/use-package.el
 (use-package magit
-  :general
-  (lc/leader-keys
-   "g b" 'magit-blame
-   "g g" 'magit-status
-   "g G" 'magit-status-here
-   "g l" 'magit-log)
-  (general-nmap
-    :keymaps '(magit-status-mode-map
-               magit-stash-mode-map
-               magit-revision-mode-map
-               magit-process-mode-map
-               magit-diff-mode-map)
-    "TAB" #'magit-section-toggle
-    "<escape>" #'transient-quit-one)
+  :bind (("C-x g" . magit-status))
+  :custom-face
+  (magit-branch-local ((t (:foreground "orange"))))
+  (magit-branch-remote ((t (:foreground "#D90F5A"))))
+  (magit-diff-removed ((t (:foreground "orange red"))))
+  (magit-diff-removed-highlight ((t (:foreground "orange red"))))
+  (magit-filename ((t (:foreground "#F34739" :weight normal))))
+  (magit-hash ((t (:foreground "#FF6E27"))))
+  (magit-log-author ((t (:foreground "orange"))))
+  (magit-log-date ((t (:foreground "#FF6E27"))))
+  (magit-log-graph ((t (:foreground "#75715E"))))
+  (magit-section-heading ((t (:foreground "#FF6E27" :weight bold))))
+  ;;(magit-section-highlight ((t (:background "gray9"))))
+  (magit-tag ((t (:foreground "orange" :weight bold))))
   :init
-  (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
-  (setq magit-log-arguments '("--graph" "--decorate" "--color"))
-  (setq git-commit-fill-column 72)
-  ;; (setq magit-log-margin (t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
-  ;; (when lc/is-ipad (require 'sendmail))
-  :config
-  (setq magit-buffer-name-format (concat "*" magit-buffer-name-format "*"))
-  (with-eval-after-load 'magit ;; your code
-    ;; copy from [在 magit 中使用 difftastic](https://emacs-china.org/t/magit-difftastic/23207)
-    (defun my/magit--with-difftastic (buffer command)
-      "Run COMMAND with GIT_EXTERNAL_DIFF=difft then show result in BUFFER."
-      (let ((process-environment
-             (cons (concat "GIT_EXTERNAL_DIFF=difft --width="
-                           (number-to-string (frame-width)))
-                   process-environment)))
-        ;; Clear the result buffer (we might regenerate a diff, e.g., for
-        ;; the current changes in our working directory).
-        (with-current-buffer buffer
-          (setq buffer-read-only nil)
-          (erase-buffer))
-        ;; Now spawn a process calling the git COMMAND.
-        (make-process
-         :name (buffer-name buffer)
-         :buffer buffer
-         :command command
-         ;; Don't query for running processes when emacs is quit.
-         :noquery t
-         ;; Show the result buffer once the process has finished.
-         :sentinel (lambda (proc event)
-                     (when (eq (process-status proc) 'exit)
-                       (with-current-buffer (process-buffer proc)
-                         (goto-char (point-min))
-                         (ansi-color-apply-on-region (point-min) (point-max))
-                         (setq buffer-read-only t)
-                         (view-mode)
-                         (end-of-line)
-                         ;; difftastic diffs are usually 2-column side-by-side,
-                         ;; so ensure our window is wide enough.
-                         (let ((width (current-column)))
-                           (while (zerop (forward-line 1))
-                             (end-of-line)
-                             (setq width (max (current-column) width)))
-                           ;; Add column size of fringes
-                           (setq width (+ width
-                                          (fringe-columns 'left)
-                                          (fringe-columns 'right)))
-                           (goto-char (point-min))
-                           (pop-to-buffer
-                            (current-buffer)
-                            `(;; If the buffer is that wide that splitting the frame in
-                              ;; two side-by-side windows would result in less than
-                              ;; 80 columns left, ensure it's shown at the bottom.
-                              ,(when (> 80 (- (frame-width) width))
-                                 #'display-buffer-at-bottom)
-                              (window-width
-                               . ,(min width (frame-width))))))))))))
-    (defun my/magit-show-with-difftastic (rev)
-      "Show the result of \"git show REV\" with GIT_EXTERNAL_DIFF=difft."
-      (interactive
-       (list (or
-              ;; If REV is given, just use it.
-              (when (boundp 'rev) rev)
-              ;; If not invoked with prefix arg, try to guess the REV from
-              ;; point's position.
-              (and (not current-prefix-arg)
-                   (or (magit-thing-at-point 'git-revision t)
-                       (magit-branch-or-commit-at-point)))
-              ;; Otherwise, query the user.
-              (magit-read-branch-or-commit "Revision"))))
-      (if (not rev)
-          (error "No revision specified")
-        (my/magit--with-difftastic
-         (get-buffer-create (concat "*git show difftastic " rev "*"))
-         (list "git" "--no-pager" "show" "--ext-diff" rev))))
-    (defun my/magit-diff-with-difftastic (arg)
-      "Show the result of \"git diff ARG\" with GIT_EXTERNAL_DIFF=difft."
-      (interactive
-       (list (or
-              ;; If RANGE is given, just use it.
-              (when (boundp 'range) range)
-              ;; If prefix arg is given, query the user.
-              (and current-prefix-arg
-                   (magit-diff-read-range-or-commit "Range"))
-              ;; Otherwise, auto-guess based on position of point, e.g., based on
-              ;; if we are in the Staged or Unstaged section.
-              (pcase (magit-diff--dwim)
-                ('unmerged (error "unmerged is not yet implemented"))
-                ('unstaged nil)
-                ('staged "--cached")
-                (`(stash . ,value) (error "stash is not yet implemented"))
-                (`(commit . ,value) (format "%s^..%s" value value))
-                ((and range (pred stringp)) range)
-                (_ (magit-diff-read-range-or-commit "Range/Commit"))))))
-      (let ((name (concat "*git diff difftastic"
-                          (if arg (concat " " arg) "")
-                          "*")))
-        (my/magit--with-difftastic
-         (get-buffer-create name)
-         `("git" "--no-pager" "diff" "--ext-diff" ,@(when arg (list arg))))))
-    (transient-define-prefix my/magit-aux-commands ()
-      "My personal auxiliary magit commands."
-      ["Auxiliary commands"
-       ("d" "Difftastic Diff (dwim)" my/magit-diff-with-difftastic)
-       ("s" "Difftastic Show" my/magit-show-with-difftastic)])
-    (transient-append-suffix 'magit-dispatch "!"
-      '("#" "My Magit Cmds" my/magit-aux-commands))
+  (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+  ;; (add-hook 'magit-mode-hook 'my-inhibit-global-linum-mode)
+  (remove-hook 'server-switch-hook 'magit-commit-diff))
 
-    (define-key magit-status-mode-map (kbd "#") #'my/magit-aux-commands)
-    )
-  )
+(use-package magit-gitflow
+  :after magit)
 
 ;; (use-package unobtrusive-magit-theme
 ;;   :defer t
@@ -4876,7 +4786,15 @@ deletion, or > if it is flagged for displaying."
 ;; buffer 内正则替换
 ;; 渐进式可视化
 (use-package anzu
-  :ensure t)
+  :diminish anzu-mode
+
+  :custom-face
+  (anzu-mode-line ((t (:foreground "yellow"))))
+  (anzu-mode-line-no-match ((t (:foreground "red"))))
+
+  :config
+  (global-anzu-mode 1)
+  )
 ;; 我都是手动调用它的，因为使用场景不多，但又不能没有……
 ;; M-x anzu-query-replace-regexp
 

@@ -1,13 +1,5 @@
 ;;; -*- coding: utf-8; lexical-binding: t -*-
 
-;; copy from https://sachachua.com/dotemacs/index.html
-;; (defvar my-laptop-p (equal (system-name) "MacBook-Pro.lan"))
-;; (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "getong")))
-;; (defvar my-phone-p (not (null (getenv "ANDROID_ROOT")))
-;;   "If non-nil, GNU Emacs is running on Termux.")
-;; (when my-phone-p (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
-;; (global-auto-revert-mode)  ; simplifies syncingr
-
 ;;auto-compile
 (use-package auto-compile
   :ensure t
@@ -139,222 +131,6 @@
   :ensure t
   :hook
   (olivetti-mode . olivetti-mode-setup))
-;; (use-package olivetti
-;;   :ensure
-;;   :defer
-;;   :diminish
-;;   :config
-;;   (setq olivetti-body-width 0.65)
-;;   (setq olivetti-minimum-body-width 72)
-;;   (setq olivetti-recall-visual-line-mode-entry-state t)
-;;   (define-minor-mode prot/olivetti-mode
-;;     "Toggle buffer-local `olivetti-mode' with additional parameters.
-;; Fringes are disabled.  The modeline is hidden, except for
-;; `prog-mode' buffers (see `prot/hidden-mode-line-mode').  The
-;; default typeface is set to a proportionately-spaced family,
-;; except for programming modes (see `prot/variable-pitch-mode').
-;; The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
-;;     :init-value nil
-;;     :global nil
-;;     (if prot/olivetti-mode
-;;         (progn
-;;           (olivetti-mode 1)
-;;           (set-window-fringes (selected-window) 0 0)
-;;           ;; (prot/variable-pitch-mode 1)
-;;           (prot/cursor-type-mode 1)
-;;           (unless (derived-mode-p 'prog-mode)
-;;             (prot/hidden-mode-line-mode 1)))
-;;       (olivetti-mode -1)
-;;       (set-window-fringes (selected-window) nil) ; Use default width
-;;       ;; (prot/variable-pitch-mode -1)
-;;       (prot/cursor-type-mode -1)
-;;       (unless (derived-mode-p 'prog-mode)
-;;         (prot/hidden-mode-line-mode -1))))
-;;   :bind ("C-c o" . prot/olivetti-mode))
-
-;; copy from [Saving persistent undo to a single directory, alist format](https://emacs.stackexchange.com/questions/26993/saving-persistent-undo-to-a-single-directory-alist-format)
-;;(use-package undo-tree
-;;  :defer t
-;;  :diminish undo-tree-mode
-;;  :init (global-undo-tree-mode)
-;;  :custom
-;;  (undo-tree-visualizer-diff t)
-;;  (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-;;  (undo-tree-visualizer-timestamps t))
-;;
-;;;; copy from [Playing nicely with linum](https://www.emacswiki.org/emacs/UndoTree)
-;;(defun undo-tree-visualizer-update-linum (&rest args)
-;;  (linum-update undo-tree-visualizer-parent-buffer))
-;;(advice-add 'undo-tree-visualize-undo :after #'undo-tree-visualizer-update-linum)
-;;(advice-add 'undo-tree-visualize-redo :after #'undo-tree-visualizer-update-linum)
-;;(advice-add 'undo-tree-visualize-undo-to-x :after #'undo-tree-visualizer-update-linum)
-;;(advice-add 'undo-tree-visualize-redo-to-x :after #'undo-tree-visualizer-update-linum)
-;;(advice-add 'undo-tree-visualizer-mouse-set :after #'undo-tree-visualizer-update-linum)
-;;(advice-add 'undo-tree-visualizer-set :after #'undo-tree-visualizer-update-linum)
-
-;;(use-package vundo
-;;  :bind ("C-x u" . vundo)
-;;  :commands (vundo)
-;;  :hook ((vundo-mode . my/vundo-setup))
-;;  :init
-;;  (progn
-;;    (setq vundo-window-max-height 5))
-;;  :config
-;;  (progn
-;;    (setq vundo-glyph-alist vundo-unicode-symbols)
-;;    ;; Take less on-screen space.
-;;    (setq vundo-compact-display t)
-;;    ;; Better contrasting highlight.
-;;    (custom-set-faces
-;;     '(vundo-node ((t (:foreground "#808080"))))
-;;     '(vundo-stem ((t (:foreground "#808080"))))
-;;     '(vundo-highlight ((t (:foreground "#FFFF00")))))
-;;
-;;    (defun my/vundo-setup ()
-;;      "Remove mode-line and header-line."
-;;      (setq mode-line-format nil)
-;;      (setq header-line-format nil))
-;;    ))
-
-;; (use-package hydra
-;;   :ensure t
-;;   :commands defhydra)
-
-;; (use-package use-package-hydra
-;;   :ensure t
-;;   :after hydra)
-;; (if my-laptop-p
-;;     (use-package hydra-posframe :if my-laptop-p :after hydra))
-
-;; (with-eval-after-load 'hydra
-;;   (defhydra my-window-movement ()
-;;     ("<left>" windmove-left)
-;;     ("<right>" windmove-right)
-;;     ("<down>" windmove-down)
-;;     ("<up>" windmove-up)
-;;     ("y" other-window "other")
-;;     ("h" switch-window "switch-window")
-;;     ("b" consult-buffer "buffer")
-;;     ("f" find-file "file")
-;;     ("F" find-file-other-window "other file")
-;;     ("v" (progn (split-window-right) (windmove-right)))
-;;     ("o" delete-other-windows :color blue)
-;;     ("a" ace-window)
-;;     ("s" ace-swap-window)
-;;     ("d" delete-window "delete")
-;;     ("D" ace-delete-window "ace delete")
-;;     ("i" ace-maximize-window "maximize")
-;;     ("q" nil)))
-
-;; (with-eval-after-load 'hydra
-;;   (defhydra my-shortcuts (:exit t)
-;;     ("j" my-helm-journal "Journal")
-;;     ("C" my-resolve-orgzly-syncthing "Conflicts")
-;;     ("n" my-capture-timestamped-note "Note")
-;;     ("c" my-org-categorize-emacs-news/body "Categorize")
-;;     ("d" my-emacs-news-check-duplicates "Dupe")
-;;     ("s" save-buffer "Save")
-;;     ("f" my-file-shortcuts/body "File shortcut")
-;;     ("+" text-scale-increase "Increase")
-;;     ("-" text-scale-decrease "Decrease")
-;;     ("G" gif-screencast-start-or-stop "GIF screencast")
-;;     ("g" my-geeqie/body "Geeqie")
-;;     ("r" my-record-ffmpeg-toggle-recording "Record screen")
-;;     ("l" (my-toggle-or-create "*scratch*" (lambda () (switch-to-buffer (startup--get-buffer-create-scratch)))) "Lisp")
-;;     ("e" eshell-toggle "Eshell")
-;;     ("w" my-engine-dmode-hydra/body "Search web")
-;;     ("E" my-emacs-news/body "Emacs News"))
-;;   (global-set-key (kbd "<f5>") #'my-shortcuts/body)
-;;   (defhydra my-emacs-news (:exit t)
-;;     "Emacs News"
-;;     ("f" (find-file "~/sync/emacs-news/index.org") "News")
-;;     ("C" (find-file "~/proj/emacs-calendar/README.org") "Calendar")
-;;     ("C" (find-file "/ssh:web:/var/www/emacslife.com/calendar/README.org" "Calendar on server"))
-;;     ("d" my-emacs-news-check-duplicates "Dupe")
-;;     ("c" my-org-categorize-emacs-news/body "Categorize")
-;;     ("h" (my-org-update-link-description "HN") "Link HN")
-;;     ("i" (my-org-update-link-description "Irreal") "Link Irreal")
-;;     ("m" my-share-emacs-news "Mail")
-;;     ("t" (browse-url "https://tweetdeck.twitter.com") "Twitter")))
-
-;; (defun my-org-update-link-description (description)
-;;   "Update the current link's DESCRIPTION."
-;;   (interactive "MDescription: ")
-;;   (let (link)
-;;     (save-excursion
-;;       (cond
-;;        ((org-in-regexp org-link-bracket-re 1)
-;;         (setq link (org-link-unescape (match-string-no-properties 1)))
-;;         (delete-region (match-beginning 0) (match-end 0))
-;;         (insert (org-link-make-string link description))
-;;         (sit-for 0))
-;;        ((or (org-in-regexp org-link-angle-re)
-;;             (org-in-regexp org-link-plain-re))
-;;         (setq link (org-unbracket-string "<" ">" (match-string 0)))
-;;         (delete-region (match-beginning 0) (match-end 0))
-;;         (insert (org-link-make-string link description))
-;;         (sit-for 0))))))
-
-;; (defun my-org-insert-link ()
-;;   (interactive)
-;;   (when (org-in-regexp org-bracket-link-regexp 1)
-;;     (goto-char (match-end 0))
-;;     (insert "\n"))
-;;   (call-interactively 'org-insert-link))
-
-;; (defun my-switch-to-previous-buffer ()
-;;   "Switch to previously open buffer.
-;;       Repeated invocations toggle between the two most recently open buffers."
-;;   (interactive)
-;;   (switch-to-buffer (other-buffer (current-buffer) 1)))
-
-;; (defun my-org-check-agenda ()
-;;   "Peek at agenda."
-;;   (interactive)
-;;   (cond
-;;    ((derived-mode-p 'org-agenda-mode)
-;;     (if (window-parent) (delete-window) (bury-buffer)))
-;;    ((get-buffer "*Org Agenda*")
-;;     (switch-to-buffer-other-window "*Org Agenda*"))
-;;    (t (org-agenda nil "a"))))
-
-;; (defun my-goto-random-char ()
-;;   (interactive)
-;;   (goto-char (random (point-max))))
-
-;; (defvar hydra-stack nil)
-
-;; (defun my-hydra-push (expr)
-;;   (push `(lambda () ,expr) hydra-stack))
-
-;; (defun my-hydra-pop ()
-;;   (interactive)
-;;   (let ((x (pop hydra-stack)))
-;;     (when x (funcall x))))
-
-;; (defun my-hydra-go-and-push (expr)
-;;   (push hydra-curr-body-fn hydra-stack)
-;;   (prin1 hydra-stack)
-;;   (funcall expr))
-
-;; (use-package undo-tree
-;;   :ensure t
-;;   :init (global-undo-tree-mode)
-;;   :after hydra
-;;   :bind ("C-x C-h u" . hydra-undo-tree/body)
-;;   :custom
-;;   (undo-tree-visualizer-diff t)
-;;   (undo-tree-history-directory-alist '(("." . "~/.emacs.d/var/undo")))
-;;   (undo-tree-visualizer-timestamps t)
-;;   :hydra (hydra-undo-tree (:hint nil)
-;;                           "
-;;   _p_: undo  _n_: redo _s_: save _l_: load   "
-;;                           ("p"   undo-tree-undo)
-;;                           ("n"   undo-tree-redo)
-;;                           ("s"   undo-tree-save-history)
-;;                           ("l"   undo-tree-load-history)
-;;                           ("u"   undo-tree-visualize "visualize" :color blue)
-;;                           ("q"   nil "quit" :color blue)))
 
 (use-package undohist
   :ensure t
@@ -406,9 +182,6 @@
   (keymap-set vundo-mode-map "d" #'my/vundo-diff)
   )
 
-;; (use-package iedit
-;;   :ensure t)
-
 ;;
 ;; Multiple cursors
 ;;
@@ -430,39 +203,6 @@
          ;; 直接多选本 buffer 所有这个单词
          ("C-c C->" . mc/mark-all-symbols-like-this)
          ))
-
-;; (use-package multiple-cursors
-;;   :ensure t
-;;   :after hydra
-;;   :bind
-;;   (("C-x C-h m" . hydra-multiple-cursors/body)
-;;    ("C-S-<mouse-1>" . mc/toggle-cursor-on-click))
-;;   :hydra (hydra-multiple-cursors
-;; 		  (:hint nil)
-;; 		  "
-;; Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cursor%s(if (> (mc/num-cursors) 1) \"s\" \"\")
-;; ------------------------------------------------------------------
-;;  [_p_]   Prev     [_n_]   Next     [_l_] Edit lines  [_0_] Insert numbers
-;;  [_P_]   Skip     [_N_]   Skip     [_a_] Mark all    [_A_] Insert letters
-;;  [_M-p_] Unmark   [_M-n_] Unmark   [_s_] Search      [_q_] Quit
-;;  [_|_] Align with input CHAR       [Click] Cursor at point"
-;; 		  ("l" mc/edit-lines :exit t)
-;; 		  ("a" mc/mark-all-like-this :exit t)
-;; 		  ("n" mc/mark-next-like-this)
-;; 		  ("N" mc/skip-to-next-like-this)
-;; 		  ("M-n" mc/unmark-next-like-this)
-;; 		  ("p" mc/mark-previous-like-this)
-;; 		  ("P" mc/skip-to-previous-like-this)
-;; 		  ("M-p" mc/unmark-previous-like-this)
-;; 		  ("|" mc/vertical-align)
-;; 		  ("s" mc/mark-all-in-region-regexp :exit t)
-;; 		  ("0" mc/insert-numbers :exit t)
-;; 		  ("A" mc/insert-letters :exit t)
-;; 		  ("<mouse-1>" mc/add-cursor-on-click)
-;; 		  ;; Help with click recognition in this hydra
-;; 		  ("<down-mouse-1>" ignore)
-;; 		  ("<drag-mouse-1>" ignore)
-;; 		  ("q" nil)))
 
 ;; copy from https://emacs-china.org/t/vterm-zsh/20497
 ;;; Terminal
@@ -703,28 +443,6 @@ Activate this advice with:
   (setq-default scroll-conservatively 1) ; affects `scroll-step'
   (setq-default scroll-margin 0)
 
-  ;; (define-minor-mode prot/scroll-centre-cursor-mode
-  ;;   "Toggle centred cursor scrolling behaviour."
-  ;;   :init-value nil
-  ;;   :lighter " S="
-  ;;   :global nil
-  ;;   (if prot/scroll-centre-cursor-mode
-  ;;       (setq-local scroll-margin (* (frame-height) 2)
-  ;;                   scroll-conservatively 0
-  ;;                   maximum-scroll-margin 0.5)
-  ;;     (dolist (local '(scroll-preserve-screen-position
-  ;;                      scroll-conservatively
-  ;;                      maximum-scroll-margin
-  ;;                      scroll-margin))
-  ;;       (kill-local-variable `,local))))
-  ;; (define-minor-mode prot/hidden-mode-line-mode
-  ;;   "Toggle modeline visibility in the current buffer."
-  ;;   :init-value nil
-  ;;   :global nil
-  ;;   (if prot/hidden-mode-line-mode
-  ;;       (setq-local mode-line-format nil)
-  ;;     (kill-local-variable 'mode-line-format)
-  ;;     (force-mode-line-update)))
   ;; copy from [Emacs on Mac OS X - To Alt or Command?](https://apple.stackexchange.com/questions/12087/emacs-on-mac-os-x-to-alt-or-command)
   ;; copy from [emacs-mac-port的command key能不能改回系统默认的command功能？](https://emacs-china.org/t/emacs-mac-port-command-key-command/8845)
   ;; check OS type
@@ -1044,15 +762,12 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
                "zathura"
                '(file)))))
 
-;;(require 'pangu-spacing)
-;;(global-pangu-spacing-mode 1)
 (use-package pangu-spacing
   :config
   (global-pangu-spacing-mode 1)
   )
 
-;;(require 'highlight-thing)
-;;(global-highlight-thing-mode)
+
 (use-package highlight-thing
   :config
   (global-highlight-thing-mode)
@@ -1142,10 +857,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :program "npx"
   :args '("prettier" "--stdin-filepath" "a.js"))
 
-;;(with-eval-after-load 'js
-;;  (evil-leader/set-key-for-mode 'js-mode "d" 'dumb-jump-go)
-;;  (define-key js-mode-map (kbd "C-c C-f") 'js-format-buffer))
-
 ;;  rainbow-delimiters 可以将对称的括号用同一种颜色标记出来。
 ;; parens
 (use-package smartparens
@@ -1193,29 +904,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
    (scss-mode . rainbow-mode))
   ((prog-mode . rainbow-delimiters-mode)))
 
-;;(add-to-list 'default-frame-alist '(foreground-color . "white"))
-;;(add-to-list 'default-frame-alist '(background-color . "black"))
-;;(require 'color-theme-sanityinc-tomorrow)
-;;(load-theme 'sanityinc-tomorrow-blue t)
-;;(color-theme-sanityinc-tomorrow--define-theme blue)
-;;(add-to-list 'default-frame-alist '(cursor-color . "black"))
-;; (add-to-list 'default-frame-alist '(cursor-type . bar))
-;;(blink-cursor-mode -1)
-;;(setq blink-cursor-blinks -1)
-;; theme
-;;(use-package color-theme-sanityinc-tomorrow
-;;  :defer t
-;;  :init (load-theme 'sanityinc-tomorrow-night t))
-
-;; copy from https://protesilaos.com/codelog/2022-08-15-intro-ef-themes-emacs/
-;; (use-package ef-themes
-;;   :defer t
-;;   :init (load-theme 'ef-winter t))
-
-;; (use-package indent-guide
-;;   :config
-;;   (indent-guide-global-mode)
-;;   )
 (use-package highlight-indent-guides
   :ensure t
   :custom (highlight-indent-guides-method 'character)
@@ -1227,28 +915,28 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   (rustic-mode . highlight-indent-guides-mode)
   )
 
-(use-package switch-window
-  :config
-  (global-set-key (kbd "C-x o") 'switch-window)
-  (global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
-  (global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
-  (global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
-  (global-set-key (kbd "C-x 0") 'switch-window-then-delete)
+;; (use-package switch-window
+;;   :config
+;;   (global-set-key (kbd "C-x o") 'switch-window)
+;;   (global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
+;;   (global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
+;;   (global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
+;;   (global-set-key (kbd "C-x 0") 'switch-window-then-delete)
 
-  (global-set-key (kbd "C-x 4 d") 'switch-window-then-dired)
-  (global-set-key (kbd "C-x 4 f") 'switch-window-then-find-file)
-  (global-set-key (kbd "C-x 4 m") 'switch-window-then-compose-mail)
-  (global-set-key (kbd "C-x 4 r") 'switch-window-then-find-file-read-only)
+;;   (global-set-key (kbd "C-x 4 d") 'switch-window-then-dired)
+;;   (global-set-key (kbd "C-x 4 f") 'switch-window-then-find-file)
+;;   (global-set-key (kbd "C-x 4 m") 'switch-window-then-compose-mail)
+;;   (global-set-key (kbd "C-x 4 r") 'switch-window-then-find-file-read-only)
 
-  (global-set-key (kbd "C-x 4 C-f") 'switch-window-then-find-file)
-  (global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
+;;   (global-set-key (kbd "C-x 4 C-f") 'switch-window-then-find-file)
+;;   (global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
 
-  (global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
+;;   (global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
 
-  (setq switch-window-shortcut-style 'qwerty)
-  (setq switch-window-qwerty-shortcuts
-        '("a" "s" "d" "f" "j" "k" "l" ";" "w" "e" "i" "o"))
-  )
+;;   (setq switch-window-shortcut-style 'qwerty)
+;;   (setq switch-window-qwerty-shortcuts
+;;         '("a" "s" "d" "f" "j" "k" "l" ";" "w" "e" "i" "o"))
+;;   )
 
 (use-package aggressive-indent
   :config
@@ -1289,102 +977,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
         auto-package-update-interval 4)
   (auto-package-update-maybe))
 
-;; (use-package general
-;;   :config
-;;   (general-evil-setup)
-;;   ;; integrate general with evil
-
-;;   ;; set up 'SPC' as the global leader key
-;;   (general-create-definer patrl/leader-keys
-;;     :states '(normal insert visual emacs)
-;;     :keymaps 'override
-;;     :prefix "SPC" ;; set leader
-;;     :global-prefix "M-SPC") ;; access leader in insert mode
-
-;;   ;; set up ',' as the local leader key
-;;   (general-create-definer patrl/local-leader-keys
-;;     :states '(normal insert visual emacs)
-;;     :keymaps 'override
-;;     :prefix "," ;; set local leader
-;;     :global-prefix "M-,") ;; access local leader in insert mode
-
-;;   (general-define-key
-;;    :states 'insert
-;;    "C-g" 'evil-normal-state) ;; don't stretch for ESC
-
-;;   ;; unbind some annoying default bindings
-;;   (general-unbind
-;;     "C-x C-r"   ;; unbind find file read only
-;;     "C-x C-z"   ;; unbind suspend frame
-;;     "C-x C-d"   ;; unbind list directory
-;;     "<mouse-2>") ;; pasting with mouse wheel click
-
-
-;;   (patrl/leader-keys
-;;     "SPC" '(execute-extended-command :wk "execute command") ;; an alternative to 'M-x'
-;;     ;;"TAB" '(:keymap tab-prefix-map :wk "tab") ;; remap tab bindings
-;;     )
-
-;;   (patrl/leader-keys
-;;     "c" '(:ignore t :wk "code"))
-
-;;   ;; help
-;;   ;; namespace mostly used by 'helpful'
-;;   (patrl/leader-keys
-;;     "h" '(:ignore t :wk "help"))
-
-;;   ;; file
-;;   (patrl/leader-keys
-;;     "f" '(:ignore t :wk "file")
-;;     "ff" '(find-file :wk "find file") ;; gets overridden by consult
-;;     "fs" '(save-buffer :wk "save file"))
-
-;;   ;; buffer
-;;   ;; see 'bufler' and 'popper'
-;;   (patrl/leader-keys
-;;     "b" '(:ignore t :wk "buffer")
-;;     "bb" '(switch-to-buffer :wk "switch buffer") ;; gets overridden by consult
-;;     "bk" '(kill-this-buffer :wk "kill this buffer")
-;;     "br" '(revert-buffer :wk "reload buffer"))
-
-;;   ;; bookmark
-;;   (patrl/leader-keys
-;;     "B" '(:ignore t :wk "bookmark")
-;;     "Bs" '(bookmark-set :wk "set bookmark")
-;;     "Bj" '(bookmark-jump :wk "jump to bookmark"))
-
-;;   ;; universal argument
-;;   (patrl/leader-keys
-;;     "u" '(universal-argument :wk "universal prefix"))
-
-;;   ;; notes
-;;   ;; see 'citar' and 'org-roam'
-;;   (patrl/leader-keys
-;;     "n" '(:ignore t :wk "notes")
-;;     ;; see org-roam and citar sections
-;;     "na" '(org-todo-list :wk "agenda todos")) ;; agenda
-
-;;   ;; code
-;;   ;; see 'flymake'
-;;   (patrl/leader-keys
-;;     "c" '(:ignore t :wk "code"))
-
-;;   ;; open
-;;   (patrl/leader-keys
-;;     "o" '(:ignore t :wk "open")
-;;     "os" '(speedbar t :wk "speedbar")) ;; TODO this needs some love
-
-;;   ;; search
-;;   ;; see 'consult'
-;;   (patrl/leader-keys
-;;     "s" '(:ignore t :wk "search"))
-
-;;   ;; templating
-;;   ;; see 'tempel'
-;;   (patrl/leader-keys
-;;     "t" '(:ignore t :wk "template")))
-
-;; "c" '(org-capture :wk "capture")))
 
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; 默认的 mode-line 不是很好看，用 doom-modeline 好一些。
@@ -1402,10 +994,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :init
   (all-the-icons-completion-mode))
 
-;; (use-package all-the-icons-dired
-;;   :ensure t
-;;   :defer t
-;;   :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; https://www.emacswiki.org/emacs/KeyCast
 ;; copy from https://book.emacs-china.org/#org737719a
@@ -1466,29 +1054,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   (projectile-global-mode))
 
 
-;; copy from https://quant67.com/post/emcas/init-config.html
-;; F8 侧边打开项目目录
-;; (use-package neotree
-;;   :config
-;;   ;; f8 to view tree strucure of folder
-;;   (defun neotree-project-dir ()
-;;     "Open NeoTree using the git root."
-;;     (interactive)
-;;     (let ((project-dir (projectile-project-root))
-;;           (file-name (buffer-file-name)))
-;;       (neotree-toggle)
-;;       (if project-dir
-;;           (if (neo-global--window-exists-p)
-;;               (progn
-;;                 (neotree-dir project-dir)
-;;                 (neotree-find file-name)))
-;;         (message "Could not find git project root."))))
-;;   (setq-default neo-show-hidden-files t)
-;;   (global-set-key [f8] 'neotree-project-dir)
-;;   ;; switch with projectile
-;;   (use-package projectile)
-;;   (setq projectile-switch-project-action 'neotree-projectile-action))
-
 ;; copy from [Highlight current active window](https://stackoverflow.com/questions/33195122/highlight-current-active-window)
 (use-package auto-dim-other-buffers
   :ensure t
@@ -1499,13 +1064,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :ensure t
   :config
   (unicode-fonts-setup))
-
-;; (use-package dired-subtree
-;;   :ensure t
-;;   :after dired
-;;   ;;:config
-;;   ;;(define-key dired-mode-map (kbd "<tab>") 'dired-subtree-toggle)
-;;   )
 
 ;; Share clipoard with OS
 (use-package pbcopy
@@ -1635,37 +1193,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 (use-package latex-preview-pane
   :ensure t
   :defer t)
-
-;; git
-(use-package git-link
-  :ensure t
-  :defer t)
-
-(use-package git-modes
-  :defer t
-  :ensure t)
-
-;; (use-package diff-hl
-;;   :ensure t
-;;   :custom
-;;   (diff-hl-show-staged-changes nil)
-;;   ;; for some reason the :hook form doesn't work so we have to use :init
-;;   :init
-;;   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-;;   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-;;   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-;;   :config
-;;   (global-diff-hl-mode))
-
-(use-package gist
-  :ensure t
-  :defer t)
-
-(use-package linkode
-  :ensure t
-  :defer t)
-
-(use-package git-timemachine)
 
 ;; Cursor 光标彩虹效果
 (use-package beacon
@@ -1885,11 +1412,6 @@ Get it from:  <http://hasseg.org/trash/>"
 (use-package dash
   :defer t)
 
-;; (use-package lsp-treemacs
-;;   :commands lsp-treemacs-errors-list
-;;   :config
-;;   ;;(lsp-metals-treeview-enable t)
-;;   (setq lsp-metals-treeview-show-when-views-received t))
 
 ;; copy from https://emacs-china.org/t/purcell-emacs-emacs/17511/13
 (use-package desktop
@@ -1990,56 +1512,6 @@ Get it from:  <http://hasseg.org/trash/>"
              (c++-mode "{" "}" "/[*/]" nil nil)
              (rust-mode "{" "}" "/[*/]" nil nil)))))
 
-;; 显示空白字符，如 \t \v \v 空格等等。
-;; 可以配置在 prog-mode，markdown-mode 和 conf-mode 下，显示行尾的空白字符。
-;;(use-package whitespace
-;;  :ensure nil
-;;  :hook
-;;  (after-init . global-whitespace-mode)
-;;
-;;  ((prog-mode markdown-mode conf-mode) . whitespace-mode)
-;;  :config
-;;  ;; makefile等以tab为标识的文件中也会将tab转换为空格, 排除特定的mode呢
-;;  (setq whitespace-global-modes '(not makefile-mode))
-;;  ;; Don't use different background for tabs.
-;;  (face-spec-set 'whitespace-tab
-;;                 '((t :background unspecified)))
-;;  ;; Only use background and underline for long lines, so we can still have
-;;  ;; syntax highlight.
-;;
-;;  ;; For some reason use face-defface-spec as spec-type doesn't work.  My guess
-;;  ;; is it's due to the variables with the same name as the faces in
-;;  ;; whitespace.el.  Anyway, we have to manually set some attribute to
-;;  ;; unspecified here.
-;;  (face-spec-set 'whitespace-line
-;;                 '((((background light))
-;;                    :background "#d8d8d8" :foreground unspecified
-;;                    :underline t :weight unspecified)
-;;                   (t
-;;                    :background "#404040" :foreground unspecified
-;;                    :underline t :weight unspecified)))
-;;
-;;  ;; Use softer visual cue for space before tabs.
-;;  (face-spec-set 'whitespace-space-before-tab
-;;                 '((((background light))
-;;                    :background "#d8d8d8" :foreground "#de4da1")
-;;                   (t
-;;                    :inherit warning
-;;                    :background "#404040" :foreground "#ee6aa7")))
-;;
-;;  (setq
-;;   whitespace-line-column nil
-;;   whitespace-style
-;;   '(face             ; visualize things below:
-;;     empty            ; empty lines at beginning/end of buffer
-;;     lines-tail       ; lines go beyond `fill-column'
-;;     space-before-tab ; spaces before tab
-;;     trailing         ; trailing blanks
-;;     tabs             ; tabs (show by face)
-;;     tab-mark         ; tabs (show by symbol)
-;;     ))
-;;  )
-
 ;; 当打开一个具有长行的文件时，它会自动检测并将一些可能导致严重性能的 mode 关闭， 如 syntax highlight。
 (use-package so-long
   :ensure nil
@@ -2105,37 +1577,6 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; by default, typescript-mode is mapped to the treesitter typescript parser
   ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
-
-;; https://github.com/orzechowskid/tsi.el/
-;; great tree-sitter-based indentation for typescript/tsx, css, json
-;;(use-package tsi
-;;  :after tree-sitter
-;;  ;; define autoload definitions which when actually invoked will cause package to be loaded
-;;  :commands (tsi-typescript-mode tsi-json-mode tsi-css-mode)
-;;  :init
-;;  (add-hook 'typescript-mode-hook (lambda () (tsi-typescript-mode 1)))
-;;  (add-hook 'json-mode-hook (lambda () (tsi-json-mode 1)))
-;;  (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
-;;  (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
-
-;; auto-format different source code files extremely intelligently
-;; apheleia 会折断长行, 非常耗费资源，不建议日常开启
-;; https://github.com/radian-software/apheleia
-;; (use-package apheleia
-;;   :ensure t
-;;   :config
-;;   (apheleia-global-mode +1))
-
-;; (global-linum-mode 1)
-;; (setq linum-format "%3d ")
-;; (add-hook 'prog-mode-hook 'linum-mode)
-;; (use-package linum
-;;   :init
-;;   (progn
-;;     (global-linum-mode t)
-;;     (setq linum-format "%4d  ")
-;;     (set-face-background 'linum nil)
-;;     ))
 
 ;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
 ;; Json
@@ -2257,19 +1698,7 @@ Get it from:  <http://hasseg.org/trash/>"
     )
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
-;;(use-package eglot
-;;  :ensure t
-;;  :config
-;;  (add-to-list 'eglot-server-programs '(rustic-mode . ("rust-analyzer")))
-;;  (add-hook 'rustic-mode-hook 'eglot-ensure)
-;;  (define-key eglot-mode-map (kbd "C-c r") 'eglot-rename))
 
-;; (use-package tide
-;;   :ensure t
-;;   :after (typescript-mode company flycheck)
-;;   :hook ((typescript-mode . tide-setup)
-;;          (typescript-mode . tide-hl-identifier-mode)
-;;          (before-save . tide-format-before-save)))
 ;; copy from https://nyk.ma/posts/emacs-write-your-own/
 ;; 由于 lsp-mode 的一次大更新，把使用方式变成如今调用 (lsp) 即可，所以目前 eglot 竞争力不强了。
 (use-package lsp-mode
@@ -2640,25 +2069,6 @@ Get it from:  <http://hasseg.org/trash/>"
         ("<f11>" . dap-step-in)
         ("S-<f11>" . dap-step-out)
         ))
-;; (use-package dap-mode
-;;   :ensure
-;;   :config
-;;   (dap-ui-mode)
-;;   (dap-ui-controls-mode 1)
-
-;;   (require 'dap-lldb)
-;;   (require 'dap-gdb-lldb)
-;;   ;; installs .extension/vscode
-;;   (dap-gdb-lldb-setup)
-;;   (dap-register-debug-template
-;;    "Rust::LLDB Run Configuration"
-;;    (list :type "lldb"
-;;          :request "launch"
-;;          :name "LLDB::Run"
-;; 	     :gdbpath "rust-lldb"
-;;          ;; uncomment if lldb-mi is not in PATH
-;;          ;; :lldbmipath "path/to/lldb-mi"
-;;          )))
 
 (use-package dap-lldb
   :ensure nil
@@ -2720,12 +2130,6 @@ Get it from:  <http://hasseg.org/trash/>"
     (setq lsp-rust-analyzer-server-command '("/backup/backup/rust_installation/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"))
     )))
 
-;; copy from [Rust development environment for Emacs](https://rustrepo.com/repo/brotzeit-rustic-rust-ides)
-;; (defun rustic-mode-auto-save-hook ()
-;;   "Enable auto-saving in rustic-mode buffers."
-;;   (when buffer-file-name
-;;     (setq-local compilation-ask-about-save nil)))
-;; (add-hook 'rustic-mode-hook 'rustic-mode-auto-save-hook)
 
 ;; 正在从ivy、swiper、counsel、hydra转向vertico、consult、embark、orderless。
 ;; 增强 minibuffer 补全：vertico 和 Orderless, 垂直补全
@@ -2898,144 +2302,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (embark-collect-mode . embark-consult-preview-minor-mode)
   )
 
-;; 增强文件内搜索和跳转函数定义：Consult
-;; Example configuration for Consult
-;; (use-package consult
-;;   ;; Replace bindings. Lazily loaded due by `use-package'.
-;;   :bind (;; C-c bindings (mode-specific-map)
-;;          ("C-c h" . consult-history)
-;;          ("C-c m" . consult-mode-command)
-;;          ("C-c k" . consult-kmacro)
-;;          ;; C-x bindings (ctl-x-map)
-;;          ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-;;          ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-;;          ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-;;          ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-;;          ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-;;          ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
-;;          ;; Custom M-# bindings for fast register access
-;;          ("M-#" . consult-register-load)
-;;          ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-;;          ("C-M-#" . consult-register)
-;;          ;; Other custom bindings
-;;          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-;;          ;; M-g bindings (goto-map)
-;;          ("M-g e" . consult-compile-error)
-;;          ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-;;          ;; ("M-g g" . consult-goto-line)             ;; orig. goto-line
-;;          ;; ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-;;          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-;;          ("M-g m" . consult-mark)
-;;          ("M-g k" . consult-global-mark)
-;;          ("M-g i" . consult-imenu)
-;;          ("M-g I" . consult-imenu-multi)
-;;          ;; M-s bindings (search-map)
-;;          ("M-s d" . consult-find)
-;;          ("M-s D" . consult-locate)
-;;          ("M-s g" . consult-grep)
-;;          ("M-s G" . consult-git-grep)
-;;          ("M-s r" . consult-ripgrep)
-;;          ("M-s l" . consult-line)
-;;          ("M-s k" . consult-keep-lines)
-;;          ("M-s u" . consult-focus-lines)
-;;          ;; Isearch integration
-;;          ("M-s e" . consult-isearch-history)
-;;          :map isearch-mode-map
-;;          ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-;;          ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-;;          ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-;;          ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-;;          ;; Minibuffer history
-;;          :map minibuffer-local-map
-;;          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-;;          ;; (global-set-key (kbd "C-s") 'my-isearch-or-consult)
-;;          ;; ("C-s" . my-isearch-or-consult)
-;;          ("C-s" . consult-line-multi)
-;;          ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
-;;   ;; Enable automatic preview at point in the *Completions* buffer. This is
-;;   ;; relevant when you use the default completion UI.
-;;   :hook (completion-list-mode . consult-preview-at-point-mode)
-
-;;   ;; The :init configuration is always executed (Not lazy)
-;;   :init
-
-;;   ;; Optionally configure the register formatting. This improves the register
-;;   ;; preview for `consult-register', `consult-register-load',
-;;   ;; `consult-register-store' and the Emacs built-ins.
-;;   (setq register-preview-delay 0.5
-;;         register-preview-function #'consult-register-format)
-
-;;   ;; Optionally tweak the register preview window.
-;;   ;; This adds thin lines, sorting and hides the mode line of the window.
-;;   (advice-add #'register-preview :override #'consult-register-window)
-
-;;   ;; Use Consult to select xref locations with preview
-;;   (setq xref-show-xrefs-function #'consult-xref
-;;         xref-show-definitions-function #'consult-xref)
-
-;;   ;; Configure other variables and modes in the :config section,
-;;   ;; after lazily loading the package.
-;;   :config
-
-;;   ;; Optionally configure preview. The default value
-;;   ;; is 'any, such that any key triggers the preview.
-;;   ;; (setq consult-preview-key 'any)
-;;   ;; (setq consult-preview-key (kbd "M-."))
-;;   ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
-;;   ;; For some commands and buffer sources it is useful to configure the
-;;   ;; :preview-key on a per-command basis using the `consult-customize' macro.
-;;   (consult-customize
-;;    consult-theme :preview-key '(:debounce 0.2 any)
-;;    consult-ripgrep consult-git-grep consult-grep
-;;    consult-bookmark consult-recent-file consult-xref
-;;    consult--source-bookmark consult--source-file-register
-;;    consult--source-recent-file consult--source-project-recent-file
-;;    ;; :preview-key (kbd "M-.")
-;;    :preview-key '(:debounce 0.4 any))
-
-;;   ;; Optionally configure the narrowing key.
-;;   ;; Both < and C-+ work reasonably well.
-;;   (setq consult-narrow-key "<") ;; (kbd "C-+")
-
-;;   ;; Optionally make narrowing help available in the minibuffer.
-;;   ;; You may want to use `embark-prefix-help-command' or which-key instead.
-;;   ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-
-;;   ;; By default `consult-project-function' uses `project-root' from project.el.
-;;   ;; Optionally configure a different project root function.
-;;   ;; There are multiple reasonable alternatives to chose from.
-;;   ;;;; 1. project.el (the default)
-;;   ;; (setq consult-project-function #'consult--default-project--function)
-;;   ;;;; 2. projectile.el (projectile-project-root)
-;;   ;; (autoload 'projectile-project-root "projectile")
-;;   (setq consult-project-function (lambda (_) (projectile-project-root)))
-;;   ;;;; 3. vc.el (vc-root-dir)
-;;   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-;;   ;;;; 4. locate-dominating-file
-;;   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-;;   (projectile-load-known-projects)
-;;   (setq my-consult-source-projectile-projects
-;;         `(:name "Projectile projects"
-;;                 :narrow   ?P
-;;                 :category project
-;;                 :action   ,#'projectile-switch-project-by-name
-;;                 :items    ,projectile-known-projects))
-;;   (add-to-list 'consult-buffer-sources my-consult-source-projectile-projects 'append)
-;;   ;; copy from https://tam5917.hatenablog.com/entry/2021/05/01/063232
-;;   (defun consult-line-symbol-at-point ()
-;;     (interactive)
-;;     (consult-line (thing-at-point 'symbol)))
-
-;;   ;; (defun my-isearch-or-consult (use-consult)
-;;   ;;   (interactive "p")
-;;   ;;   (cond ((eq use-consult 1)
-;;   ;;          (call-interactively 'isearch-forward))
-;;   ;;         ((eq use-consult 4)
-;;   ;;          (call-interactively 'consult-line-symbol-at-point))
-;;   ;;         ((eq use-consult 16)
-;;   ;;          (call-interactively 'consult-line-migemo))))
-;;   )
 (use-package consult
   :demand
   :bind (;; C-c bindings (mode-specific-map)
@@ -3105,84 +2372,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package consult-flyspell
   :commands consult-flyspell)
 
-;; (global-set-key (kbd "C-s") 'consult-line)
-
 (use-package consult-flycheck)
-
-;; copy from https://huadeyu.tech/tools/emacs-setup-notes.html
-;; (use-package treemacs
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (with-eval-after-load 'winum
-;;     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-;;   :config
-;;   (progn
-;;     (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
-;;           treemacs-deferred-git-apply-delay      0.5
-;;           treemacs-directory-name-transformer    #'identity
-;;           treemacs-display-in-side-window        t
-;;           treemacs-eldoc-display                 t
-;;           treemacs-file-event-delay              1000
-;;           treemacs-file-extension-regex          treemacs-last-period-regex-value
-;;           treemacs-file-follow-delay             0.2
-;;           treemacs-file-name-transformer         #'identity
-;;           treemacs-follow-after-init             t
-;;           treemacs-git-command-pipe              ""
-;;           treemacs-goto-tag-strategy             'refetch-index
-;;           treemacs-indentation                   2
-;;           treemacs-indentation-string            " "
-;;           treemacs-is-never-other-window         nil
-;;           treemacs-max-git-entries               5000
-;;           treemacs-missing-project-action        'ask
-;;           treemacs-no-png-images                 nil
-;;           treemacs-no-delete-other-windows       t
-;;           treemacs-project-follow-cleanup        nil
-;;           ;; treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-;;           treemacs-persist-file (no-littering-expand-etc-file-name '"treemacs-persist.org")
-;;           ;; treemacs–last-error-persist-file (no-littering-expand-etc-file-name '“treemacs-last-error-persist-file.org”)
-;;           treemacs-position                      'left
-;;           treemacs-recenter-distance             0.1
-;;           treemacs-recenter-after-file-follow    nil
-;;           treemacs-recenter-after-tag-follow     nil
-;;           treemacs-recenter-after-project-jump   'always
-;;           treemacs-recenter-after-project-expand 'on-distance
-;;           treemacs-show-cursor                   nil
-;;           treemacs-show-hidden-files             t
-;;           treemacs-silent-filewatch              nil
-;;           treemacs-silent-refresh                nil
-;;           treemacs-sorting                       'alphabetic-asc
-;;           treemacs-space-between-root-nodes      t
-;;           treemacs-tag-follow-cleanup            t
-;;           treemacs-tag-follow-delay              1.5
-;;           treemacs-user-mode-line-format         nil
-;;           treemacs-width                         35)
-
-;;     ;; The default width and height of the icons is 22 pixels. If you are
-;;     ;; using a Hi-DPI display, uncomment this to double the icon size.
-;;     ;;(treemacs-resize-icons 44)
-
-;;     (treemacs-follow-mode t)
-;;     (treemacs-filewatch-mode t)
-;;     (treemacs-fringe-indicator-mode t)
-;;     (pcase (cons (not (null (executable-find "git")))
-;;                  (not (null treemacs-python-executable)))
-;;       (`(t . t)
-;;        (treemacs-git-mode 'deferred))
-;;       (`(t . _)
-;;        (treemacs-git-mode 'simple))))
-;;   :bind
-;;   (:map global-map
-;;         ("M-0"       . treemacs-select-window)
-;;         ("C-x t 1"   . treemacs-delete-other-windows)
-;;         ("C-x t t"   . treemacs)
-;;         ("C-x t B"   . treemacs-bookmark)
-;;         ("C-x t C-t" . treemacs-find-file)
-;;         ("C-x t M-t" . treemacs-find-tag)))
-
-;; (use-package treemacs-projectile
-;;   :after treemacs projectile
-;;   :ensure t)
 
 ;; 保存光标历史，记住上个命令
 ;; copy from https://book.emacs-china.org/#orga142e60
@@ -3250,43 +2440,11 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (setq sync-recentf-marker (no-littering-expand-var-file-name "sync-recentf-marker"))
   )
 
-;; (defun suppress-messages (func &rest args)
-;;   "Suppress message output from FUNC."
-;;   ;; Some packages are too noisy.
-;;   ;; https://superuser.com/questions/669701/emacs-disable-some-minibuffer-messages
-;;   (cl-flet ((silence (&rest args1) (ignore)))
-;;     (advice-add 'message :around #'silence)
-;;     (unwind-protect
-;;         (apply func args)
-;;       (advice-remove 'message #'silence))))
-
-;; ;; Suppress "Cleaning up the recentf...done (0 removed)"
-;; (advice-add 'recentf-cleanup :around #'suppress-messages)
-;; (defconst recentf-used-hooks
-;;   '(
-;;     (find-file-hook       recentf-track-opened-file)
-;;     (write-file-functions recentf-track-opened-file)
-;;     (kill-buffer-hook     recentf-track-closed-file)
-;;     (kill-emacs-hook      recentf-save-list)
-;;     )
-;;   "Hooks used by recentf.")
-;; (defun recentf-save-list/silent ()
-;;   (let ((save-silently t)) (recentf-save-list)))
 
 (use-package yasnippet-snippets
   :disabled
   )
 
-;; (use-package counsel-projectile
-;;   :after (counsel projectile)
-;;   )
-
-;; Hit M-m, expand up to the next largest region based on mode-context sensitive scope.
-;; (use-package expand-region
-;;   :ensure expand-region
-;;   :bind (("M-#" . er/mark-symbol)
-;;          ("M-m" . er/expand-region))
-;;   :commands (er/expand-region er/enable-mode-expansions))
 
 (use-package deadgrep
   :commands (deadgrep)
@@ -3340,13 +2498,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (setq dashboard-set-navigator t)
   )
 
-;; (use-package highlight-symbol
-;;   :ensure t
-;;   :init (highlight-symbol-mode)
-;;   ;; :bind ("<f5>" . highlight-symbol)  ;; 按下 F3 键就可高亮当前符号
-;;   :config
-;;   (setq highlight-symbol-idle-delay 1.0)
-;;   )
 
 ;; C-c / t 触发 google-this，
 (use-package google-this
@@ -3384,20 +2535,14 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
           uniquify-after-kill-buffer-p t
           uniquify-ignore-buffers-re "^\\*")))
 
-;; copy from https://se30.xyz/conf.html
-;; Turn on ansi in shells
-;; (use-package ansi-color
-;;   :ensure ansi-color
-;;   :commands shell
-;;   :config
-;;   (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
+
 
 ;; ANSI & XTERM 256 color support
 (use-package xterm-color
-;;   :defines (compilation-environment
-;;             eshell-preoutput-filter-functions
-;;             eshell-output-filter-functions)
-;;   :functions (compilation-filter my-advice-compilation-filter)
+  ;;   :defines (compilation-environment
+  ;;             eshell-preoutput-filter-functions
+  ;;             eshell-output-filter-functions)
+  ;;   :functions (compilation-filter my-advice-compilation-filter)
   :init
   ;; For shell and interpreters
   (setenv "TERM" "xterm-256color")
@@ -3430,11 +2575,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
                (xterm-color-filter string))))
   (advice-add 'compilation-filter :around #'my-advice-compilation-filter)
   (advice-add 'gud-filter :around #'my-advice-compilation-filter))
-
-;; theme
-;; (use-package spacemacs-theme
-;;   :defer t
-;;   :init (load-theme 'spacemacs-dark t))
 
 
 ;; 自动保存
@@ -3504,16 +2644,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package magit-gitflow
   :after magit)
 
-;; (use-package unobtrusive-magit-theme
-;;   :defer t
-;;   :init
-;;   (defun change-new-theme ()
-;;     (load-theme 'manoj-dark)
-;;     (load-theme 'unobtrusive-magit)
-;;     )
-;;   :hook
-;;   (magit-mode . change-new-theme)
-;;   )
 
 (use-package doom-themes
   :ensure t
@@ -3536,14 +2666,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (doom-themes-org-config))
 
 (use-package dsvn)
-
-;; copy from https://www.zhihu.com/column/p/23359721
-;; (use-package dired-ranger
-;;   :ensure t
-;;   :bind (:map dired-mode-map
-;;               ("W" . dired-ranger-copy)
-;;               ("X" . dired-ranger-move)
-;;               ("Y" . dired-ranger-paste)))
 
 ;; copy from https://www.lucacambiaghi.com/vanilla-emacs/readme.html
 ;; 安装后可以通过 M-x restart-emacs 重启 emacs
@@ -3610,20 +2732,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
          ;; 快速打开Emacs配置文件
          ("C-x ," . crux-find-user-init-file)
          ("C-c k" . crux-smart-kill-line)
-  ))
+         ))
 
-;; switch-window
-;; How to navigate between windows
-;; (use-package ace-window
-;;   :ensure t
-;;   :config
-;;   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-;;   (custom-set-faces
-;;    '(aw-leading-char-face
-;;      ((t (:inherit ace-jump-face-foreground :height 5.0)))))
-;;   ;; :bind
-;;   ;; ("M-o" . ace-window)
-;;   )
 
 ;; How to delete consecutive space at once
 (use-package smart-hungry-delete
@@ -3634,8 +2744,11 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :config (smart-hungry-delete-add-default-hooks))
 
 ;; M-<up> M-<down> to move line up and down
+;; 上下移动行/块
 (use-package drag-stuff
   :ensure t
+  :bind (("<M-up>". drag-stuff-up)
+         ("<M-down>" . drag-stuff-down))
   :diminish drag-stuff-mode
   :config
   (drag-stuff-global-mode t)
@@ -3643,9 +2756,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 
 
-;; In some case I want to hide the mode line
-;; (use-package hide-mode-line
-;;   :ensure t)
+
 
 ;; Nyan Cat is lovely, it can live on mode line
 (use-package nyan-mode
@@ -3677,16 +2788,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
          ("C-M-p" . dumb-jump-back)
          ("C-M-q" . dumb-jump-quick-look)))
 
-;; Display line changes in gutter based on git history. Enable it everywhere.
-(use-package git-gutter
-  :ensure t
-  :diminish git-gutter-mode
-  :config
-  (global-git-gutter-mode t))
-
-;; TimeMachine lets us step through the history of a file as recorded in git.
-(use-package git-timemachine
-  :ensure t)
 
 ;; Color Identifier
 (use-package color-identifiers-mode
@@ -3764,20 +2865,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package solidity-mode
   :ensure t)
 
-;; Capture my task or idea
-;; (use-package org-capture
-;;   :bind ("C-c c" . org-capture)
-;;   :after org
-;;   :config
-;;   (add-to-list 'org-capture-templates
-;;                '("t" "Todo"  entry
-;;                  (file "~/Documents/org/todo.org")
-;;                  "* TODO %?" :empty-lines 0))
 
-;;   (add-to-list 'org-capture-templates
-;;                '("w" "Work" entry
-;;                  (file+olp "~/Documents/org/work.org" "2021")
-;;                  "* %?" :empty-lines 0)))
 ;; Beautify Org heading symbol
 (use-package org-superstar
   :ensure t
@@ -3820,61 +2908,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :config
   (setq org-fancy-priorities-list '("🅰" "🅱" "🅲" "🅳" "🅴")))
 
-;; Interactive agenda in the console
-;; (use-package org-agenda
-;;   :bind ("C-c a" . org-agenda)
-;;   :config
-;;   (setq org-agenda-files (directory-files-recursively "~/Documents/org/" "\\.org$"))
-;;   ;; (setq org-agenda-files '(
-;;   ;;                          "~/Documents/org/work.org"
-;;   ;;                          "~/Documents/org/reminder.org"
-;;   ;;                         ))
-;;   (setq org-agenda-start-with-log-mode t)
-;;   (setq org-agenda-prefix-format
-;;         '((agenda . " %i %-24:c%?-16t%-10e% s")
-;;           (todo   . " %i %-24:c %-10e")
-;;           (tags   . " %i %-24:c")
-;;           (search . " %i %-24:c")))
-
-;;   ;;https://www.philnewton.net/blog/how-i-get-work-done-with-emacs/
-;;   (setq org-agenda-custom-commands
-;;         '(("d" "Today's Tasks"
-;;            ((agenda "" ((org-agenda-span 1)
-;;                         (org-agenda-overriding-header "Today's Tasks")))))))
-;;   )
-
-;; (use-package org-roam
-;;   :ensure t
-;;   :diminish org-roam-mode
-;;   :hook
-;;   (after-init . org-roam-mode)
-;;   :custom
-;;   (org-roam-directory "~/Documents/org/roam/")
-;;   (org-roam-db-update-method 'immediate)
-;;   (org-roam-completion-system 'ivy)
-;;   :bind
-;;   (:map org-roam-mode-map
-;;         (("C-c n l" . org-roam)
-;;          ("C-c n f" . org-roam-find-file)
-;;          ("C-c n g" . org-roam-graph))
-;;         :map org-mode-map
-;;         (("C-c n i" . org-roam-insert))
-;;         (("C-c n I" . org-roam-insert-immediate))))
-
-;; (use-package org-roam-server
-;;   :ensure t
-;;   :config
-;;   (setq org-roam-server-host "127.0.0.1"
-;;         org-roam-server-port 8686
-;;         org-roam-server-authenticate nil
-;;         org-roam-server-export-inline-images t
-;;         org-roam-server-serve-files nil
-;;         org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-;;         org-roam-server-network-poll t
-;;         org-roam-server-network-arrows nil
-;;         org-roam-server-network-label-truncate t
-;;         org-roam-server-network-label-truncate-length 60
-;;         org-roam-server-network-label-wrap-length 20))
 
 ;; English Chinese Dictionary
 (use-package youdao-dictionary
@@ -3898,9 +2931,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :config
   (custom-set-variables
    '(pdf-tools-handle-upgrades nil)))
-;;(pdf-tools-install)
-;;(pdf-info-check-epdfinfo)
-;; copy  from https://www.songofcode.com/dotfiles/
+
 
 ;; C/C++
 (use-package cc-mode
@@ -3968,102 +2999,13 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
       company-minimum-prefix-length 1
       lsp-idle-delay 0.1)  ;; clangd is fast
 
-;; (use-package swiper
-;;   :ensure t
-;;   :config
-;;   (defun isearch-forward-or-swiper (use-swiper)
-;;     (interactive "p")
-;;     (let (current-prefix-arg)
-;;       (call-interactively (if use-swiper 'swiper 'isearch-forward))))
-;;   (global-set-key (kbd "C-s") 'isearch-forward-or-swiper)
-;;   )
-
 ;;以前是ivy用户，现在则是仅使用vertico, embark和consult了
-;;(use-package ivy
-;;  :ensure t
-;;  :diminish ivy-mode
-;;  :hook (after-init . ivy-mode))
 
 (use-package ag
   :ensure t
   :ensure-system-package (ag . "brew install ag")
   )
 
-;; (use-package helm
-;;   :bind (("M-x" . helm-M-x)
-;;          ;; ("C-x b" . helm-mini)
-;;          ("C-x C-f" . helm-find-files)
-;;          ("C-c y"   . helm-show-kill-ring)
-;;          ("C-c m"   . helm-man-woman)
-;;          ("C-c o"   . helm-occur)
-;;          :map helm-map
-;;          ("C-h" . delete-backward-char)
-;;          :map helm-find-files-map
-;;          ("C-h" . delete-backward-char))
-;;   :init
-;;   (custom-set-faces
-;;    '(helm-header           ((t (:background "#3a3a3a" :underline nil))))
-;;    '(helm-source-header    ((t (:background "gray16" :foreground "gray64" :slant italic))))
-;;    '(helm-candidate-number ((t (:foreground "#00afff"))))
-;;    '(helm-selection        ((t (:background "#005f87" :weight normal))))
-;;    '(helm-match            ((t (:foreground "darkolivegreen3")))))
-;;   :config
-;;   (helm-mode 1))
-;; copy from https://sachachua.com/dotemacs/index.html
-;; (use-package helm
-;;   :diminish helm-mode
-;;   :if my-laptop-p
-;;   :config
-;;   (progn
-;;     (require 'helm-for-files)
-;;     (setq helm-candidate-number-limit 100)
-;;     (setq helm-completing-read-handlers-alist
-;;           '((describe-function)
-;;             (consult-bookmark)
-;;             (org-refile-get-location)
-;;             (consult-outline)
-;;             (consult-line)
-;;             (org-olpath-completing-read)
-;;             (consult-mark)
-;;             (org-refile)
-;;             (consult-multi-occur)
-;;             (describe-variable)
-;;             (execute-extended-command)
-;;             (consult-yank)))
-;;     ;; From https://gist.github.com/antifuchs/9238468
-;;     (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
-;;           helm-input-idle-delay 0.01  ; this actually updates things
-;;                                         ; reeeelatively quickly.
-;;           helm-yas-display-key-on-candidate t
-;;           helm-quick-update t
-;;           helm-M-x-requires-pattern nil
-;;           helm-ff-skip-boring-files t))
-;;   (defadvice helm-files-insert-as-org-links (around sacha activate)
-;;     (insert (mapconcat (lambda (candidate)
-;;                          (org-link-make-string candidate))
-;;                        (helm-marked-candidates)
-;;                        "\n")))
-;;   :bind (("C-c h" . helm-mini)
-;;          ("C-h a" . helm-apropos)
-;;          ("C-x C-b" . helm-buffers-list)
-;;          ("C-x c o" . helm-occur)
-;;          ("C-x c s" . helm-swoop)
-;;          ("C-x c y" . helm-yas-complete)
-;;          ("C-x c Y" . helm-yas-create-snippet-on-region)
-;;          ("C-x c SPC" . helm-all-mark-rings)))
-
-;; (use-package helm-projectile
-;;   :diminish projectile-mode
-;;   :bind ("C-c p p" . helm-projectile-switch-project)
-;;   :init
-;;   (use-package helm-ag)
-;;   :config
-;;   (projectile-global-mode t)
-;;   (helm-projectile-on))
-
-;;(use-package lsp-ivy
-;;  :ensure t
-;; :after (lsp-mode))
 
 (use-package consult-dir
   :ensure t
@@ -4072,30 +3014,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
 
-;; https://karthinks.com/software/jumping-directories-in-eshell/
-;; (defun eshell/z (&optional regexp)
-;;   "Navigate to a previously visited directory in eshell, or to
-;; any directory proferred by `consult-dir'."
-;;   (let ((eshell-dirs (delete-dups
-;;                       (mapcar 'abbreviate-file-name
-;;                               (ring-elements eshell-last-dir-ring)))))
-;;     (cond
-;;      ((and (not regexp) (featurep 'consult-dir))
-;;       (let* ((consult-dir--source-eshell `(:name "Eshell"
-;;                                                  :narrow ?e
-;;                                                  :category file
-;;                                                  :face consult-file
-;;                                                  :items ,eshell-dirs))
-;;              (consult-dir-sources (cons consult-dir--source-eshell
-;;                                         consult-dir-sources)))
-;;         (eshell/cd (substring-no-properties
-;;                     (consult-dir--pick "Switch directory: ")))))
-;;      (t (eshell/cd (if regexp (eshell-find-previous-directory regexp)
-;;                      (completing-read "cd: " eshell-dirs)))))))
-
-;; environment
-;; (defconst *is-windows* (eq system-type 'windows-nt))
-;; (defconst *is-unix* (not *is-windows*))
 
 (use-package whitespace-cleanup-mode
   :demand t
@@ -4114,16 +3032,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
     (setq show-trailing-whitespace nil))
   (global-whitespace-cleanup-mode 1))
 
-;; (use-package parinfer-rust-mode
-;;   :ensure t
-;;   :hook
-;;   emacs-lisp-mode
-;;   lisp-mode
-;;   clojure-mode
-;;   :config
-;;   (setq parinfer-rust-library "~/.emacs.d/var/parinfer-rust/parinfer-rust-library.so")
-;;   :custom
-;;   (parinfer-rust-auto-download t))
 
 ;; keyfreq to analyze the key using situation
 (use-package keyfreq
@@ -4131,20 +3039,19 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :config
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1)
-  (setq keyfreq-excluded-commands '(self-insert-command
-                                    forward-char
-                                    backward-char
-                                    previous-line
-                                    next-line
-                                    org-self-insert-command
-                                    org-delete-backward-char
-                                    org-return
-                                    mwheel-scroll
-                                    dap-tooltip-mouse-motion
-                                    gud-tooltip-mouse-motion))
+  (setq keyfreq-excluded-commands
+        '(self-insert-command
+          forward-char
+          backward-char
+          previous-line
+          next-line
+          org-self-insert-command
+          org-delete-backward-char
+          org-return
+          mwheel-scroll
+          dap-tooltip-mouse-motion
+          gud-tooltip-mouse-motion))
   )
-
-
 
 
 ;; copy from https://tech.toryanderson.com/2020/11/13/migrating-to-a-custom-file-less-setup/
@@ -4154,16 +3061,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :custom
   (custom-file null-device "Don't store customizations"))
 
-
-
-;; (use-package popwin
-;;   :config
-;;   (global-set-key (kbd "s-j") popwin:keymap)
-;;   (push '(compilation-mode :noselect t :position bottom :height 22) popwin:special-display-config)
-;;   (push '("*rspec-compilation*" :noselect t :position bottom :height 22) popwin:special-display-config)
-;;   (push '("*Go Test*" :noselect t :position bottom :height 22) popwin:special-display-config)
-;;   (push '("*vterm" :regexp t :stick t :position bottom :height 24) popwin:special-display-config)
-;;   (popwin-mode))
 
 ;; Edit multiple regions in the same way simultaneously
 (use-package iedit
@@ -4216,27 +3113,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package julia-mode)
 (use-package julia-repl)
 
-
-;; symbol-overlay
-;; homepage: https://github.com/wolray/symbol-overlay
-;;
-;; 作者的知乎，新插件推荐，高亮symbol同时支持一键跳转 https://zhuanlan.zhihu.com/p/26471685
-;; 同时高亮多个symbol https://emacs-china.org/t/package-symbol-overlay-symbol/7706
-;;
-;; 老王的使用中提到了 https://manateelazycat.github.io/emacs/2022/11/07/how-i-use-emacs.html
-;; 用 Emacs 的都少不了 isearch, 但是 isearch 不方便的地方是每次都要手动输入或者 yank 当前 symbol 给 isearch， 同时要批量替换的按键流程也很繁琐。 在使用 symbol-overlay 之前我一直用我自己开发的 lazy-search, 这两个项目的目标都是启动后立即选中光标处的 symbol, 再按单按键比如按 n/p 后， 快速跳转上一个和下一个匹配项， 节省了大量选中当前 symbol 启动 isearch 再粘贴 symbol 的操作时间。 用了 symbol-overlay 后， 发现比我的 lazy-search 实现的更加简洁和强大， 包括搜索后快速按 r 键可以对所有匹配的 symbol 进行快速重命名操作， symbol-overlay 基本上是单文件重构场景下最好用的插件， 强烈推荐大家使用。
-;; 被embark替代
-;; (use-package symbol-overlay
-;;   :defer 2
-;;   :config
-;;   (setq symbol-overlay-idle-time 0.1)
-;;   (global-set-key (kbd "M-i") 'symbol-overlay-put)
-;;   (global-set-key (kbd "M-n") 'symbol-overlay-switch-forward)
-;;   (global-set-key (kbd "M-p") 'symbol-overlay-switch-backward)
-;;   (global-set-key (kbd "<f7>") 'symbol-overlay-mode)
-;;   (global-set-key (kbd "<f8>") 'symbol-overlay-remove-all)
-;;   )
-
 ;; 高亮当前字符
 (use-package idle-highlight-mode
   :pin melpa
@@ -4260,55 +3136,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 		      :map ripgrep-search-mode-map
 		      ("e" . wgrep-change-to-wgrep-mode)))
 
-;; (use-package corfu
-;;   :demand t
-;;   ;; Optionally use TAB for cycling, default is `corfu-complete'.
-;;   :bind (:map corfu-map
-;; 		      ("<escape>". corfu-quit)
-;; 		      ("<return>" . corfu-insert)
-;; 		      ("M-d" . corfu-show-documentation)
-;; 		      ("M-l" . 'corfu-show-location)
-;; 		      ("TAB" . corfu-next)
-;; 		      ([tab] . corfu-next)
-;; 		      ("S-TAB" . corfu-previous)
-;; 		      ([backtab] . corfu-previous))
-
-;;   :custom
-;;   ;; Works with `indent-for-tab-command'. Make sure tab doesn't indent when you
-;;   ;; want to perform completion
-;;   (tab-always-indent 'complete)
-;;   (completion-cycle-threshold nil)      ; Always show candidates in menu
-
-;;   (corfu-auto nil)
-;;   (corfu-auto-prefix 2)
-;;   (corfu-auto-delay 0.25)
-
-;;   ;; (corfu-min-width 80)
-;;   ;; (corfu-max-width corfu-min-width)     ; Always have the same width
-;;   (corfu-count 14)
-;;   (corfu-scroll-margin 4)
-;;   (corfu-cycle nil)
-
-;;   ;; (corfu-echo-documentation nil)        ; Already use corfu-doc
-;;   (corfu-separator ?\s)                 ; Necessary for use with orderless
-;;   (corfu-quit-no-match 'separator)
-
-;;   (corfu-preview-current 'insert)       ; Preview current candidate?
-;;   (corfu-preselect-first t)             ; Preselect first candidate?
-
-;;   :init
-;;   ;; Recommended: Enable Corfu globally.
-;;   ;; This is recommended since dabbrev can be used globally (M-/).
-;;   (global-corfu-mode))
-
-;; (defun corfu-move-to-minibuffer ()
-;;   "Move \"popup\" completion candidates to minibuffer.
-
-;;   Useful if you want a more robust view into the recommend candidates."
-;;   (interactive)
-;;   (let (completion-cycle-threshold completion-cycling)
-;;     (apply #'consult-completion-in-region completion-in-region--data)))
-;; (define-key corfu-map "\M-m" #'corfu-move-to-minibuffer)
 
 (use-package kind-icon
   :ensure t
@@ -4323,134 +3150,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
    	          (setq completion-in-region-function
    		            (kind-icon-enhance-completion
    		             completion-in-region-function)))))
-;; (use-package kind-icon
-;;   ;; :after corfu
-;;   :custom
-;;   (kind-icon-use-icons t)
-;;   ;; (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
-;;   (kind-icon-blend-background nil)  ; Use midpoint color between foreground and background colors ("blended")?
-;;   (kind-icon-blend-frac 0.08)
-
-;;   ;; NOTE 2022-02-05: `kind-icon' depends `svg-lib' which creates a cache
-;;   ;; directory that defaults to the `user-emacs-directory'. Here, I change that
-;;   ;; directory to a location appropriate to `no-littering' conventions, a
-;;   ;; package which moves directories of other packages to sane locations.
-;;   ;; (svg-lib-icons-dir (no-littering-expand-var-file-name "svg-lib/cache/")) ; Change cache dir
-;;   :config
-;;   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
-
-;;   ;; Add hook to reset cache so the icon colors match my theme
-;;   ;; NOTE 2022-02-05: This is a hook which resets the cache whenever I switch
-;;   ;; the theme using my custom defined command for switching themes. If I don't
-;;   ;; do this, then the backgound color will remain the same, meaning it will not
-;;   ;; match the background color corresponding to the current theme. Important
-;;   ;; since I have a light theme and dark theme I switch between. This has no
-;;   ;; function unless you use something similar
-;;   (add-hook 'kb/themes-hooks #'(lambda () (interactive) (kind-icon-reset-cache))))
-
-;; (use-package corfu-doc
-;;   ;; NOTE 2022-02-05: At the time of writing, `corfu-doc' is not yet on melpa
-;;   :bind (:map corfu-map
-;; 	      ;; This is a manual toggle for the documentation window.
-;; 	      ([remap corfu-show-documentation] . corfu-doc-toggle) ; Remap the default doc command
-;; 	      ;; Scroll in the documentation window
-;; 	      ("M-n" . corfu-doc-scroll-up)
-;; 	      ("M-p" . corfu-doc-scroll-down))
-;;   :hook (corfu-mode . corfu-doc-mode)
-;;   :custom
-;;   (corfu-doc-delay 0.1)
-;;   (corfu-doc-hide-threshold 10)
-;;   (corfu-doc-max-width 60)
-;;   (corfu-doc-max-height 10)
-
-;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
-;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
-;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
-;;   ;; (corfu-echo-documentation nil)
-;;   :config
-;;   ;; NOTE 2022-02-05: This is optional. Enabling the mode means that every corfu
-;;   ;; popup will have corfu-doc already enabled. This isn't desirable for me
-;;   ;; since (i) most of the time I do not need to see the documentation and (ii)
-;;   ;; when scrolling through many candidates, corfu-doc makes the corfu popup
-;;   ;; considerably laggy when there are many candidates. Instead, I rely on
-;;   ;; manual toggling via `corfu-doc-toggle'.
-;;   (corfu-doc-mode))
-
-;; (use-package cape
-;;   :bind (("C-c p p" . completion-at-point)
-;; 	 ("C-c p d" . cape-dabbrev)
-;; 	 ("C-c p f" . cape-file)
-;; 	 ("C-c p s" . cape-symbol)
-;; 	 ("C-c p i" . cape-ispell)))
-
-;; Use Company backends as Capfs.
-;; (setq-local completion-at-point-functions
-;;             (mapcar #'cape-company-to-capf
-;;                     (list #'company-files #'company-ispell #'company-dabbrev)))
-
-;; (use-package link-hint
-;;   :bind
-;;   ("C-c l o" . link-hint-open-link)
-;;   ("C-c l c" . link-hint-copy-link))
-
-;; (use-package lin
-;;   :config (lin-global-mode 1)
-;;   (setq lin-face 'lin-blue))
-
-;; (use-package pulsar
-;;   :custom
-;;   (pulsar-pulse-functions ; Read the doc string for why not `setq'
-;;    '(recenter-top-bottom
-;;      move-to-window-line-top-bottom
-;;      reposition-window
-;;      bookmark-jump
-;;      other-window
-;;      delete-window
-;;      delete-other-windows
-;;      forward-page
-;;      backward-page
-;;      scroll-up-command
-;;      scroll-down-command
-;;      windmove-right
-;;      windmove-left
-;;      windmove-up
-;;      windmove-down
-;;      windmove-swap-states-right
-;;      windmove-swap-states-left
-;;      windmove-swap-states-up
-;;      windmove-swap-states-down
-;;      tab-new
-;;      tab-close
-;;      tab-next
-;;      org-next-visible-heading
-;;      org-previous-visible-heading
-;;      org-forward-heading-same-level
-;;      org-backward-heading-same-level
-;;      outline-backward-same-level
-;;      outline-forward-same-level
-;;      outline-next-visible-heading
-;;      outline-previous-visible-heading
-;;      ace-window
-;;      outline-up-heading))
-;;   :hook
-;;   (consult-after-jump . pulsar-recenter-top)
-;;   (consult-after-jump . pulsar-reveal-entry)
-;;   ;; integration with the built-in `imenu':
-;;   (imenu-after-jump . pulsar-recenter-top)
-;;   (imenu-after-jump . pulsar-reveal-entry)
-;;   :config
-;;   (pulsar-global-mode 1)
-;;   (setq pulsar-face 'pulsar-magenta
-;; 	    pulsar-delay 0.05)
-;;   (defun jf/pulse (parg)
-;;     "Pulse the current line.
-;;
-;;   If PARG (given as universal prefix), pulse between `point' and `mark'."
-;;     (interactive "P")
-;;     (if (car parg)
-;; 	    (pulsar--pulse nil nil (point) (mark))
-;; 	  (pulsar-pulse-line)))
-;;   :bind (("C-x l" . jf/pulse)))
 
 (use-package pulsar
   :config
@@ -4483,35 +3182,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package goto-last-change
   :bind (("C-x ;" . goto-last-change)))
 
-;; copy from https://qiita.com/tadsan/items/a76768439869f00a4e89
-;; (use-package php-mode
-;;   :hook ((php-mode . my-php-mode-setup))
-;;   :init
-;;   (require 'php-mode)
-;;   :custom
-;;   ;; (php-manual-url 'ja)
-;;   (php-mode-coding-style 'psr2)
-;;   (php-mode-template-compatibility nil)
-;;   :config
-;;   (defun my-php-mode-setup ()
-;;     "My PHP-mode hook."
-;;     (subword-mode 1)
-;;     (setq show-trailing-whitespace t)
 
-;;     (setq-local page-delimiter "\\_<\\(class\\|function\\|namespace\\)\\_>.+$")
-
-;;     (require 'flycheck-phpstan)
-;;     (flycheck-mode t)
-;;     (add-to-list 'flycheck-disabled-checkers 'php-phpmd)
-;;     (add-to-list 'flycheck-disabled-checkers 'php-phpcs))
-;;   ;; (bind-key "[" (smartchr "[]" "array()" "[[]]") php-mode-map)
-;;   ;; (bind-key "]" (smartchr "array " "]" "]]")     php-mode-map)
-;;   ;; (bind-key "C-}" 'cedit-barf php-mode-map)
-;;   ;; (bind-key "C-)" 'cedit-slurp php-mode-map)
-;;   (bind-key "C-c C-c" 'psysh-eval-region         php-mode-map)
-;;   (bind-key "<f6>" 'phpunit-current-project      php-mode-map)
-;;   (bind-key "C-c C--" 'php-current-class php-mode-map)
-;;   (bind-key "C-c C-=" 'php-current-namespace php-mode-map))
 (use-package php-mode
   ;; (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
   :mode
@@ -4634,44 +3305,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (setq-default phpstan-executable 'docker)
   )
 
-;; (use-package explain-pause-mode
-;;   ;; :straight (explain-pause-mode :type git :host github :repo "lastquestion/explain-pause-mode")
-;;   :ensure t
-;;   :config
-;;   (explain-pause-mode))
-
-;; (use-package pyim
-;;   :demand t
-;;   :bind (:map pyim-mode-map
-;;               ("," . pyim-previous-page)
-;;               ("." . pyim-next-page))
-;;   :config
-;;   (setq pyim-page-tooltip 'minibuffer
-;;         pyim-default-scheme 'quanpin
-;;         pyim-page-style 'two-lines
-;;         pyim-page-length 8
-;;         pyim-cloudim 'google)
-;;   (global-set-key (kbd "C-\\") 'toggle-input-method)
-;;   ;; vertico search pinyin
-;;   (defun pyim-orderless-regexp (orig-func component)
-;;     (let ((result (funcall orig-func component)))
-;;       (pyim-cregexp-build result)))
-;;   (advice-add 'orderless-regexp :around #'pyim-orderless-regexp))
-
-;; (use-package pyim-basedict
-;;   :after pyim
-;;   :config
-;;   (pyim-basedict-enable))
-;; 中文输入法
-;; (use-package rime
-;;   :custom (default-input-method "rime")
-;;   :config
-;;   (setq rime-show-candidate 'posframe)
-;;   (setq rime-disable-predicates '(rime-predicate-after-alphabet-char-p
-;; 				                  rime-predicate-ace-window-p
-;; 				                  rime-predicate-hydra-p
-;; 				                  rime-predicate-in-code-string-p
-;; 				                  rime-predicate-tex-math-or-command-p)))
 
 (use-package edebug-x
   :ensure t
@@ -4912,28 +3545,6 @@ deletion, or > if it is flagged for displaying."
 ;; template.
 (use-package emmet-mode
   :hook web-mode)
-;; Dash is a documentation manager for Mac OS that provides a single place to quickly search over
-;; 200 documentation sets
-;; (use-package dash-docs
-;;   :config
-;;   (setq
-;;    dash-docs-enable-debugging init-file-debug
-;;    dash-docs-min-length 2
-;;    dash-docs-browser-func #'eww)
-;;   (setq dash-docs-docsets-path (no-littering-expand-var-file-name "docsets"))
-;;   (setq installed-langs (dash-docs-installed-docsets))
-;;   ;;figure out to convert spaces into underscores when installing the docs
-;;   (setq docset-langs '("Rust" "Emacs_Lisp" "JavaScript" "C" "Bash" "Vim" "SQLite" "PostgreSQL" "LaTeX" "Docker" "C++" "HTML" "SVG" "CSS"))
-;;   (dolist (lang docset-langs)
-;; 	  (when (null (member lang installed-langs))
-;; 	    (dash-docs-install-docset lang))))
-
-
-;; (use-package centered-cursor-mode
-;;   :demand
-;;   :config
-;;   ;; Optional, enables centered-cursor-mode in all buffers.
-;;   (global-centered-cursor-mode))
 
 ;; transpose spit windows
 (use-package transpose-frame
@@ -4945,10 +3556,7 @@ deletion, or > if it is flagged for displaying."
   (global-syntax-subword-mode)
   (setq syntax-subword-skip-spaces nil))
 
-;; 上下移动行/块
-(use-package drag-stuff
-  :bind (("<M-up>". drag-stuff-up)
-         ("<M-down>" . drag-stuff-down)))
+
 
 ;; *Gcmh* does garbage collection (GC) when the user is idle.
 (use-package gcmh
@@ -5006,22 +3614,6 @@ deletion, or > if it is flagged for displaying."
             (eyebrowse-mode t)
             (setq eyebrowse-new-workspace t)))
 
-;; (use-package winum
-;;   :ensure t
-;;   :config
-;;   (setq winum-auto-setup-mode-line nil)
-;;   (define-key winum-keymap (kbd "C-`") 'winum-select-window-by-number)
-;;   (define-key winum-keymap (kbd "C-²") 'winum-select-window-by-number)
-;;   (define-key winum-keymap (kbd "M-0") 'winum-select-window-0-or-10)
-;;   (define-key winum-keymap (kbd "M-1") 'winum-select-window-1)
-;;   (define-key winum-keymap (kbd "M-2") 'winum-select-window-2)
-;;   (define-key winum-keymap (kbd "M-3") 'winum-select-window-3)
-;;   (define-key winum-keymap (kbd "M-4") 'winum-select-window-4)
-;;   (define-key winum-keymap (kbd "M-5") 'winum-select-window-5)
-;;   (define-key winum-keymap (kbd "M-6") 'winum-select-window-6)
-;;   (define-key winum-keymap (kbd "M-7") 'winum-select-window-7)
-;;   (define-key winum-keymap (kbd "M-8") 'winum-select-window-8)
-;;   (winum-mode))
 
 ;; hydra 更接近于「功能菜单」：弹出一个「常用功能列表」.
 ;; 你可以用连续击键来连续触发若干个函数。
@@ -5263,8 +3855,6 @@ FACE defaults to inheriting from default and highlight."
   :hook
   (dashboard-after-initialize . which-key-posframe-mode)
   (dashboard-after-initialize . which-key-mode))
-
-
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

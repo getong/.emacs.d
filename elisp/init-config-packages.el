@@ -1801,8 +1801,9 @@ Get it from:  <http://hasseg.org/trash/>"
   (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
-     ("o" "~/Syncthings/org/"           "Org")
-     ("r" "~/Syncthings/org/roam/"      "Roam")))
+     ;; ("o" "~/Syncthings/org/"           "Org")
+     ;; ("r" "~/Syncthings/org/roam/"      "Roam")
+     ))
   :after (diredfl all-the-icons)
   :config
   (dirvish-define-preview exa (file)
@@ -4503,7 +4504,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (indent-tabs-mode nil)
   (tab-width 2)
   (c-basic-offset 2)
-  :hook (php-mode . flycheck)
+  :hook (php-mode . flycheck-mode)
   :config
   (add-hook 'php-mode-hook
 	        #'(lambda ()

@@ -1814,9 +1814,10 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; 异步读取含 10000 个以上文件的文件夹
   (setq dirvish-async-listing-threshold 10000
         dirvish-cache-dir (no-littering-expand-var-file-name "dirvish" )
-        dirvish-hide-cursor nil
+        ;; 高亮当前文件
+        dirvish-hide-cursor t
         dired-filter-revert 'always
-        dirvish-reuse-session nil
+        dirvish-reuse-session t
         dirvish-depth 0
         dirvish-header-line-format
         '(:left (path) :right (free-space))

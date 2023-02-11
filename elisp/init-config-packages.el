@@ -1805,6 +1805,17 @@ Get it from:  <http://hasseg.org/trash/>"
      ("r" "~/Syncthings/org/roam/"      "Roam")))
   :after (diredfl all-the-icons)
   :config
+  (dirvish-define-preview exa (file)
+    "Use `exa' to generate directory preview."
+    :require ("exa") ; tell Dirvish to check if we have the executable
+    (when (file-directory-p file) ; we only interest in directories here
+      `(shell . ("exa" "-al" "--color=always" "--icons"
+                 "--group-directories-first" ,file))))
+
+  (add-to-list 'dirvish-preview-dispatchers 'exa)
+
+  (setq insert-directory-program "gls")
+  (setq dirvish-preview-dispatchers (remove 'epub dirvish-preview-dispatchers))
   (dirvish-override-dired-mode +1)
   ;; 异步读取含 10000 个以上文件的文件夹
   (setq dirvish-async-listing-threshold 10000
@@ -1849,16 +1860,24 @@ Get it from:  <http://hasseg.org/trash/>"
    ("M-e" . dirvish-emerge-menu)
    ("M-j" . dirvish-fd-jump)))
 
-(dirvish-define-preview exa (file)
-  "Use `exa' to generate directory preview."
-  :require ("exa") ; tell Dirvish to check if we have the executable
-  (when (file-directory-p file) ; we only interest in directories here
-    `(shell . ("exa" "-al" "--color=always" "--icons"
-               "--group-directories-first" ,file))))
 
-(add-to-list 'dirvish-preview-dispatchers 'exa)
 
-(setq insert-directory-program "gls")
+;; Tramp should default to the sshx mode.
+(use-package tramp
+  :commands tramp
+  :config
+  ;; Enable full-featured Dirvish over TRAMP on certain connections
+  ;; https://www.gnu.org/software/tramp/#Improving-performance-of-asynchronous-remote-processes-1.
+  (add-to-list 'tramp-connection-properties
+               (list (regexp-quote "/ssh:YOUR_HOSTNAME:")
+                     "direct-async-process" t))
+  ;; Tips to speed up connections
+  (setq tramp-verbose 0
+        tramp-chunksize 2000
+        tramp-use-ssh-controlmaster-options nil
+        tramp-default-method "sshx"
+        )
+  )
 
 (use-package s)
 
@@ -3357,12 +3376,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
          ("C-x r C-x" . rm-exchange-point-and-mark)
          ("C-x r C-k" . rm-kill-region)
          ("C-x r M-w" . rm-kill-ring-save)))
-
-;; Tramp should default to the sshx mode.
-(use-package tramp
-  :commands tramp
-  :config
-  (setq tramp-default-method "sshx"))
 
 ;; copy from https://github.com/jwiegley/use-package/issues/320
 ;; Make buffer names unique, handy when opening files with similar names

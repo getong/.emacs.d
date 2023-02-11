@@ -3298,26 +3298,22 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
       buf))
   (advice-add #'deadgrep--buffer :around #'my/deadgrep-fix-buffer-advice))
 
+;; perspective 在 Emacs 中标记工作区，类似于窗口管理器中的工作区，窗口管理器类似 Awesome 和 XMonad
 (use-package perspective
+  :demand t
   :init
   ;; (setq persp-show-modestring 'header)
   (setq persp-sort 'created)
   (setq persp-suppress-no-prefix-key-warning t)
+  :bind (("C-M-k" . persp-switch)
+         ("C-M-n" . persp-next)
+         ("C-x k" . persp-kill-buffer*))
+  :custom
+  (persp-initial-frame-name "Pinfo")
   :config
-  (persp-mode)
-  ;;(my-leader-def "x" '(:keymap perspective-map :which-key "perspective"))
-  (general-define-key
-   :keymaps 'override
-   :states '(normal emacs)
-   "gt" 'persp-next
-   "gT" 'persp-prev
-   "gn" 'persp-switch
-   "gN" 'persp-kill)
-  (general-define-key
-   :keymaps 'perspective-map
-   ;;"b" 'persp-ivy-switch-buffer
-   ;;"x" 'persp-ivy-switch-buffer
-   "u" 'persp-ibuffer))
+  ;; Running `persp-mode' multiple times resets the perspective list...
+  (unless (equal persp-mode t)
+    (persp-mode)))
 
 (use-package flycheck-package
   :after flycheck
@@ -4401,61 +4397,84 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 ;;   :config (lin-global-mode 1)
 ;;   (setq lin-face 'lin-blue))
 
+;; (use-package pulsar
+;;   :custom
+;;   (pulsar-pulse-functions ; Read the doc string for why not `setq'
+;;    '(recenter-top-bottom
+;;      move-to-window-line-top-bottom
+;;      reposition-window
+;;      bookmark-jump
+;;      other-window
+;;      delete-window
+;;      delete-other-windows
+;;      forward-page
+;;      backward-page
+;;      scroll-up-command
+;;      scroll-down-command
+;;      windmove-right
+;;      windmove-left
+;;      windmove-up
+;;      windmove-down
+;;      windmove-swap-states-right
+;;      windmove-swap-states-left
+;;      windmove-swap-states-up
+;;      windmove-swap-states-down
+;;      tab-new
+;;      tab-close
+;;      tab-next
+;;      org-next-visible-heading
+;;      org-previous-visible-heading
+;;      org-forward-heading-same-level
+;;      org-backward-heading-same-level
+;;      outline-backward-same-level
+;;      outline-forward-same-level
+;;      outline-next-visible-heading
+;;      outline-previous-visible-heading
+;;      ace-window
+;;      outline-up-heading))
+;;   :hook
+;;   (consult-after-jump . pulsar-recenter-top)
+;;   (consult-after-jump . pulsar-reveal-entry)
+;;   ;; integration with the built-in `imenu':
+;;   (imenu-after-jump . pulsar-recenter-top)
+;;   (imenu-after-jump . pulsar-reveal-entry)
+;;   :config
+;;   (pulsar-global-mode 1)
+;;   (setq pulsar-face 'pulsar-magenta
+;; 	    pulsar-delay 0.05)
+;;   (defun jf/pulse (parg)
+;;     "Pulse the current line.
+;;
+;;   If PARG (given as universal prefix), pulse between `point' and `mark'."
+;;     (interactive "P")
+;;     (if (car parg)
+;; 	    (pulsar--pulse nil nil (point) (mark))
+;; 	  (pulsar-pulse-line)))
+;;   :bind (("C-x l" . jf/pulse)))
+
 (use-package pulsar
-  :custom
-  (pulsar-pulse-functions ; Read the doc string for why not `setq'
-   '(recenter-top-bottom
-     move-to-window-line-top-bottom
-     reposition-window
-     bookmark-jump
-     other-window
-     delete-window
-     delete-other-windows
-     forward-page
-     backward-page
-     scroll-up-command
-     scroll-down-command
-     windmove-right
-     windmove-left
-     windmove-up
-     windmove-down
-     windmove-swap-states-right
-     windmove-swap-states-left
-     windmove-swap-states-up
-     windmove-swap-states-down
-     tab-new
-     tab-close
-     tab-next
-     org-next-visible-heading
-     org-previous-visible-heading
-     org-forward-heading-same-level
-     org-backward-heading-same-level
-     outline-backward-same-level
-     outline-forward-same-level
-     outline-next-visible-heading
-     outline-previous-visible-heading
-     ace-window
-     outline-up-heading))
-  :hook
-  (consult-after-jump . pulsar-recenter-top)
-  (consult-after-jump . pulsar-reveal-entry)
-  ;; integration with the built-in `imenu':
-  (imenu-after-jump . pulsar-recenter-top)
-  (imenu-after-jump . pulsar-reveal-entry)
   :config
+
+  ;; pulse on change
+  (setq pulsar-pulse-on-window-change t)
+  (setq pulsar-pulse t)
+
+  ;; configure
+  (setq pulsar-delay 0.055)
+  (setq pulsar-iterations 10)
+  (setq pulsar-face 'pulsar-magenta)
+  (setq pulsar-highlight-face 'pulsar-yellow)
+
+  ;; enable globally
   (pulsar-global-mode 1)
-  (setq pulsar-face 'pulsar-magenta
-	    pulsar-delay 0.05)
-  (defun jf/pulse (parg)
-    "Pulse the current line.
 
-  If PARG (given as universal prefix), pulse between `point' and `mark'."
-    (interactive "P")
-    (if (car parg)
-	    (pulsar--pulse nil nil (point) (mark))
-	  (pulsar-pulse-line)))
-  :bind (("C-x l" . jf/pulse)))
+  ;; integration with the `consult' package:
+  (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
+  (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry)
 
+  ;; integration with the built-in `imenu':
+  (add-hook 'imenu-after-jump-hook #'pulsar-recenter-top)
+  (add-hook 'imenu-after-jump-hook #'pulsar-reveal-entry))
 (use-package goto-line-preview
   :bind (("M-g g" . goto-line-preview)
          ("M-g M-g" . goto-line-preview)))

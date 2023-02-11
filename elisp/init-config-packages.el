@@ -610,8 +610,6 @@
   ;; (setq custom-safe-themes t)            ; mark all themes as safe, since we can't persist now
   (setq enable-local-variables :all)     ; fix =defvar= warnings
 
-  (setq delete-by-moving-to-trash t) ;; use trash-cli rather than rm when deleting files.
-
   ;; less noise when compiling elisp
   (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))
   (setq native-comp-async-report-warnings-errors nil)
@@ -1755,8 +1753,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
               (hl-line-mode 1)))
   ;; Auto-refresh dired on file change
   (add-hook 'dired-mode-hook 'auto-revert-mode)
-  ;; copy from https://christiantietze.de/posts/2021/06/emacs-trash-file-macos/
-  (setq delete-by-moving-to-trash t)
   (cond
    ((string-equal system-type "windows-nt") ; Microsoft Windows
     (progn
@@ -1794,9 +1790,6 @@ Get it from:  <http://hasseg.org/trash/>"
 (use-package dirvish
   :hook
   (after-init . dirvish-override-dired-mode)
-  (dirvish-find-entry . (lambda (&rest _) (setq-local truncate-lines t)))
-  :init
-  (dirvish-override-dired-mode)
   :custom
   (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
    '(("h" "~/"                          "Home")
@@ -1816,26 +1809,28 @@ Get it from:  <http://hasseg.org/trash/>"
   (add-to-list 'dirvish-preview-dispatchers 'exa)
 
   (setq insert-directory-program "gls")
+  ;; 不预览epub文件
   (setq dirvish-preview-dispatchers (remove 'epub dirvish-preview-dispatchers))
-  (dirvish-override-dired-mode +1)
   ;; 异步读取含 10000 个以上文件的文件夹
   (setq dirvish-async-listing-threshold 10000
         dirvish-cache-dir (no-littering-expand-var-file-name "dirvish" )
         dirvish-hide-cursor nil
         dired-filter-revert 'always
+        dirvish-reuse-session nil
         dirvish-depth 0
-        ;; (dirvish-peek-mode) ; Preview files in minibuffer
-        ;; (dirvish-side-follow-mode) ; similar to `treemacs-follow-mode'
+        dirvish-header-line-format
+        '(:left (path) :right (free-space))
+        ;; hide the parent directory
+        ;; dirvish-default-layout '(0 0.4 0.6)
         dirvish-mode-line-format
-        '(:left (sort symlink) :right (omit yank index))
-        dirvish-attributes '(all-the-icons file-time file-size subtree-state vc-state git-msg)
+        '(:left (sort file-time " " file-size symlink) :right (omit yank index))
+        dirvish-attributes '(all-the-icons collapse file-time file-size subtree-state vc-state git-msg)
         delete-by-moving-to-trash t
         dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group"
         dirvish-subtree-always-show-state t
         dirvish-side-width 25
-        dirvish-use-mode-line nil
-        dirvish-use-header-line nil
-        dirvish-header-line-height 20
+        ;; make header line span all panes
+        dirvish-use-header-line 'global
         dirvish-side-window-parameters nil
         )
   (set-face-attribute 'dirvish-hl-line nil
@@ -5211,6 +5206,29 @@ FACE defaults to inheriting from default and highlight."
         ;; (define-key evil-motion-state-map (kbd "M-j") #'watch-other-window-up)
         ;; (define-key evil-motion-state-map (kbd "M-k") #'watch-other-window-down)
         ))
+
+(use-package vc-svn
+  :ensure    dsvn
+  :init      (progn
+               (autoload 'svn-status "dsvn" "Run `svn status'." t)
+               (autoload 'svn-update "dsvn" "Run `svn update'." t)))
+
+;; Asynchronous Fuzzy Finder for Emacs
+(use-package affe
+  :bind (("M-s M-f" . affe-find)
+	     ("M-s f"   . affe-find)
+	     ("M-s M-g" . affe-grep)
+	     ("M-s g"   . affe-grep)
+         )
+  :config
+  (defun affe-orderless-regexp-compiler (input _type _ignorecase)
+    (setq input (orderless-pattern-compiler input))
+    (cons input (lambda (str) (orderless--highlight input str))))
+  (setq affe-regexp-compiler #'affe-orderless-regexp-compiler
+        affe-regexp-function #'orderless-pattern-compiler
+        affe-highlight-function #'orderless-highlight-matches)
+  ;; Manual preview key for `affe-grep'
+  (consult-customize affe-find affe-grep :preview-key (kbd "C-x .")))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

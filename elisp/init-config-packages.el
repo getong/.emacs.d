@@ -897,12 +897,13 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
    '(rainbow-delimiters-depth-7-face ((t (:foreground "orchid" :weight bold))))
    '(rainbow-delimiters-depth-8-face ((t (:foreground "purple" :weight bold))))
    '(rainbow-delimiters-depth-9-face ((t (:foreground "hotpink" :weight bold))))
-   '(rainbow-delimiters-unmatched-face ((t (:background "red" :foreground "green" :weight bold)))))
+   '(rainbow-delimiters-unmatched-face ((t (:background "green" :foreground "blue" :weight bold)))))
   :hook
   ((css-mode . rainbow-mode)
    (sass-mode . rainbow-mode)
-   (scss-mode . rainbow-mode))
-  ((prog-mode . rainbow-delimiters-mode)))
+   (scss-mode . rainbow-mode)
+   (rust-mode . rainbow-mode)
+   (prog-mode . rainbow-delimiters-mode)))
 
 (use-package highlight-indent-guides
   :ensure t
@@ -915,28 +916,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   (rustic-mode . highlight-indent-guides-mode)
   )
 
-;; (use-package switch-window
-;;   :config
-;;   (global-set-key (kbd "C-x o") 'switch-window)
-;;   (global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
-;;   (global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
-;;   (global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
-;;   (global-set-key (kbd "C-x 0") 'switch-window-then-delete)
-
-;;   (global-set-key (kbd "C-x 4 d") 'switch-window-then-dired)
-;;   (global-set-key (kbd "C-x 4 f") 'switch-window-then-find-file)
-;;   (global-set-key (kbd "C-x 4 m") 'switch-window-then-compose-mail)
-;;   (global-set-key (kbd "C-x 4 r") 'switch-window-then-find-file-read-only)
-
-;;   (global-set-key (kbd "C-x 4 C-f") 'switch-window-then-find-file)
-;;   (global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
-
-;;   (global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
-
-;;   (setq switch-window-shortcut-style 'qwerty)
-;;   (setq switch-window-qwerty-shortcuts
-;;         '("a" "s" "d" "f" "j" "k" "l" ";" "w" "e" "i" "o"))
-;;   )
 
 (use-package aggressive-indent
   :config
@@ -3657,16 +3636,15 @@ deletion, or > if it is flagged for displaying."
 
 (use-package ace-window
   :ensure t
-  :defer t
-  :delight ace-window-mode
-  :bind ("C-x x j" . ace-window)
-  :init (setq aw-background nil)
-  :custom
-  (aw-scope 'frame)
-  (aw-ignore-on t)
-  (aw-dispatch-when-more-than 3)
-  (aw-keys '(?h ?j ?k ?l ?u ?i ?o ?p))
-  (aw-ignored-buffers '("*NeoTree*"))
+  :bind
+  (("C-x o" . ace-window))
+  :init
+  (setq aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n))
+  ;;cewindowd窗口提示大小
+  :custom-face
+  (aw-leading-char-face ((t (:foreground "green" :weight normal :height 4.5))))
+  ;; (mode-line ((t (:foreground "#030303" :background "#bdbdbd" :box nil))))
+  ;; (mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil))))
   )
 
 ;; kubernetes

@@ -1289,100 +1289,100 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
         auto-package-update-interval 4)
   (auto-package-update-maybe))
 
-(use-package general
-  :config
-  (general-evil-setup)
-  ;; integrate general with evil
+;; (use-package general
+;;   :config
+;;   (general-evil-setup)
+;;   ;; integrate general with evil
 
-  ;; set up 'SPC' as the global leader key
-  (general-create-definer patrl/leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC" ;; set leader
-    :global-prefix "M-SPC") ;; access leader in insert mode
+;;   ;; set up 'SPC' as the global leader key
+;;   (general-create-definer patrl/leader-keys
+;;     :states '(normal insert visual emacs)
+;;     :keymaps 'override
+;;     :prefix "SPC" ;; set leader
+;;     :global-prefix "M-SPC") ;; access leader in insert mode
 
-  ;; set up ',' as the local leader key
-  (general-create-definer patrl/local-leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "," ;; set local leader
-    :global-prefix "M-,") ;; access local leader in insert mode
+;;   ;; set up ',' as the local leader key
+;;   (general-create-definer patrl/local-leader-keys
+;;     :states '(normal insert visual emacs)
+;;     :keymaps 'override
+;;     :prefix "," ;; set local leader
+;;     :global-prefix "M-,") ;; access local leader in insert mode
 
-  (general-define-key
-   :states 'insert
-   "C-g" 'evil-normal-state) ;; don't stretch for ESC
+;;   (general-define-key
+;;    :states 'insert
+;;    "C-g" 'evil-normal-state) ;; don't stretch for ESC
 
-  ;; unbind some annoying default bindings
-  (general-unbind
-    "C-x C-r"   ;; unbind find file read only
-    "C-x C-z"   ;; unbind suspend frame
-    "C-x C-d"   ;; unbind list directory
-    "<mouse-2>") ;; pasting with mouse wheel click
+;;   ;; unbind some annoying default bindings
+;;   (general-unbind
+;;     "C-x C-r"   ;; unbind find file read only
+;;     "C-x C-z"   ;; unbind suspend frame
+;;     "C-x C-d"   ;; unbind list directory
+;;     "<mouse-2>") ;; pasting with mouse wheel click
 
 
-  (patrl/leader-keys
-    "SPC" '(execute-extended-command :wk "execute command") ;; an alternative to 'M-x'
-    ;;"TAB" '(:keymap tab-prefix-map :wk "tab") ;; remap tab bindings
-    )
+;;   (patrl/leader-keys
+;;     "SPC" '(execute-extended-command :wk "execute command") ;; an alternative to 'M-x'
+;;     ;;"TAB" '(:keymap tab-prefix-map :wk "tab") ;; remap tab bindings
+;;     )
 
-  (patrl/leader-keys
-    "c" '(:ignore t :wk "code"))
+;;   (patrl/leader-keys
+;;     "c" '(:ignore t :wk "code"))
 
-  ;; help
-  ;; namespace mostly used by 'helpful'
-  (patrl/leader-keys
-    "h" '(:ignore t :wk "help"))
+;;   ;; help
+;;   ;; namespace mostly used by 'helpful'
+;;   (patrl/leader-keys
+;;     "h" '(:ignore t :wk "help"))
 
-  ;; file
-  (patrl/leader-keys
-    "f" '(:ignore t :wk "file")
-    "ff" '(find-file :wk "find file") ;; gets overridden by consult
-    "fs" '(save-buffer :wk "save file"))
+;;   ;; file
+;;   (patrl/leader-keys
+;;     "f" '(:ignore t :wk "file")
+;;     "ff" '(find-file :wk "find file") ;; gets overridden by consult
+;;     "fs" '(save-buffer :wk "save file"))
 
-  ;; buffer
-  ;; see 'bufler' and 'popper'
-  (patrl/leader-keys
-    "b" '(:ignore t :wk "buffer")
-    "bb" '(switch-to-buffer :wk "switch buffer") ;; gets overridden by consult
-    "bk" '(kill-this-buffer :wk "kill this buffer")
-    "br" '(revert-buffer :wk "reload buffer"))
+;;   ;; buffer
+;;   ;; see 'bufler' and 'popper'
+;;   (patrl/leader-keys
+;;     "b" '(:ignore t :wk "buffer")
+;;     "bb" '(switch-to-buffer :wk "switch buffer") ;; gets overridden by consult
+;;     "bk" '(kill-this-buffer :wk "kill this buffer")
+;;     "br" '(revert-buffer :wk "reload buffer"))
 
-  ;; bookmark
-  (patrl/leader-keys
-    "B" '(:ignore t :wk "bookmark")
-    "Bs" '(bookmark-set :wk "set bookmark")
-    "Bj" '(bookmark-jump :wk "jump to bookmark"))
+;;   ;; bookmark
+;;   (patrl/leader-keys
+;;     "B" '(:ignore t :wk "bookmark")
+;;     "Bs" '(bookmark-set :wk "set bookmark")
+;;     "Bj" '(bookmark-jump :wk "jump to bookmark"))
 
-  ;; universal argument
-  (patrl/leader-keys
-    "u" '(universal-argument :wk "universal prefix"))
+;;   ;; universal argument
+;;   (patrl/leader-keys
+;;     "u" '(universal-argument :wk "universal prefix"))
 
-  ;; notes
-  ;; see 'citar' and 'org-roam'
-  (patrl/leader-keys
-    "n" '(:ignore t :wk "notes")
-    ;; see org-roam and citar sections
-    "na" '(org-todo-list :wk "agenda todos")) ;; agenda
+;;   ;; notes
+;;   ;; see 'citar' and 'org-roam'
+;;   (patrl/leader-keys
+;;     "n" '(:ignore t :wk "notes")
+;;     ;; see org-roam and citar sections
+;;     "na" '(org-todo-list :wk "agenda todos")) ;; agenda
 
-  ;; code
-  ;; see 'flymake'
-  (patrl/leader-keys
-    "c" '(:ignore t :wk "code"))
+;;   ;; code
+;;   ;; see 'flymake'
+;;   (patrl/leader-keys
+;;     "c" '(:ignore t :wk "code"))
 
-  ;; open
-  (patrl/leader-keys
-    "o" '(:ignore t :wk "open")
-    "os" '(speedbar t :wk "speedbar")) ;; TODO this needs some love
+;;   ;; open
+;;   (patrl/leader-keys
+;;     "o" '(:ignore t :wk "open")
+;;     "os" '(speedbar t :wk "speedbar")) ;; TODO this needs some love
 
-  ;; search
-  ;; see 'consult'
-  (patrl/leader-keys
-    "s" '(:ignore t :wk "search"))
+;;   ;; search
+;;   ;; see 'consult'
+;;   (patrl/leader-keys
+;;     "s" '(:ignore t :wk "search"))
 
-  ;; templating
-  ;; see 'tempel'
-  (patrl/leader-keys
-    "t" '(:ignore t :wk "template")))
+;;   ;; templating
+;;   ;; see 'tempel'
+;;   (patrl/leader-keys
+;;     "t" '(:ignore t :wk "template")))
 
 ;; "c" '(org-capture :wk "capture")))
 
@@ -1412,6 +1412,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 ;; ;;modeline上显示我的所有的按键和执行的命令
 ;; https://sqrtminusone.xyz/configs/emacs/
 (use-package keycast
+  :ensure t
   :config
   (keycast-mode)
   (define-minor-mode keycast-mode
@@ -5230,6 +5231,21 @@ FACE defaults to inheriting from default and highlight."
         affe-highlight-function #'orderless-highlight-matches)
   ;; Manual preview key for `affe-grep'
   (consult-customize affe-find affe-grep :preview-key (kbd "C-x .")))
+
+(use-package which-key-posframe
+  :custom
+  (which-key-idle-delay 2)
+  (which-key-idle-secondary-delay 0)
+  (which-key-posframe-border-width 2)
+  (which-key-posframe-parameters '((left-fringe . 5) (right-fringe . 5)))
+  :custom-face
+  (which-key-posframe ((t (:background "black" ))))
+  (which-key-posframe-border ((t (:background " green"))))
+  :hook
+  (dashboard-after-initialize . which-key-posframe-mode)
+  (dashboard-after-initialize . which-key-mode))
+
+
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

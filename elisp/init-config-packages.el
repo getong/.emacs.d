@@ -1820,6 +1820,9 @@ Get it from:  <http://hasseg.org/trash/>"
   (dirvish-override-dired-mode +1)
   ;; 异步读取含 10000 个以上文件的文件夹
   (setq dirvish-async-listing-threshold 10000
+        dirvish-cache-dir (no-littering-expand-var-file-name "dirvish" )
+        dirvish-hide-cursor nil
+        dired-filter-revert 'always
         dirvish-depth 0
         ;; (dirvish-peek-mode) ; Preview files in minibuffer
         ;; (dirvish-side-follow-mode) ; similar to `treemacs-follow-mode'

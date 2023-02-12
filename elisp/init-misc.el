@@ -29,10 +29,10 @@
 ;;   (global-hl-line-mode 1))
 
 ;;(setq-default indent-tabs-mode nil)
-(ido-mode 1)
+;; (ido-mode 1)
 ;; (setq column-number-mode t)
 
-(setq inhibit-startup-message t) ;; 关闭起动时LOGO
+;; (setq inhibit-startup-message t) ;; 关闭起动时LOGO
 (setq visible-bell t);;关闭出错时的提示声
 (global-font-lock-mode t);语法高亮
 ;; (show-paren-mode t) ;; 显示括号匹配
@@ -51,7 +51,7 @@
 ;; (setq backup-by-copying t)
 
 
-(setq initial-scratch-message nil)
+;; (setq initial-scratch-message nil)
 
 (global-unset-key (kbd "C-SPC")) ;; 输入法快捷键冲突
 (global-set-key (kbd "M-SPC") 'set-mark-command)
@@ -264,12 +264,12 @@
 
 
 
-(setq-default cursor-type 'bar)
+;; (setq-default cursor-type 'bar)
 (setq-default cursor-in-non-selected-windows '(bar . 2))
-(setq-default blink-cursor-blinks 50)
-(setq-default blink-cursor-interval nil) ; 0.75 would be my choice
+;; (setq-default blink-cursor-blinks 50)
+;; (setq-default blink-cursor-interval nil) ; 0.75 would be my choice
 (setq-default blink-cursor-delay 0.2)
-(blink-cursor-mode -1)
+;; (blink-cursor-mode -1)
 ;; (define-minor-mode prot/cursor-type-mode
 ;;   "Toggle between static block and pulsing bar cursor."
 ;;   :init-value nil
@@ -334,7 +334,8 @@
 (custom-set-variables '(delete-selection-mode t) ;; delete when you select region and modify
                       ;; '(delete-by-moving-to-trash t) ;; delete && move to transh
                       '(inhibit-compacting-font-caches t) ;; don’t compact font caches during GC.
-                      '(gc-cons-percentage 1))
+                      ;; '(gc-cons-percentage 1)
+                      )
 
 ;; Dark and transparent title bar in macOS
 (when (memq window-system '(mac ns))

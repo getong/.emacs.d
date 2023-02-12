@@ -315,12 +315,12 @@
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
   ;; life is too short
-  (defalias 'yes-or-no-p 'y-or-n-p)
+  ;; (defalias 'yes-or-no-p 'y-or-n-p)
   ;; no tabs
   ;; (setq indent-tabs-mode nil)
   (setq-default indent-tabs-mode nil)
   ;; keep everything under vc
-  (setq make-backup-files nil)
+  ;; (setq make-backup-files nil)
   ;; no need to create lockfiles
   (setq create-lockfiles nil)
   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
@@ -335,14 +335,14 @@
   (setq locale-coding-system 'utf-8
         coding-system-for-read 'utf-8
         coding-system-for-write 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
+  ;; (set-terminal-coding-system 'utf-8)
+  ;; (set-keyboard-coding-system 'utf-8)
   (set-selection-coding-system 'utf-8)
-  (prefer-coding-system 'utf-8)
+  ;; (prefer-coding-system 'utf-8)
   (set-file-name-coding-system 'utf-8)
-  (set-default-coding-systems 'utf-8)
+  ;; (set-default-coding-systems 'utf-8)
   (set-language-environment 'utf-8)
-  (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+  ;; (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; escape quits everything
 
@@ -1998,7 +1998,7 @@ Get it from:  <http://hasseg.org/trash/>"
   (company-tabnine-max-num-results 9)
   :bind
   (("M-q" . company-other-backend)
-   ("C-z t" . company-tabnine))
+   ("C-x x t" . company-tabnine))
   :init
   (defun company//sort-by-tabnine (candidates)
     "Integrate company-tabnine with lsp-mode"
@@ -2285,9 +2285,18 @@ Get it from:  <http://hasseg.org/trash/>"
   (require 'dap-cpptools)
   ;;(dap-cpptools-setup)
   ;; (require 'dap-lldb)
-  (add-hook 'dap-stopped-hook
-            (lambda (arg)
-              (call-interactively #'dap-hydra)))
+  :hook
+  ((dap-stopped . (lambda (arg)
+                    ;; Automatically trigger the built-in dap-mode hydra when the debugger
+                    ;; hits a breakpoint.
+                    (call-interactively #'dap-hydra)))
+   (lsp-mode . (lambda ()
+                 ;; Automatically configure dap-mode with default settings
+                 (dap-auto-configure-mode 1)))
+   ;; Require programming language specific DAP setup.
+   ((js-mode js2-mode web-mode) . (lambda ()
+                                    (require 'dap-chrome)
+                                    (dap-chrome-setup))))
   :config
   (require 'dap-chrome)
   :bind
@@ -2632,7 +2641,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :hook (after-init . size-indication-mode)
   :init
   ;; 高亮显示选中区域
-  (transient-mark-mode t)
+  ;; (transient-mark-mode t)
   ;; 高亮选中区域颜色
   ;; (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
   (custom-set-faces
@@ -2640,9 +2649,10 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
      ;; ((nil (:background "#666" :foreground "#ffffff")))
      ((nil (:background "purple" :foreground "black")))
      ))
-  (progn
-    (setq column-number-mode t)
-    ))
+  ;; (progn
+  ;;   (setq column-number-mode t)
+  ;;   )
+  )
 
 ;; copy from https://blog.sumtypeofway.com/posts/emacs-config.html
 (use-package recentf
@@ -2659,8 +2669,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
         recentf-save-file (no-littering-expand-var-file-name "recentf"))
   ;; (bind-key "C-c っ" 'helm-recentf)
   ;; (bind-key "C-c t" 'helm-recentf)
-  :config
-  (recentf-mode 1)
+  ;; :config
+  ;; (recentf-mode 1)
   ;;(run-at-time nil (* 5 60) 'recentf-save-list)
   )
 
@@ -2668,7 +2678,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :ensure t
   :config
   (setq recentf-auto-cleanup 60)
-  (recentf-mode 1)
+  ;; (recentf-mode 1)
   :init
   ;; defvar 必须在init修改，才起效
   (setq sync-recentf-marker (no-littering-expand-var-file-name "sync-recentf-marker"))
@@ -4152,6 +4162,67 @@ FACE defaults to inheriting from default and highlight."
   (json-mode . setup-awesome-pair-mode)
   )
 
+
+(use-package better-defaults
+  :init
+  (setq-default cursor-type 'bar)
+  (set-default 'indicate-empty-lines t)
+  (setq-default truncate-lines t)
+  (if (boundp 'buffer-file-coding-system)
+      (setq-default buffer-file-coding-system 'utf-8)
+    (setf buffer-file-coding-system 'utf-8))
+  ;; coloca los archivos de respaldo hechos por Emacs en /tmp
+  ;; (setq backup-directory-alist
+  ;;       `((".*" . ,temporary-file-directory)))
+  ;; (setq auto-save-file-name-transforms
+  ;;       `((".*" "~/.cache/emacs/saves/" t)))
+  ;; apaga creación de lockfiles
+  (setq create-lockfiles nil)
+  :custom
+  (blink-cursor-blinks 1)
+  (blink-cursor-interval 1)
+  ;; tabs 底下显示 bar
+  (x-underline-at-descent-line t)
+  (save-interprogram-paste-before-kill t)
+  (bookmark-save-flag 1)
+  ;; 关闭起动时LOGO
+  (inhibit-startup-message t )
+  (initial-scratch-message nil)
+  (line-spacing 0)
+  (make-backup-files nil)
+  (global-auto-revert-non-file-buffers t)
+  (auto-revert-verbose nil)
+  (echo-keystrokes 0.1)
+  (shift-select-mode nil)
+  (fill-column 80)
+  (blink-matching-paren t)
+  (history-length 1000)
+  (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+  (enable-recursive-minibuffers t)
+  (gc-cons-percentage 0.125 )
+  (ediff-diff-options "-w")
+  (ediff-split-window-function 'split-window-horizontally)
+  ;; (buffer-file-coding-system 'utf-8)
+  ;; (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+  :config
+  ;; activa transient-mark-mode
+  (transient-mark-mode 1)
+  (blink-cursor-mode)
+  (ido-mode nil)
+  (tooltip-mode -1)
+  (recentf-mode 1)
+  (savehist-mode 1)
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (global-auto-revert-mode 1)
+  (column-number-mode 1)
+  (global-subword-mode 1)
+  (global-font-lock-mode 1)
+  (delete-selection-mode 1)
+  (prefer-coding-system       'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (add-to-list 'default-frame-alist '(tty-color-mode . -1)))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

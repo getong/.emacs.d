@@ -20,7 +20,7 @@
 
 (require 'init-macro)
 
-(require 'init-misc)
+;; (require 'init-misc)
 
 ;; (setq debug-on-quit t)
 

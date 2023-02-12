@@ -322,7 +322,7 @@
   ;; keep everything under vc
   ;; (setq make-backup-files nil)
   ;; no need to create lockfiles
-  (setq create-lockfiles nil)
+  ;; (setq create-lockfiles nil)
   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
   ;; (setq read-extended-command-predicate
@@ -345,6 +345,9 @@
   ;; (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; escape quits everything
+  (global-unset-key (kbd "C-SPC")) ;; 输入法快捷键冲突
+  (global-set-key (kbd "M-SPC") 'set-mark-command)
+  (global-unset-key (kbd "C-z"))      ; 关闭 "C-z" 最小化
 
   ;; Don't persist a custom file
   ;; (setq custom-file (make-temp-file "")) ; use a temp file as a placeholder
@@ -360,30 +363,89 @@
   ;; (setq warning-suppress-types (append warning-suppress-types '((org-element-cache))))
 
   ;; 显示括号匹配
-  (show-paren-mode t)
+  ;; (show-paren-mode t)
+;;; copy from https://blog.ginshio.org/2022/doom_emacs_configuration/#guix
+  (setq-default
+   window-combination-resize t        ; 从其他窗口获取新窗口的大小
+   x-stretch-cursor t                 ; 将光标拉伸到字形宽度
+   )
+
+  (setq
+   undo-limit 104857600         ; 重置撤销限制到 100 MiB
+   truncate-string-ellipsis "…" ; Unicode 省略号相比 ascii 更好
+   ;; 同时节省 /宝贵的/ 空间
+   password-cache-expiry nil    ; 我能信任我的电脑 ... 或不能?
+   ;; 不要让 `点' (光标) 跳来跳去
+   scroll-margin 2              ; 适当保持一点点边距
+   gc-cons-threshold 1073741824
+   read-process-output-max 1048576
+   delete-selection-mode t  ;; delete when you select region and modify
+   inhibit-compacting-font-caches t  ;; don’t compact font caches during GC.
+   max-specpdl-size 10000
+   max-lisp-eval-depth 10000
+   gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
+   inhibit-startup-screen t
+   visible-bell t;;关闭出错时的提示声
+   show-paren-style 'parenthesis
+   appt-issue-message t
+   version-control t
+   kept-old-versions 2
+   kept-new-versions 5
+   delete-old-versions t
+   vc-follow-symlinks t
+   )
 
   ;; Hide commands in M-x which don't work in the current mode
   (setq read-extended-command-predicate #'command-completion-default-include-p)
   :config
+  ;; disable menu bar, tool-bar
+  (push '(menu-bar-lines . 0)   default-frame-alist)
+  (push '(tool-bar-lines . 0)   default-frame-alist)
+  (push '(vertical-scroll-bars) default-frame-alist)
+
+  (global-superword-mode t)
+  (mouse-avoidance-mode 'animate) ;;光标靠近鼠标指针时，让鼠标指针自动让开，别挡住视线。
+
+
+  ;; 对齐插入空格而不是tab
+  ;; copy from http://stackoverflow.com/questions/22710040/emacs-align-regexp-with-spaces-instead-of-tabs
+  (defadvice align-regexp (around align-regexp-with-spaces activate)
+    (let ((indent-tabs-mode nil))
+      ad-do-it))
+
+  ;; copy from https://emacsredux.com/blog/2020/12/04/maximize-the-emacs-frame-on-startup/
+  ;; start the initial frame maximized
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  ;; start every frame maximized
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+  (remove-hook 'text-mode-hook #'visual-line-mode)
+  (add-hook 'text-mode-hook #'auto-fill-mode)
+  (add-hook 'window-setup-hook #'toggle-frame-fullscreen)
+
+  ;; Dark and transparent title bar in macOS
+  (when (memq window-system '(mac ns))
+    (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+    (add-to-list 'default-frame-alist '(ns-appearance . dark)))
   ;; copy from https://emacs.stackexchange.com/questions/32150/how-to-add-a-timestamp-to-each-entry-in-emacs-messages-buffer
   ;; 添加时间戳到message消息
   (defun sh/current-time-microseconds ()
-	"Return the current time formatted to include microseconds."
-	(let* ((nowtime (current-time))
+	  "Return the current time formatted to include microseconds."
+	  (let* ((nowtime (current-time))
            (now-ms (nth 2 nowtime)))
       (concat (format-time-string "[%Y-%m-%dT%T" nowtime) (format ".%d]" now-ms))))
 
   (defun sh/ad-timestamp-message (FORMAT-STRING &rest args)
-	"Advice to run before `message' that prepends a timestamp to each message.
+	  "Advice to run before `message' that prepends a timestamp to each message.
 Activate this advice with:
 (advice-add 'message :before 'sh/ad-timestamp-message)"
-	(unless (string-equal FORMAT-STRING "%s%s")
+	  (unless (string-equal FORMAT-STRING "%s%s")
       (let ((deactivate-mark nil)
-			(inhibit-read-only t))
-		(with-current-buffer "*Messages*"
+			      (inhibit-read-only t))
+		    (with-current-buffer "*Messages*"
           (goto-char (point-max))
           (if (not (bolp))
-			  (newline))
+			        (newline))
           (insert (sh/current-time-microseconds) " ")))))
 
   (advice-add 'message :before 'sh/ad-timestamp-message)

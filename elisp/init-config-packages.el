@@ -50,8 +50,8 @@
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-(add-hook 'after-init-hook
-          (lambda () (message "loaded in %s" (emacs-init-time))))
+;; (add-hook 'after-init-hook
+;;           (lambda () (message "loaded in %s" (emacs-init-time))))
 
 (use-package async-await
   :config
@@ -64,17 +64,17 @@
   :config
   ;; (add-to-list 'recentf-exclude no-littering-var-directory)
   ;; (add-to-list 'recentf-exclude no-littering-etc-directory)
-  (with-eval-after-load 'recentf
-    (set 'recentf-exclude
-         '(no-littering-var-directory
-           no-littering-etc-directory
-           (expand-file-name "elpa" user-emacs-directory)
-           (expand-file-name "straight" user-emacs-directory)
-           )))
-  (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
-  (unless (file-exists-p custom-file)  ;; 如果该文件不存在
-    (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
-  (load custom-file)
+  ;; (with-eval-after-load 'recentf
+  ;;   (set 'recentf-exclude
+  ;;        '(no-littering-var-directory
+  ;;          no-littering-etc-directory
+  ;;          (expand-file-name "elpa" user-emacs-directory)
+  ;;          (expand-file-name "straight" user-emacs-directory)
+  ;;          )))
+  ;; (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
+  ;; (unless (file-exists-p custom-file)  ;; 如果该文件不存在
+  ;;   (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
+  ;; (load custom-file)
 
   ;; https://eshelyaron.com/esy.html
   ;; (setq auto-save-file-name-transforms
@@ -2398,14 +2398,16 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   ;; (add-to-list 'recentf-exclude "\\elpa")
   ;; (add-to-list 'recentf-exclude "private/tmp")
   ;; 2000 files ought to be enough.
-  (setq recentf-max-saved-items 2000)
-  ;;(setq recentf-max-menu-items 5000)
-  (setq recentf-auto-cleanup 'never)  ;
-  ;; (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker" (expand-file-name "var/undohist/*" user-emacs-directory)))
-  ;; (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
-  (setq recentf-save-file (no-littering-expand-var-file-name "recentf"))
+  (setq recentf-max-saved-items 2000
+        ;;(setq recentf-max-menu-items 5000)
+        recentf-auto-cleanup 'never
+        recentf-exclude '(no-littering-var-directory no-littering-etc-directory (expand-file-name "elpa" user-emacs-directory) (expand-file-name "straight" user-emacs-directory) "/tmp" "COMMIT_EDITMSG" "sync-recentf-marker")
+        ;; (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker" (expand-file-name "var/undohist/*" user-emacs-directory)))
+        ;; (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
+        recentf-save-file (no-littering-expand-var-file-name "recentf"))
   ;; (bind-key "C-c っ" 'helm-recentf)
   ;; (bind-key "C-c t" 'helm-recentf)
+  :config
   (recentf-mode 1)
   ;;(run-at-time nil (* 5 60) 'recentf-save-list)
   )
@@ -2437,21 +2439,21 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (advice-add #'deadgrep--buffer :around #'my/deadgrep-fix-buffer-advice))
 
 ;; perspective 在 Emacs 中标记工作区，类似于窗口管理器中的工作区，窗口管理器类似 Awesome 和 XMonad
-(use-package perspective
-  :demand t
-  :init
-  ;; (setq persp-show-modestring 'header)
-  (setq persp-sort 'created)
-  (setq persp-suppress-no-prefix-key-warning t)
-  :bind (("C-M-k" . persp-switch)
-         ("C-M-n" . persp-next)
-         ("C-x k" . persp-kill-buffer*))
-  :custom
-  (persp-initial-frame-name "Pinfo")
-  :config
-  ;; Running `persp-mode' multiple times resets the perspective list...
-  (unless (equal persp-mode t)
-    (persp-mode)))
+;; (use-package perspective
+;;   :demand t
+;;   :init
+;;   ;; (setq persp-show-modestring 'header)
+;;   (setq persp-sort 'created)
+;;   (setq persp-suppress-no-prefix-key-warning t)
+;;   :bind (("C-M-k" . persp-switch)
+;;          ("C-M-n" . persp-next)
+;;          ("C-x k" . persp-kill-buffer*))
+;;   :custom
+;;   (persp-initial-frame-name "Pinfo")
+;;   :config
+;;   ;; Running `persp-mode' multiple times resets the perspective list...
+;;   (unless (equal persp-mode t)
+;;     (persp-mode)))
 
 (use-package flycheck-package
   :after flycheck
@@ -3657,18 +3659,18 @@ deletion, or > if it is flagged for displaying."
 
 ;; paredit-mode 启用自动补全括号
 ;; 再一次paredit-mode 禁用自动补全括号
-(use-package paredit
-  :ensure t
-  :config
-  (define-key paredit-mode-map (kbd "C-M-]") 'paredit-forward-barf-sexp)
-  (define-key paredit-mode-map (kbd "C-M-[") 'paredit-backward-barf-sexp)
-  (define-key paredit-mode-map (kbd "M-]") 'paredit-forward-slurp-sexp)
-  (define-key paredit-mode-map (kbd "M-[") 'paredit-backward-slurp-sexp)
-  (add-hook 'cider-repl-mode-hook 'paredit-mode)
-  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-  (add-hook 'clojure-mode-hook 'paredit-mode)
-  (add-hook 'nrepl-mode-hook 'paredit-mode)
-  )
+;; (use-package paredit
+;;   :ensure t
+;;   :config
+;;   (define-key paredit-mode-map (kbd "C-M-]") 'paredit-forward-barf-sexp)
+;;   (define-key paredit-mode-map (kbd "C-M-[") 'paredit-backward-barf-sexp)
+;;   (define-key paredit-mode-map (kbd "M-]") 'paredit-forward-slurp-sexp)
+;;   (define-key paredit-mode-map (kbd "M-[") 'paredit-backward-slurp-sexp)
+;;   (add-hook 'cider-repl-mode-hook 'paredit-mode)
+;;   (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+;;   (add-hook 'clojure-mode-hook 'paredit-mode)
+;;   (add-hook 'nrepl-mode-hook 'paredit-mode)
+;;   )
 
 ;; nameframe
 (use-package nameframe
@@ -3835,74 +3837,65 @@ FACE defaults to inheriting from default and highlight."
   (dashboard-after-initialize . which-key-posframe-mode)
   (dashboard-after-initialize . which-key-mode))
 
+
+;; AwesomePairPac
 (use-package awesome-pair
   :straight (awesome-pair
              :host github
              :repo "manateelazycat/awesome-pair")
   :defer t
-  :init
-  (progn
-    (dolist (hook (list
-                   'c-mode-common-hook
-                   'c-mode-hook
-                   'c++-mode-hook
-                   'java-mode-hook
-                   'haskell-mode-hook
-                   'emacs-lisp-mode-hook
-                   'lisp-interaction-mode-hook
-                   'lisp-mode-hook
-                   'maxima-mode-hook
-                   'ielm-mode-hook
-                   'sh-mode-hook
-                   'makefile-gmake-mode-hook
-                   'php-mode-hook
-                   'python-mode-hook
-                   'js-mode-hook
-                   'typescript-mode-hook
-                   'go-mode-hook
-                   'qml-mode-hook
-                   'jade-mode-hook
-                   'css-mode-hook
-                   'ruby-mode-hook
-                   'coffee-mode-hook
-                   'rust-mode-hook
-                   'qmake-mode-hook
-                   'lua-mode-hook
-                   'swift-mode-hook
-                   'json-mode-hook
-                   ))
-      (add-hook hook #'(lambda ()
-                         (require 'awesome-pair)
-                         (awesome-pair-mode 1)
-                         (show-paren-mode 1))
-                )))
+  :bind
+  (:map prog-mode-map
+        (
+         ("(" . awesome-pair-open-round)
+         ("[" . awesome-pair-open-bracket)
+         ("{" . awesome-pair-open-curly)
+         (")" . awesome-pair-close-round)
+         ("]" . awesome-pair-close-bracket)
+         ("}" . awesome-pair-close-curly)
+         ("=" . awesome-pair-equal)
+
+         ("%" . awesome-pair-match-paren)
+         ("\"" . awesome-pair-double-quote)
+
+         ("SPC" . awesome-pair-space)
+
+         ("M-o" . awesome-pair-backward-delete)
+         ("C-d" . awesome-pair-forward-delete)
+         ("C-k" . awesome-pair-kill)
+
+         ("M-\"" . awesome-pair-wrap-double-quote)
+         ("M-[" . awesome-pair-wrap-bracket)
+         ("M-{" . awesome-pair-wrap-curly)
+         ("M-(" . awesome-pair-wrap-round)
+         ("M-)" . awesome-pair-unwrap)
+
+         ("M-F" . awesome-pair-jump-right)
+         ("M-B" . awesome-pair-jump-left)
+         ("M-:" . awesome-pair-jump-out-pair-and-newline)
+         ))
   :config
-  (define-key awesome-pair-mode-map (kbd "(") 'awesome-pair-open-round)
-  (define-key awesome-pair-mode-map (kbd "[") 'awesome-pair-open-bracket)
-  (define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly)
-  (define-key awesome-pair-mode-map (kbd ")") 'awesome-pair-close-round)
-  (define-key awesome-pair-mode-map (kbd "]") 'awesome-pair-close-bracket)
-  (define-key awesome-pair-mode-map (kbd "}") 'awesome-pair-close-curly)
-  (define-key awesome-pair-mode-map (kbd "=") 'awesome-pair-equal)
+  (defun setup-awesome-pair-mode ()
+    (require 'awesome-pair)
+    (awesome-pair-mode 1)
+    (show-paren-mode 1)
+    )
+  :hook
+  (prog-mode . setup-awesome-pair-mode)
+  (c-mode . setup-awesome-pair-mode)
+  (c++-mode . setup-awesome-pair-mode)
+  (emacs-lisp-mode . setup-awesome-pair-mode)
+  (lisp-interaction-mode . setup-awesome-pair-mode)
+  (lisp-mode . setup-awesome-pair-mode)
+  (sh-mode . setup-awesome-pair-mode)
+  (php-mode . setup-awesome-pair-mode)
+  (typescript-mode . setup-awesome-pair-mode)
+  (go-mode . setup-awesome-pair-mode)
+  (lua-mode . setup-awesome-pair-mode)
+  (swift-mode . setup-awesome-pair-mode)
+  (json-mode . setup-awesome-pair-mode)
+  )
 
-  (define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-match-paren)
-  (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
-
-  (define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
-
-  (define-key awesome-pair-mode-map (kbd "M-o") 'awesome-pair-backward-delete)
-  (define-key awesome-pair-mode-map (kbd "C-d") 'awesome-pair-forward-delete)
-  (define-key awesome-pair-mode-map (kbd "C-k") 'awesome-pair-kill)
-
-  (define-key awesome-pair-mode-map (kbd "M-\"") 'awesome-pair-wrap-double-quote)
-  ;; (define-key awesome-pair-mode-map (kbd "M-[") 'awesome-pair-wrap-bracket)
-  (define-key awesome-pair-mode-map (kbd "M-{") 'awesome-pair-wrap-curly)
-  (define-key awesome-pair-mode-map (kbd "M-(") 'awesome-pair-wrap-round)
-  (define-key awesome-pair-mode-map (kbd "M-)") 'awesome-pair-unwrap)
-
-  (define-key awesome-pair-mode-map (kbd "M-p") 'awesome-pair-jump-right)
-  (define-key awesome-pair-mode-map (kbd "M-n") 'awesome-pair-jump-left)
-  (define-key awesome-pair-mode-map (kbd "M-:") 'awesome-pair-jump-out-pair-and-newline))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

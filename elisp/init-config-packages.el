@@ -909,16 +909,27 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :ensure t)
 
 (use-package reformatter
-  :ensure t)
+  :ensure t
+  :config
+  (reformatter-define lua-format
+    :program "stylua"
+    :args '("-")
+    :group 'lua)
 
-(reformatter-define lua-format
-  :program "stylua"
-  :args '("-")
-  :group 'lua)
+  (reformatter-define js-format
+    :program "npx"
+    :args '("prettier" "--stdin-filepath" "a.js"))
+  ;; SQL formatter
+  (reformatter-define sql-format
+    :program "pg_format")
 
-(reformatter-define js-format
-  :program "npx"
-  :args '("prettier" "--stdin-filepath" "a.js"))
+  ;; XML formatter
+  (reformatter-define xml-format
+    :program "xmlformat"
+    :group 'xml)
+  )
+
+
 
 ;;  rainbow-delimiters 可以将对称的括号用同一种颜色标记出来。
 ;; parens
@@ -1054,6 +1065,20 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 	      (add-hook 'pre-command-hook 'keycast--update t) )
       (remove-hook 'pre-command-hook 'keycast--update)
       (setq global-mode-string (delete '("" keycast-mode-line " ") global-mode-string)))))
+;; 在后面，上面在前面
+;; (use-package keycast
+;;   :commands bg/toggle-keycast
+;;   :config
+;;   (defun bg/toggle-keycast()
+;;     (interactive)
+;;     (if (member '("" keycast-mode-line " ") global-mode-string)
+;;         (progn (setq global-mode-string (delete '("" keycast-mode-line " ") global-mode-string))
+;;                (remove-hook 'pre-command-hook 'keycast--update)
+;;                (message "Keycast OFF"))
+;;       (add-to-list 'global-mode-string '("" keycast-mode-line " "))
+;;       (add-hook 'pre-command-hook 'keycast--update t)
+;;       (message "Keycast ON"))))
+
 
 ;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
 (use-package doom-modeline
@@ -1066,6 +1091,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   (setq doom-modeline-env-enable-python nil)
   (setq doom-modeline-height 15)
   (setq doom-modeline-project-detection 'projectile)
+  (setq doom-modeline-buffer-file-name-style nil)
   :config
   (setq doom-modeline-battery nil)
   ;; (doom-modeline-mode 1)
@@ -1111,10 +1137,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 (use-package pbcopy
   :ensure t)
 
-;; XML formatter
-(reformatter-define xml-format
-  :program "xmlformat"
-  :group 'xml)
+
 
 (with-eval-after-load 'nxml-mode
   (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
@@ -1182,9 +1205,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :ensure t
   :after tree-sitter)
 
-;; SQL formatter
-(reformatter-define sql-format
-  :program "pg_format")
 
 (defun my/format-sql ()
   "Format active region otherwise format the entire buffer."
@@ -2479,19 +2499,16 @@ Get it from:  <http://hasseg.org/trash/>"
 
 (use-package vertico-posframe
   :config
-  (defun zw/posframe-poshandler-bottom-center (info)
-    (cons (/ (- (plist-get info :parent-frame-width)
-                (plist-get info :posframe-width))
-             2)
-          (- (plist-get info :parent-frame-height)
-             (plist-get info :posframe-height))))
+  (setq vertico-posframe-min-width 60)
+  (setq vertico-posframe-truncate-lines nil)
+  (setq vertico-posframe-poshandler 'posframe-poshandler-window-top-center)
+
   (defun vertico-posframe-set-cursor (&rest args)
     (with-current-buffer vertico-posframe--buffer
       (setq-local cursor-type 'bar)
       (setq-local cursor-in-non-selected-windows 'bar)))
   (advice-add 'vertico-posframe--show :after 'vertico-posframe-set-cursor)
-  (setq vertico-posframe-poshandler 'zw/posframe-poshandler-bottom-center
-        vertico-posframe-width (frame-width))
+  (setq vertico-posframe-width (frame-width))
   (vertico-posframe-mode 1))
 
 ;; minibuffer 模糊匹配
@@ -2500,30 +2517,30 @@ Get it from:  <http://hasseg.org/trash/>"
   :config
   (defvar +orderless-dispatch-alist
     '((?% . char-fold-to-regexp)
-	  (?! . orderless-without-literal)
-	  (?`. orderless-initialism)
-	  (?= . orderless-literal)
-	  (?~ . orderless-flex)))
+	    (?! . orderless-without-literal)
+	    (?`. orderless-initialism)
+	    (?= . orderless-literal)
+	    (?~ . orderless-flex)))
   (defun +orderless-dispatch (pattern index _total)
     (cond
      ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
      ((string-suffix-p "$" pattern)
-	  `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x100000-\x10FFFD]*$")))
+	    `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x100000-\x10FFFD]*$")))
      ;; File extensions
      ((and
-	   ;; Completing filename or eshell
-	   (or minibuffer-completing-file-name
-	       (derived-mode-p 'eshell-mode))
-	   ;; File extension
-	   (string-match-p "\\`\\.." pattern))
-	  `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x100000-\x10FFFD]*$")))
+	     ;; Completing filename or eshell
+	     (or minibuffer-completing-file-name
+	         (derived-mode-p 'eshell-mode))
+	     ;; File extension
+	     (string-match-p "\\`\\.." pattern))
+	    `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x100000-\x10FFFD]*$")))
      ;; Ignore single !
      ((string= "!" pattern) `(orderless-literal . ""))
      ;; Prefix and suffix
      ((if-let (x (assq (aref pattern 0) +orderless-dispatch-alist))
-	      (cons (cdr x) (substring pattern 1))
-	    (when-let (x (assq (aref pattern (1- (length pattern))) +orderless-dispatch-alist))
-	      (cons (cdr x) (substring pattern 0 -1)))))))
+	        (cons (cdr x) (substring pattern 1))
+	      (when-let (x (assq (aref pattern (1- (length pattern))) +orderless-dispatch-alist))
+	        (cons (cdr x) (substring pattern 0 -1)))))))
 
   ;; Define orderless style with initialism by default
   (orderless-define-completion-style +orderless-with-initialism
@@ -2541,10 +2558,10 @@ Get it from:  <http://hasseg.org/trash/>"
 	    ;;; but rather prepended to the default completion-styles.
         ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
         completion-category-overrides '((file (styles . (partial-completion))) ;; partial-completion is tried first
-					                    ;; enable initialism by default for symbols
-					                    (command (styles +orderless-with-initialism))
-					                    (variable (styles +orderless-with-initialism))
-					                    (symbol (styles +orderless-with-initialism)))
+					                              ;; enable initialism by default for symbols
+					                              (command (styles +orderless-with-initialism))
+					                              (variable (styles +orderless-with-initialism))
+					                              (symbol (styles +orderless-with-initialism)))
         orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
         orderless-style-dispatchers '(+orderless-dispatch)))
 
@@ -2613,30 +2630,51 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
          ("C-c m" . consult-mode-command)
          ("C-c k" . consult-kmacro)
          ;; C-x bindings (ctl-x-map)
-         ("C-x b" . consult-buffer)
-         ("C-x C-b" . consult-buffer)
-         ("C-x C-d" . consult-dir)
-         ("C-x C-t" . consult-tramp)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
          ;; Other custom bindings
-         ("M-y" . consult-yank-pop)
-         ("<help> a" . consult-apropos)
-         ("s-f" . consult-line)
-         ("s-F" . zw/consult-line-multi)
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ("<help> a" . consult-apropos)            ;; orig. apropos-command
          ;; M-g bindings (goto-map)
-         ("M-g g" . consult-goto-line)
-         ("M-g o" . consult-outline)
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flycheck)               ;; Alternative: consult-flymake
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
          ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
          ;; M-s bindings (search-map)
          ("M-s d" . consult-find)
+         ("M-s D" . consult-locate)
          ("M-s g" . consult-grep)
-         ("M-s y" . consult-yasnippet)
-         ("M-s m" . consult-minor-mode-menu)
-         ("M-s f" . consult-flymake)
-         ("M-s s" . consult-flyspell)
-         (:map isearch-mode-map
-               ("M-s" . consult-isearch-history))
-         (:map minibuffer-local-completion-map
-               ("C-x C-d" . consult-dir)))
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
   :init
   (setq consult-preview-key "M-."
         register-preview-delay 0.5

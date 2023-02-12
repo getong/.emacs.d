@@ -69,7 +69,8 @@
          '(no-littering-var-directory
            no-littering-etc-directory
            (expand-file-name "elpa" user-emacs-directory)
-           (expand-file-name "cache" user-emacs-directory))))
+           (expand-file-name "straight" user-emacs-directory)
+           )))
   (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
   (unless (file-exists-p custom-file)  ;; 如果该文件不存在
     (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
@@ -88,7 +89,7 @@
   (when (fboundp 'startup-redirect-eln-cache)
     (startup-redirect-eln-cache
      (convert-standard-filename
-      (expand-file-name  "var/eln-cache/" user-emacs-directory))))
+      (no-littering-expand-var-file-name "eln-cache"))))
   ;; (setq recentf-max-menu-items 5)
   )
 
@@ -96,7 +97,7 @@
 (use-package transient
   :init
   ;; (setq transient-history nil)
-  (setq transient-history-file "~/.emacs.d/var/transient/history.el")
+  (setq transient-history-file  (no-littering-expand-var-file-name "transient/history.el"))
   :config
   ;; 执行 Mx outline-navigate 时，会出现一个菜单，你可以通过 p 和 n 键在 outline-mode（包括 org-mode！）中前进和后退，这个状态会一直持续到你停止它随着 Cg. 增加。
   (transient-define-prefix outline-navigate ()
@@ -161,7 +162,7 @@
   (setq vundo-roll-back-on-quit t)
   ;; 头部显示
   ;; (setq  vundo-window-side 'top)
-  (setq undohist-directory (expand-file-name "var/undohist" user-emacs-directory))
+  (setq undohist-directory (no-littering-expand-var-file-name "undohist"))
   (undohist-initialize)
   (defun my/vundo-diff ()
     (interactive)
@@ -2368,7 +2369,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 	          savehist-autosave-interval 300)
   :config
   ;; (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-  (setq savehist-file (concat user-emacs-directory "var/savehist")
+  (setq savehist-file (no-littering-expand-var-file-name "savehist")
         savehist-save-minibuffer-history 1
         )
   )
@@ -2400,9 +2401,9 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (setq recentf-max-saved-items 2000)
   ;;(setq recentf-max-menu-items 5000)
   (setq recentf-auto-cleanup 'never)  ;
-  (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker" (expand-file-name "var/undohist/*" user-emacs-directory)))
+  ;; (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker" (expand-file-name "var/undohist/*" user-emacs-directory)))
   ;; (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
-  (setq recentf-save-file "~/.emacs.d/var/recentf")
+  (setq recentf-save-file (no-littering-expand-var-file-name "recentf"))
   ;; (bind-key "C-c っ" 'helm-recentf)
   ;; (bind-key "C-c t" 'helm-recentf)
   (recentf-mode 1)
@@ -3833,6 +3834,75 @@ FACE defaults to inheriting from default and highlight."
   :hook
   (dashboard-after-initialize . which-key-posframe-mode)
   (dashboard-after-initialize . which-key-mode))
+
+(use-package awesome-pair
+  :straight (awesome-pair
+             :host github
+             :repo "manateelazycat/awesome-pair")
+  :defer t
+  :init
+  (progn
+    (dolist (hook (list
+                   'c-mode-common-hook
+                   'c-mode-hook
+                   'c++-mode-hook
+                   'java-mode-hook
+                   'haskell-mode-hook
+                   'emacs-lisp-mode-hook
+                   'lisp-interaction-mode-hook
+                   'lisp-mode-hook
+                   'maxima-mode-hook
+                   'ielm-mode-hook
+                   'sh-mode-hook
+                   'makefile-gmake-mode-hook
+                   'php-mode-hook
+                   'python-mode-hook
+                   'js-mode-hook
+                   'typescript-mode-hook
+                   'go-mode-hook
+                   'qml-mode-hook
+                   'jade-mode-hook
+                   'css-mode-hook
+                   'ruby-mode-hook
+                   'coffee-mode-hook
+                   'rust-mode-hook
+                   'qmake-mode-hook
+                   'lua-mode-hook
+                   'swift-mode-hook
+                   'json-mode-hook
+                   ))
+      (add-hook hook #'(lambda ()
+                         (require 'awesome-pair)
+                         (awesome-pair-mode 1)
+                         (show-paren-mode 1))
+                )))
+  :config
+  (define-key awesome-pair-mode-map (kbd "(") 'awesome-pair-open-round)
+  (define-key awesome-pair-mode-map (kbd "[") 'awesome-pair-open-bracket)
+  (define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly)
+  (define-key awesome-pair-mode-map (kbd ")") 'awesome-pair-close-round)
+  (define-key awesome-pair-mode-map (kbd "]") 'awesome-pair-close-bracket)
+  (define-key awesome-pair-mode-map (kbd "}") 'awesome-pair-close-curly)
+  (define-key awesome-pair-mode-map (kbd "=") 'awesome-pair-equal)
+
+  (define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-match-paren)
+  (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
+
+  (define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
+
+  (define-key awesome-pair-mode-map (kbd "M-o") 'awesome-pair-backward-delete)
+  (define-key awesome-pair-mode-map (kbd "C-d") 'awesome-pair-forward-delete)
+  (define-key awesome-pair-mode-map (kbd "C-k") 'awesome-pair-kill)
+
+  (define-key awesome-pair-mode-map (kbd "M-\"") 'awesome-pair-wrap-double-quote)
+  ;; (define-key awesome-pair-mode-map (kbd "M-[") 'awesome-pair-wrap-bracket)
+  (define-key awesome-pair-mode-map (kbd "M-{") 'awesome-pair-wrap-curly)
+  (define-key awesome-pair-mode-map (kbd "M-(") 'awesome-pair-wrap-round)
+  (define-key awesome-pair-mode-map (kbd "M-)") 'awesome-pair-unwrap)
+
+  (define-key awesome-pair-mode-map (kbd "M-p") 'awesome-pair-jump-right)
+  (define-key awesome-pair-mode-map (kbd "M-n") 'awesome-pair-jump-left)
+  (define-key awesome-pair-mode-map (kbd "M-:") 'awesome-pair-jump-out-pair-and-newline))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

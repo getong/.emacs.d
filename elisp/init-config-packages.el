@@ -2682,20 +2682,20 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
         xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
   (advice-add #'register-preview :override #'consult-register-window)
-  :when (executable-find "rga")
-  :bind (("M-s M-g" . consult-ripgrep-all))
-  :config
-  (defun consult--ripgrep-all (&optional dir initial)
-    "Search with `rga' for files in DIR where the content matches a regexp.
-  The initial input is given by the INITIAL argument. See `consult-grep'
-  for more details."
-    (interactive "P")
-    (consult--grep "Ripgrep-all" #'consult--ripgrep-make-builder dir initial))
-  (defun consult-ripgrep-all ()
-    ;; Bind to a key
-    (interactive)
-    (let ((consult-ripgrep-args "rga --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number ."))
-      (consult--ripgrep-all)))
+  ;; :when (executable-find "rga")
+  ;; :bind (("M-s M-g" . consult-ripgrep-all))
+  ;; :config
+  ;; (defun consult--ripgrep-all (&optional dir initial)
+  ;;   "Search with `rga' for files in DIR where the content matches a regexp.
+  ;; The initial input is given by the INITIAL argument. See `consult-grep'
+  ;; for more details."
+  ;;   (interactive "P")
+  ;;   (consult--grep "Ripgrep-all" #'consult--ripgrep-make-builder dir initial))
+  ;; (defun consult-ripgrep-all ()
+  ;;   ;; Bind to a key
+  ;;   (interactive)
+  ;;   (let ((consult-ripgrep-args "rga --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number ."))
+  ;;     (consult--ripgrep-all)))
   ;; Optionally configure the narrowing key.
   (setq consult-narrow-key "<" ;; (kbd "C-+")
         consult-line-numbers-widen t

@@ -1091,7 +1091,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   (setq doom-modeline-env-enable-python nil)
   (setq doom-modeline-height 15)
   (setq doom-modeline-project-detection 'projectile)
-  (setq doom-modeline-buffer-file-name-style nil)
+  (setq doom-modeline-buffer-file-name-style 'auto)
   :config
   (setq doom-modeline-battery nil)
   ;; (doom-modeline-mode 1)
@@ -3726,13 +3726,17 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 ;; 支持驼峰书写的光标移动
 ;;--------------------------------------------------------
 (use-package syntax-subword
-  :ensure nil
+  :ensure t
   :defer t
   :diminish syntax-subword-mode
+  :config
+  (global-syntax-subword-mode)
   :init
-  (add-hook 'prog-mode-hook 'syntax-subword-mode)
-  (add-hook 'org-mode-hook 'syntax-subword-mode)
-  (add-hook 'text-mode-hook 'syntax-subword-mode)
+  (setq syntax-subword-skip-spaces nil)
+  :hook
+  (prog-mode . syntax-subword-mode)
+  (org-mode . syntax-subword-mode)
+  (text-mode . syntax-subword-mode)
   )
 
 (use-package mmm-mode
@@ -3898,11 +3902,7 @@ deletion, or > if it is flagged for displaying."
 (use-package transpose-frame
   :bind ("C-x %". #'transpose-frame))
 
-(use-package syntax-subword
-  :ensure t
-  :init
-  (global-syntax-subword-mode)
-  (setq syntax-subword-skip-spaces nil))
+
 
 
 
@@ -3911,7 +3911,7 @@ deletion, or > if it is flagged for displaying."
   :diminish 'gcmh-mode
   :init
   (setq gcmh-idle-delay 5
-	    gcmh-high-cons-threshold (* 16 1024 1024))  ; 16mb
+	      gcmh-high-cons-threshold (* 16 1024 1024))  ; 16mb
   :config (gcmh-mode))
 
 (use-package recursion-indicator
@@ -4315,7 +4315,7 @@ FACE defaults to inheriting from default and highlight."
   (fset 'yes-or-no-p 'y-or-n-p)
   (global-auto-revert-mode 1)
   (column-number-mode 1)
-  (global-subword-mode 1)
+  ;; (global-subword-mode 1)
   (global-font-lock-mode 1)
   (delete-selection-mode 1)
   (prefer-coding-system       'utf-8)

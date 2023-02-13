@@ -2682,7 +2682,20 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
         xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
   (advice-add #'register-preview :override #'consult-register-window)
+  :when (executable-find "rga")
+  :bind (("M-s M-g" . consult-ripgrep-all))
   :config
+  (defun consult--ripgrep-all (&optional dir initial)
+    "Search with `rga' for files in DIR where the content matches a regexp.
+  The initial input is given by the INITIAL argument. See `consult-grep'
+  for more details."
+    (interactive "P")
+    (consult--grep "Ripgrep-all" #'consult--ripgrep-make-builder dir initial))
+  (defun consult-ripgrep-all ()
+    ;; Bind to a key
+    (interactive)
+    (let ((consult-ripgrep-args "rga --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number ."))
+      (consult--ripgrep-all)))
   ;; Optionally configure the narrowing key.
   (setq consult-narrow-key "<" ;; (kbd "C-+")
         consult-line-numbers-widen t
@@ -2692,8 +2705,15 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
         consult-async-input-debounce 0.1)
 
   ;; Preview consult commands
-  (consult-customize consult-goto-line :preview-key '(:debounce 0 any)
-                     consult-theme :preview-key '(:debounce 0.2 any))
+  ;; (consult-customize consult-goto-line :preview-key '(:debounce 0 any)
+  ;;                    consult-theme :preview-key '(:debounce 0.2 any))
+  (consult-customize
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult--source-buffer consult-recent-file consult-xref
+   consult--source-recent-file consult--source-project-recent-file
+   consult--source-bookmark consult--source-project-buffer
+   :preview-key (kbd "C-M-m")
+   consult-theme (list :debounce 1.0 (kbd "C-M-m")))
 
   ;; custom functions
   (defun zw/consult-line-multi ()
@@ -4176,9 +4196,9 @@ FACE defaults to inheriting from default and highlight."
 ;; Asynchronous Fuzzy Finder for Emacs
 (use-package affe
   :bind (("M-s M-f" . affe-find)
-	     ("M-s f"   . affe-find)
-	     ("M-s M-g" . affe-grep)
-	     ("M-s g"   . affe-grep)
+	       ("M-s f"   . affe-find)
+	       ;; ("M-s M-g" . affe-grep)
+	       ("M-s g"   . affe-grep)
          )
   :config
   (defun affe-orderless-regexp-compiler (input _type _ignorecase)

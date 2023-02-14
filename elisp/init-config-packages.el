@@ -2703,10 +2703,10 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
         consult-async-refresh-delay  0.15
         consult-async-input-throttle 0.2
         consult-async-input-debounce 0.1)
-
+  :config
   ;; Preview consult commands
   ;; (consult-customize consult-goto-line :preview-key '(:debounce 0 any)
-  ;;                    consult-theme :preview-key '(:debounce 0.2 any))
+  ;;                   consult-theme :preview-key '(:debounce 0.2 any))
   (consult-customize
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult--source-buffer consult-recent-file consult-xref
@@ -4195,10 +4195,11 @@ FACE defaults to inheriting from default and highlight."
 
 ;; Asynchronous Fuzzy Finder for Emacs
 (use-package affe
+  :after (consult)
   :bind (("M-s M-f" . affe-find)
-	       ("M-s f"   . affe-find)
-	       ;; ("M-s M-g" . affe-grep)
-	       ("M-s g"   . affe-grep)
+	 ("M-s f"   . affe-find)
+	 ;; ("M-s M-g" . affe-grep)
+	 ("M-s g"   . affe-grep)
          )
   :config
   (defun affe-orderless-regexp-compiler (input _type _ignorecase)
@@ -4208,7 +4209,8 @@ FACE defaults to inheriting from default and highlight."
         affe-regexp-function #'orderless-pattern-compiler
         affe-highlight-function #'orderless-highlight-matches)
   ;; Manual preview key for `affe-grep'
-  (consult-customize affe-find affe-grep :preview-key (kbd "C-x .")))
+  (consult-customize affe-find affe-grep :preview-key (kbd "C-x ."))
+  )
 
 (use-package which-key-posframe
   :custom
@@ -4343,6 +4345,49 @@ FACE defaults to inheriting from default and highlight."
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
   (add-to-list 'default-frame-alist '(tty-color-mode . -1)))
+
+
+;;;; Buffers and Tabs
+;; https://github.com/alphapapa/bufler.el
+;;
+;; Why this instead of Centaur Tabs?  `bufler' integrates with `tab-bar-mode'
+;; and `tab-lines-mode'.  Why is this important?  Because `centaur-tabs-mode'
+;; hack the buffer to add the tabs; the impact was that popped buffers would
+;; have sizing issues.
+(use-package bufler
+  :straight t
+  :hook (after-init . (bufler-mode))
+  :custom (bufler-columns '("Name" "VC" "Path"))
+  :config
+  (defun jf/bufler/tab-configuration ()
+    (bufler-tabs-mode 1)
+    (tab-bar-mode -1)
+    (bufler-workspace-tabs))
+  (setq tab-line-switch-cycling t)
+  (defun jf/bufler-workspace-mode-lighter ()
+    "Return the lighter string mode line."
+    "Bflr")
+  (advice-add #'bufler-workspace-mode-lighter
+	      :override #'jf/bufler-workspace-mode-lighter
+	      '((name . "wrapper")))
+  ;; Ensuring that when I make a selection, it closes the bufler buffer.
+  (defun jf/bufler-list-buffer-switch (&rest args)
+    (kill-buffer "*Bufler*"))
+  (advice-add 'bufler-list-buffer-switch :after 'jf/bufler-list-buffer-switch)
+
+  :bind (:map bufler-list-mode-map
+	      ("s-3" . quit-window)
+	      ("s-\\" . quit-window))
+  :bind
+  ;;(("s-3" . bufler-switch-buffer)
+  ;;	 ("s-\\" . bufler-sidebar)
+  ;; ("s-\\" . jf/tab-bar-switch-prompt-for-tab)
+  ;; ("s-]" . tab-line-switch-to-next-tab)
+  ;; ("s-}" . tab-line-switch-to-next-tab)
+  ;; ("s-[" . tab-line-switch-to-prev-tab)
+  ;; ("s-{" . tab-line-switch-to-prev-tab)
+  ;;	 )
+  )
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

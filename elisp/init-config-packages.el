@@ -1357,7 +1357,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
       ))
    ((string-equal system-type "darwin") ; Mac OS X
     (progn
-      (setq trash-directory (expand-file-name "~/.Trash"))  ;; fallback for `move-file-to-trash'
+      (setq trash-directory (expand-file-name "~/.local/share/Trash"))  ;; fallback for `move-file-to-trash'
       ))
    ((string-equal system-type "gnu/linux") ; linux
     (progn

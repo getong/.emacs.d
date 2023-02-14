@@ -263,6 +263,8 @@
     ;; vterm 模式下禁用emojify-mode
     (emojify-mode -1)
     (setq-local global-hl-line-mode nil)
+    (turn-off-smartparens-strict-mode)
+    (turn-off-smartparens-mode)
     )
   :hook
   (vterm-mode . turn-off-chrome)
@@ -1123,10 +1125,15 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 
 
 ;; copy from [Highlight current active window](https://stackoverflow.com/questions/33195122/highlight-current-active-window)
+;; auto dim / dimmer
 (use-package auto-dim-other-buffers
   :ensure t
+  :diminish auto-dim-other-buffers-mode
+  :init (add-hook 'after-init-hook (lambda ()
+                                     (when (fboundp 'auto-dim-other-buffers-mode)
+                                       (auto-dim-other-buffers-mode t))))
   :config
-  (auto-dim-other-buffers-mode))
+  (set-face-attribute 'auto-dim-other-buffers-face nil :background "#42444C"))
 
 (use-package unicode-fonts
   :ensure t
@@ -3130,7 +3137,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package nyan-mode
   :ensure t
   :init
-  (setq nyan-animate-nyancat t)
+  (setq nyan-animate-nyancat nil)
   (setq nyan-wavy-trail t)
   (setq nyan-minimum-window-width 80)
   (setq nyan-bar-length 20)

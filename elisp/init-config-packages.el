@@ -1206,21 +1206,21 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   :after tree-sitter)
 
 
-(defun my/format-sql ()
-  "Format active region otherwise format the entire buffer."
-  (interactive)
-  (if (region-active-p)
-      (sql-format-region (region-beginning) (region-end))
-    (sql-format-buffer)))
+;; (defun my/format-sql ()
+;;   "Format active region otherwise format the entire buffer."
+;;   (interactive)
+;;   (if (region-active-p)
+;;       (sql-format-region (region-beginning) (region-end))
+;;     (sql-format-buffer)))
 
-(with-eval-after-load 'sql
-  (add-hook 'sql-mode-hook 'flymake-sqlfluff-load)
-  (add-hook 'sql-mode-hook 'flymake-mode)
-  (define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
+;; (with-eval-after-load 'sql
+;;   (add-hook 'sql-mode-hook 'flymake-sqlfluff-load)
+;;   (add-hook 'sql-mode-hook 'flymake-mode)
+;;   (define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
 
 ;; SQL linter using sqlfluff
-(use-package flymake-sqlfluff
-  :ensure t)
+;; (use-package flymake-sqlfluff
+;;   :ensure t)
 
 ;; Org tree slide
 (use-package hide-mode-line
@@ -1945,7 +1945,7 @@ Get it from:  <http://hasseg.org/trash/>"
    ;; Symbol highlighting
    lsp-enable-symbol-highlighting t
    lsp-print-io nil
-   lsp-prefer-flymake :none
+   ;; lsp-prefer-flymake :none
    flycheck-checker-error-threshold 10000
    lsp-ui-flycheck-enable t
    lsp-ui-flycheck-list-position 'right
@@ -4178,9 +4178,9 @@ FACE defaults to inheriting from default and highlight."
         ;; 隔壁窗口向上翻一行
         ("C-x l u" . watch-other-window-down-line)
         ;; 隔壁窗口向上翻一屏
-        ("C-x w u" . watch-other-window-up)
+        ("C-x w d" . watch-other-window-up)
         ;; 隔壁窗口向下翻一屏
-        ("C-x w d" . watch-other-window-down)
+        ("C-x w u" . watch-other-window-down)
         ;; (define-key evil-motion-state-map (kbd "C-j") #'watch-other-window-up-line)
         ;; (define-key evil-motion-state-map (kbd "C-k") #'watch-other-window-down-line)
         ;; (define-key evil-motion-state-map (kbd "M-j") #'watch-other-window-up)

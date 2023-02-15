@@ -1386,6 +1386,7 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; 基于 Dired 的极简、一站式文件管理器
 (use-package dirvish
   :hook
+  ;; Let Dirvish take over Dired globally
   (after-init . dirvish-override-dired-mode)
   :custom
   (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
@@ -1430,6 +1431,10 @@ Get it from:  <http://hasseg.org/trash/>"
         ;; make header line span all panes
         dirvish-use-header-line 'global
         dirvish-side-window-parameters nil
+        dired-recursive-copies 'always
+        dired-recursive-deletes 'always
+        ;; don't hide any files
+        dired-omit-files nil
         )
   (set-face-attribute 'dirvish-hl-line nil
                       :foreground (face-attribute 'diredfl-flag-mark :foreground)
@@ -1457,6 +1462,9 @@ Get it from:  <http://hasseg.org/trash/>"
    ("M-e" . dirvish-emerge-menu)
    ("M-j" . dirvish-fd-jump)))
 
+(use-package dirvish-side :ensure nil :after dirvish)
+(use-package dirvish-vc :ensure nil :after (magit dirvish))
+(use-package dirvish-extras :ensure nil :after dirvish)
 
 
 ;; Tramp should default to the sshx mode.
@@ -1595,14 +1603,14 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; 在搜索中删除字符会回退搜索结果，而不是停在当前位置将最后一个搜 索字符删除。这里可以通过remap isearch-delete-char来实现。
 ;; 还可以将搜索结果保持在高亮状态以方便肉眼识别。这个是通过设置 lazy-highlight-cleanup为nil实现的。
 ;; 去除高亮状态需要人工M-x调用 lazy-highlight-cleanup。
-(use-package isearch
-  :ensure nil
-  :bind (:map isearch-mode-map
-              ([remap isearch-delete-char] . isearch-del-char))
-  :custom
-  (isearch-lazy-count t)
-  (lazy-count-prefix-format "%s/%s ")
-  (lazy-highlight-cleanup nil))
+;; (use-package isearch
+;;   :ensure nil
+;;   :bind (:map isearch-mode-map
+;;               ([remap isearch-delete-char] . isearch-del-char))
+;;   :custom
+;;   (isearch-lazy-count t)
+;;   (lazy-count-prefix-format "%s/%s ")
+;;   (lazy-highlight-cleanup nil))
 
 ;; 打开这个 mode 以后就能正确地处理驼峰命名中的单词了。
 ;; (use-package subword
@@ -2631,8 +2639,10 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 
 (use-package consult
-  :demand
+  ;; :demand
   :bind (;; C-c bindings (mode-specific-map)
+         ("C-s" . consult-line)
+         ("C-r" . consult-line)
          ("C-c h" . consult-history)
          ("C-c m" . consult-mode-command)
          ("C-c k" . consult-kmacro)
@@ -2674,6 +2684,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
          ;; Isearch integration
          ("M-s e" . consult-isearch-history)
          :map isearch-mode-map
+         ("C-s" . consult-line)
          ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
          ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
          ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
@@ -4179,20 +4190,21 @@ FACE defaults to inheriting from default and highlight."
   ;; :init
   ;; (require 'watch-other-window)
   :bind
-  (:map prog-mode-map
-        ;; 隔壁窗口向下翻一行
-        ("C-x l d" . watch-other-window-up-line)
-        ;; 隔壁窗口向上翻一行
-        ("C-x l u" . watch-other-window-down-line)
-        ;; 隔壁窗口向上翻一屏
-        ("C-x w d" . watch-other-window-up)
-        ;; 隔壁窗口向下翻一屏
-        ("C-x w u" . watch-other-window-down)
-        ;; (define-key evil-motion-state-map (kbd "C-j") #'watch-other-window-up-line)
-        ;; (define-key evil-motion-state-map (kbd "C-k") #'watch-other-window-down-line)
-        ;; (define-key evil-motion-state-map (kbd "M-j") #'watch-other-window-up)
-        ;; (define-key evil-motion-state-map (kbd "M-k") #'watch-other-window-down)
-        ))
+  ;; (:map prog-mode-map
+  ;; 隔壁窗口向下翻一行
+  ("C-x 6 d" . watch-other-window-up-line)
+  ;; 隔壁窗口向上翻一行
+  ("C-x 6 u" . watch-other-window-down-line)
+  ;; 隔壁窗口向上翻一屏
+  ("C-x 7 d" . watch-other-window-up)
+  ;; 隔壁窗口向下翻一屏
+  ("C-x 7 u" . watch-other-window-down)
+  ;; (define-key evil-motion-state-map (kbd "C-j") #'watch-other-window-up-line)
+  ;; (define-key evil-motion-state-map (kbd "C-k") #'watch-other-window-down-line)
+  ;; (define-key evil-motion-state-map (kbd "M-j") #'watch-other-window-up)
+  ;; (define-key evil-motion-state-map (kbd "M-k") #'watch-other-window-down)
+  ;; )
+  )
 
 (use-package vc-svn
   :ensure    dsvn

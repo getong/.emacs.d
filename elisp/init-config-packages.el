@@ -1467,6 +1467,10 @@ Get it from:  <http://hasseg.org/trash/>"
 (use-package dirvish-extras :ensure nil :after dirvish)
 
 
+;; C-x C-f /method:user@host:path/to/file
+;; /sshx:vagrant@192.168.31.92:/etc/hosts
+;; C-x C-f /ssh:bird@bastion|ssh:admin@production:/path
+;; C-x C-f /ssh:you@remotehost|sudo::/path RET
 ;; Tramp should default to the sshx mode.
 (use-package tramp
   ;; :commands tramp

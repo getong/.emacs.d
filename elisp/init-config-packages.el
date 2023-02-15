@@ -4347,6 +4347,8 @@ FACE defaults to inheriting from default and highlight."
   ;; (global-subword-mode 1)
   (global-font-lock-mode 1)
   (delete-selection-mode 1)
+  (global-hi-lock-mode -1)
+  (setq-default bidi-display-reordering nil)
   (prefer-coding-system       'utf-8)
   (set-default-coding-systems 'utf-8)
   (set-terminal-coding-system 'utf-8)
@@ -4375,16 +4377,16 @@ FACE defaults to inheriting from default and highlight."
     "Return the lighter string mode line."
     "Bflr")
   (advice-add #'bufler-workspace-mode-lighter
-	      :override #'jf/bufler-workspace-mode-lighter
-	      '((name . "wrapper")))
+	            :override #'jf/bufler-workspace-mode-lighter
+	            '((name . "wrapper")))
   ;; Ensuring that when I make a selection, it closes the bufler buffer.
   (defun jf/bufler-list-buffer-switch (&rest args)
     (kill-buffer "*Bufler*"))
   (advice-add 'bufler-list-buffer-switch :after 'jf/bufler-list-buffer-switch)
 
   :bind (:map bufler-list-mode-map
-	      ("s-3" . quit-window)
-	      ("s-\\" . quit-window))
+	            ("s-3" . quit-window)
+	            ("s-\\" . quit-window))
   :bind
   ;;(("s-3" . bufler-switch-buffer)
   ;;	 ("s-\\" . bufler-sidebar)
@@ -4394,6 +4396,28 @@ FACE defaults to inheriting from default and highlight."
   ;; ("s-[" . tab-line-switch-to-prev-tab)
   ;; ("s-{" . tab-line-switch-to-prev-tab)
   ;;	 )
+  )
+
+(use-package color-rg
+  :straight (:host github :repo "manateelazycat/color-rg")
+  :commands (color-rg-search-input color-rg-search-project color-rg-search-symbol-in-project)
+
+  :custom
+  (color-rg-search-no-ignore-file nil)
+  (color-rg-mac-load-path-from-shell nil)
+  :config
+  (custom-set-faces
+   `(color-rg-font-lock-header-line-text ((t (:foreground ,(doom-color 'base7)))))
+   `(color-rg-font-lock-header-line-keyword ((t (:foreground ,(doom-color 'red)))))
+   `(color-rg-font-lock-header-line-directory ((t (:foreground ,(doom-color 'blue)))))
+   `(color-rg-font-lock-header-line-edit-mode ((t (:foreground ,(doom-color 'magenta)))))
+   `(color-rg-font-lock-command ((t (:background ,(doom-color 'modeline-bg) :foreground ,(doom-color 'comments)))))
+   `(color-rg-font-lock-file ((t (:foreground ,(doom-color 'blue)))))
+   `(color-rg-font-lock-line-number ((t (:foreground ,(doom-color 'comments)))))
+   `(color-rg-font-lock-column-number ((t (:foreground ,(doom-color 'comments)))))
+   `(color-rg-font-lock-match ((t (:foreground ,(doom-color 'red))))))
+  :if (executable-find "rg")
+  :bind ("C-M-s" . color-rg-search-input)
   )
 
 (provide 'init-config-packages)

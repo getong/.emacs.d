@@ -2805,7 +2805,17 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (setq recentf-max-saved-items 2000
         ;;(setq recentf-max-menu-items 5000)
         recentf-auto-cleanup 'never
-        recentf-exclude '(no-littering-var-directory no-littering-etc-directory (expand-file-name "elpa" user-emacs-directory) (expand-file-name "straight" user-emacs-directory) "/tmp" "COMMIT_EDITMSG" "sync-recentf-marker")
+        recentf-exclude '(no-littering-var-directory
+                          no-littering-etc-directory
+                          (expand-file-name "elpa" user-emacs-directory)
+                          (expand-file-name "straight" user-emacs-directory)
+                          "/tmp"
+                          "sync-recentf-marker"
+                          `(,tramp-file-name-regexp
+                            "COMMIT_EDITMSG")
+                          tramp-auto-save-directory temporary-file-directory
+                          backup-directory-alist (list (cons tramp-file-name-regexp nil))
+                          )
         ;; (setq recentf-exclude '("/recentf" "COMMIT_EDITMSG" "/.?TAGS" "^/sudo:" "/\\.emacs\\.d/games/*-scores" "/\\.emacs\\.d/\\.cask/"  "~$" "^/ftp:" "^/ssh:" "sync-recentf-marker" (expand-file-name "var/undohist/*" user-emacs-directory)))
         ;; (setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))
         recentf-save-file (no-littering-expand-var-file-name "recentf"))
@@ -2875,13 +2885,22 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   ;; Content is not centered by default. To center, set
   (setq dashboard-center-content t)
   (setq dashboard-items '((recents  . 20)   ;; 显示多少个最近文件
-			              (bookmarks . 10)  ;; 显示多少个最近书签
-			              (projects . 12) ;; 显示多少个最近项目
+			                    (bookmarks . 10)  ;; 显示多少个最近书签
+			                    (projects . 12) ;; 显示多少个最近项目
                           (agenda . 5)
                           ))
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
   (setq dashboard-set-navigator t)
+  ;;跳过远端项目，不要持久化保存
+  ;; copy from https://zhuanlan.zhihu.com/p/488366338
+  (defun my/project-remember-advice (fn pr &optional no-write)
+    (let* ((remote? (file-remote-p (project-root pr)))
+           (no-write (if remote? t no-write)))
+      (funcall fn pr no-write)))
+
+  (advice-add 'project-remember-project :around
+              'my/project-remember-advice)
   )
 
 

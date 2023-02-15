@@ -1469,7 +1469,7 @@ Get it from:  <http://hasseg.org/trash/>"
 
 ;; Tramp should default to the sshx mode.
 (use-package tramp
-  :commands tramp
+  ;; :commands tramp
   :config
   ;; Enable full-featured Dirvish over TRAMP on certain connections
   ;; https://www.gnu.org/software/tramp/#Improving-performance-of-asynchronous-remote-processes-1.
@@ -4431,6 +4431,20 @@ FACE defaults to inheriting from default and highlight."
   :if (executable-find "rg")
   :bind ("C-M-s" . color-rg-search-input)
   )
+
+(use-package wgrep-ag :ensure t :defer t)
+
+;; docker tramp
+(use-package docker-tramp
+  :if (executable-find "docker")
+  :ensure t)
+
+(use-package vagrant
+  :if (executable-find "vagrant")
+  :ensure t)
+(use-package vagrant-tramp
+  :if (executable-find "vagrant")
+  :ensure t)
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

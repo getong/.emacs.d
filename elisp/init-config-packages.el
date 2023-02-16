@@ -2704,38 +2704,21 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
          ("M-r" . consult-history))                ;; orig. previous-matching-history-element
   :init
+  (advice-add #'register-preview :override #'consult-register-window)
+  :config
   (setq
    consult-preview-key  nil
    register-preview-delay 0.5
    register-preview-function #'consult-register-format
    xref-show-xrefs-function #'consult-xref
-   xref-show-definitions-function #'consult-xref)
-  (advice-add #'register-preview :override #'consult-register-window)
-  ;; :when (executable-find "rga")
-  ;; :bind (("M-s M-g" . consult-ripgrep-all))
-  ;; :config
-  ;; (defun consult--ripgrep-all (&optional dir initial)
-  ;;   "Search with `rga' for files in DIR where the content matches a regexp.
-  ;; The initial input is given by the INITIAL argument. See `consult-grep'
-  ;; for more details."
-  ;;   (interactive "P")
-  ;;   (consult--grep "Ripgrep-all" #'consult--ripgrep-make-builder dir initial))
-  ;; (defun consult-ripgrep-all ()
-  ;;   ;; Bind to a key
-  ;;   (interactive)
-  ;;   (let ((consult-ripgrep-args "rga --null --line-buffered --color=never --max-columns=1000 --path-separator /   --smart-case --no-heading --line-number ."))
-  ;;     (consult--ripgrep-all)))
-  ;; Optionally configure the narrowing key.
-  (setq consult-narrow-key "<" ;; (kbd "C-+")
-        consult-line-numbers-widen t
-        consult-async-min-input 2
-        consult-async-refresh-delay  0.15
-        consult-async-input-throttle 0.2
-        consult-async-input-debounce 0.1)
-  :config
-  ;; Preview consult commands
-  ;; (consult-customize consult-goto-line :preview-key '(:debounce 0 any)
-  ;;                   consult-theme :preview-key '(:debounce 0.2 any))
+   xref-show-definitions-function #'consult-xref
+   ;; Optionally configure the narrowing key.m
+   consult-narrow-key "<" ;; (kbd "C-+")
+   consult-line-numbers-widen t
+   consult-async-min-input 2
+   consult-async-refresh-delay  0.15
+   consult-async-input-throttle 0.2
+   consult-async-input-debounce 0.1)
   (consult-customize
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult--source-buffer consult-recent-file consult-xref

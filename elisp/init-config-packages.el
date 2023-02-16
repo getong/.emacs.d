@@ -1062,9 +1062,9 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
     "Keycast mode"
     :global t
     (if keycast-mode
-	    (progn
-	      (add-to-list 'global-mode-string '("" keycast-mode-line " "))
-	      (add-hook 'pre-command-hook 'keycast--update t) )
+	(progn
+	  (add-to-list 'global-mode-string '("" keycast-mode-line " "))
+	  (add-hook 'pre-command-hook 'keycast--update t) )
       (remove-hook 'pre-command-hook 'keycast--update)
       (setq global-mode-string (delete '("" keycast-mode-line " ") global-mode-string)))))
 ;; 在后面，上面在前面
@@ -1081,9 +1081,13 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 ;;       (add-hook 'pre-command-hook 'keycast--update t)
 ;;       (message "Keycast ON"))))
 
+(use-package shrink-path
+  :ensure t)
 
 ;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
 (use-package doom-modeline
+  :straight
+  (doom-modeline :type git :host github :repo "seagle0128/doom-modeline")
   :ensure t
   :defer t
   :init
@@ -2612,6 +2616,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :ensure t
 
   :bind
+  (:map minibuffer-mode-map
+        ("M-o" . embark-export))
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
@@ -2632,12 +2638,12 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
   :ensure t ; only need to install it, embark loads it after consult if found
-  :after (embark consult)
+  ;; :after (embark consult)
   :demand t ; only necessary if you have the hook below
   ;; if you want to have consult previews as you move around an
   ;; auto-updating embark collect buffer
   :hook
-  (embark-collect-mode . consult-preview-at-point-mode)
+  ;; (embark-collect-mode . consult-preview-at-point-mode)
   (embark-collect-mode . embark-consult-preview-minor-mode)
   )
 
@@ -2698,11 +2704,12 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
          ("M-r" . consult-history))                ;; orig. previous-matching-history-element
   :init
-  (setq consult-preview-key "M-."
-        register-preview-delay 0.5
-        register-preview-function #'consult-register-format
-        xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+  (setq
+   consult-preview-key  nil
+   register-preview-delay 0.5
+   register-preview-function #'consult-register-format
+   xref-show-xrefs-function #'consult-xref
+   xref-show-definitions-function #'consult-xref)
   (advice-add #'register-preview :override #'consult-register-window)
   ;; :when (executable-find "rga")
   ;; :bind (("M-s M-g" . consult-ripgrep-all))
@@ -2751,7 +2758,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :commands consult-tramp
   :straight
   (consult-tramp :type git :host github :repo "Ladicle/consult-tramp")
-  :init (setq consult-tramp-method "ssh"))
+  :init (setq consult-tramp-method "sshx"))
 (use-package consult-flyspell
   :commands consult-flyspell)
 
@@ -3537,6 +3544,9 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 (use-package wgrep
   :after (embark-consult ripgrep)
+  :config
+  (setq wgrep-auto-save-buffer t
+        wgrep-change-readonly-file t)
   :bind (:map wgrep-mode-map
 		      ;; Added keybinding to echo Magit behavior
 		      ("C-c C-c" . save-buffer)
@@ -3557,8 +3567,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (add-hook 'my-completion-ui-mode-hook
    	        (lambda ()
    	          (setq completion-in-region-function
-   		            (kind-icon-enhance-completion
-   		             completion-in-region-function)))))
+   		              (kind-icon-enhance-completion
+   		               completion-in-region-function)))))
 
 (use-package pulsar
   :config

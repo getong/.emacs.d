@@ -1155,7 +1155,14 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 
 ;; copy fromhttps://devbins.github.io/post/emacs_flutter/
 (use-package lsp-dart
-  :init (setq lsp-dart-sdk-dir (concat (file-name-directory (file-truename (executable-find "flutter"))) "cache/dart-sdk"))
+  :ensure t
+  :after dap-mode
+  :init
+  (setq lsp-dart-sdk-dir (concat (file-name-directory (file-truename (executable-find "flutter"))) "cache/dart-sdk"))
+  (dap-register-debug-template "Flutter :: Custom debug"
+                               (list :flutterPlatform "x86_64"
+                                     :program "lib/main_debug.dart"
+                                     :args '("--flavor" "customer_a")))
   :hook (dart-mode . lsp))
 
 (use-package dart-mode
@@ -1178,6 +1185,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   (with-eval-after-load "projectile"
     (add-to-list 'projectile-project-root-files-bottom-up "pubspec.yaml")
     (add-to-list 'projectile-project-root-files-bottom-up "BUILD"))
+  :hook (dart-mode . flutter-test-mode)
   )
 
 ;; copy from https://devbins.github.io/post/emacs_flutter/

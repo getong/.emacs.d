@@ -1180,6 +1180,16 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
     (add-to-list 'projectile-project-root-files-bottom-up "BUILD"))
   )
 
+;; copy from https://devbins.github.io/post/emacs_flutter/
+;; 编写好代码之后按下 M-x 输入 flutter-run 或 flutter-run-or-hot-reload 运行项目
+;; 也可以使用快捷键 C-M-x 来启动项目。
+;; 项目启动后会开启一个 *Flutter* 的 buffer ，在这里你可以做如下操作
+;; r Hot reload. 🔥🔥🔥
+;; R Hot restart.
+;; h List all available interactive commands.
+;; d Detach (terminate “flutter run” but leave application running).
+;; c Clear the screen
+;; q Quit (terminate the application on the device).
 (use-package flutter
   :ensure t
   :after dart-mode
@@ -2718,7 +2728,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
    consult-async-min-input 2
    consult-async-refresh-delay  0.15
    consult-async-input-throttle 0.2
-   consult-async-input-debounce 0.1)
+   consult-async-input-debounce 0.1
+   consult-project-root-function #'projectile-project-root)
   (consult-customize
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult--source-buffer consult-recent-file consult-xref

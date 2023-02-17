@@ -1167,6 +1167,8 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
 
 (use-package dart-mode
   :ensure t
+  :mode
+  ("\\.dart\\'" . dart-mode)
   :defines (projectile-project-root-files-bottom-up)
   :if (or (executable-find "dart") (executable-find "flutter"))
   :bind (:map dart-mode-map
@@ -1181,7 +1183,7 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
     "Execute the code of the current file."
     (interactive)
     (compile (format "dart %s" (buffer-file-name))))
-  (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions)
+  ;; (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions)
   (with-eval-after-load "projectile"
     (add-to-list 'projectile-project-root-files-bottom-up "pubspec.yaml")
     (add-to-list 'projectile-project-root-files-bottom-up "BUILD"))
@@ -1491,8 +1493,8 @@ Get it from:  <http://hasseg.org/trash/>"
 
 ;; C-x C-f /method:user@host:path/to/file
 ;; /sshx:vagrant@192.168.31.92:/etc/hosts
-;; C-x C-f /ssh:bird@bastion|ssh:admin@production:/path
-;; C-x C-f /ssh:you@remotehost|sudo::/path RET
+;; C-x C-f /sshx:bird@bastion|ssh:admin@production:/path
+;; C-x C-f /sshx:you@remotehost|sudo::/path RET
 ;; Tramp should default to the sshx mode.
 (use-package tramp
   ;; :commands tramp
@@ -2521,18 +2523,20 @@ Get it from:  <http://hasseg.org/trash/>"
   :config
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-  ;; use vertico as the interface for completion-at-point
-  (setq completion-in-region-function
+        '(read-only t cursor-intangible t face minibuffer-prompt)
+        ;; Sort directories before files (vertico-multiform-mode)
+        vertico-multiform-categories
+        '((file (vertico-sort-function . sort-directories-first)))
+        ;; use vertico as the interface for completion-at-point
+        completion-in-region-function
         (lambda (&rest args)
           (apply (if vertico-mode
                      #'consult-completion-in-region
                    #'completion--in-region)
-                 args)))
-  ;; Sort directories before files (vertico-multiform-mode)
-  (setq vertico-multiform-categories
-        '((file (vertico-sort-function . sort-directories-first))))
+                 args))
+        vterm-timer-delay 0.01
+        )
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   (defun sort-directories-first (files)
     (setq files (vertico-sort-history-length-alpha files))
     (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
@@ -4412,6 +4416,7 @@ FACE defaults to inheriting from default and highlight."
 ;; have sizing issues.
 (use-package bufler
   :straight t
+  :diminish
   :hook (after-init . (bufler-mode))
   :custom (bufler-columns '("Name" "VC" "Path"))
   :config

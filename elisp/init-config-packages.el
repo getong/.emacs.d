@@ -929,8 +929,12 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
   (reformatter-define xml-format
     :program "xmlformat"
     :group 'xml)
+  ;; Dart format
+  (reformatter-define dart-format
+    :program "dart"
+    :args '("format")
+    :group 'dart)
   )
-
 
 
 ;;  rainbow-delimiters 可以将对称的括号用同一种颜色标记出来。
@@ -1175,10 +1179,6 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
               ("C-c C-f" . dart-format-buffer)
               ("C-c C-c" . my/dart-run-file))
   :config
-  (reformatter-define dart-format
-    :program "dart"
-    :args '("format")
-    :group 'dart)
   (defun my/dart-run-file ()
     "Execute the code of the current file."
     (interactive)
@@ -1618,9 +1618,26 @@ Get it from:  <http://hasseg.org/trash/>"
              (rust-mode "{" "}" "/[*/]" nil nil)))))
 
 ;; 当打开一个具有长行的文件时，它会自动检测并将一些可能导致严重性能的 mode 关闭， 如 syntax highlight。
+;; Solong mode
+;; improves performance in large files by disabling some modes
 (use-package so-long
-  :ensure nil
-  :config (global-so-long-mode 1))
+  :hook (prog-mode . global-so-long-mode)
+  :config
+  (setq so-long-threshold 400)
+  ;; don't disable font-lock-mode, line-number-mode and don't make buffer read only
+  (delq 'font-lock-mode so-long-minor-modes)
+  (delq 'display-line-numbers-mode so-long-minor-modes)
+  (delq 'buffer-read-only so-long-variable-overrides)
+  ;; reduce the level of syntax highlighting
+  (add-to-list 'so-long-variable-overrides '(font-lock-maximum-decoration . 1))
+  ;; disable save-place in large files
+  (add-to-list 'so-long-variable-overrides '(save-place-alist . nil))
+  ;; disable these
+  (append so-long-minor-modes
+          '(eldoc-mode
+            auto-composition-mode
+            undo-tree-mode
+            hl-fill-column-mode)))
 
 ;; 有时候Emacs里打开的文件可能被外部修改，启用autorevert的话可以自动更新对应的 buffer.
 (use-package autorevert
@@ -4485,6 +4502,15 @@ FACE defaults to inheriting from default and highlight."
 (use-package vagrant-tramp
   :if (executable-find "vagrant")
   :ensure t)
+
+(use-package sql
+  :mode (("\\.sql\\'" . sql-mode))
+  )
+
+(use-package sqlformat
+  :custom
+  (sqlformat-args '("-g"))
+  (sqlformat-command 'pgformatter))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

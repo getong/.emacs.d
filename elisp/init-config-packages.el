@@ -1505,10 +1505,21 @@ Get it from:  <http://hasseg.org/trash/>"
                (list (regexp-quote "/ssh:YOUR_HOSTNAME:")
                      "direct-async-process" t))
   ;; Tips to speed up connections
-  (setq tramp-verbose 0
+  (setq tramp-verbose 6
         tramp-chunksize 2000
         tramp-use-ssh-controlmaster-options nil
         tramp-default-method "sshx"
+        ;; Skip looking for dir-local on remote system to speed up tramp.
+        enable-remote-dir-locals nil
+        ;; Preserve PATH on remote host.
+        tramp-remote-path (delete 'tramp-default-remote-path tramp-remote-path)
+        remote-file-name-inhibit-cache 120
+        tramp-auto-save-directory (no-littering-expand-var-file-name "tramp-autosave")
+        tramp-persistency-file-name (no-littering-expand-var-file-name "tramp")
+        vc-ignore-dir-regexp (format "%s\\|%s\\|%s"
+                                     vc-ignore-dir-regexp
+                                     tramp-file-name-regexp
+                                     "[/\\\\]node_modules")
         )
   )
 

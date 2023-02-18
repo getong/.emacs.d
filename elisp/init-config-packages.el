@@ -1495,6 +1495,9 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; /sshx:vagrant@192.168.31.92:/etc/hosts
 ;; C-x C-f /sshx:bird@bastion|ssh:admin@production:/path
 ;; C-x C-f /sshx:you@remotehost|sudo::/path RET
+;; /ssh:username@hostname#port:/path/to/file
+;; /ssh:tarou@remotehost#10022:~/
+;; /ssh:username@hostname|sudo:usename:/path/to/file
 ;; Tramp should default to the sshx mode.
 (use-package tramp
   ;; :commands tramp

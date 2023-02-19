@@ -821,6 +821,22 @@ Version: 2018-08-02 2022-05-18"
           (t (user-error "Your 3rd argument 「%s」 isn't valid" ToDirection)))
          t t))
       (put 'xah-convert-fullwidth-chars 'state $stateAfter)))
+
+  ;; 全角转半角 M-x translate-region chunyang-fullwidth-to-halfwidth
+  ;; 半角转全角 M-x translate-region chunyang-halfwidth-to-fullwidth
+  (define-translation-table 'chunyang-fullwidth-to-halfwidth
+    (let ((table (make-char-table 'translation-table)))
+      (cl-loop for fullwidth from #xFF01 to #xFF5E
+               for halfwidth from #x21 to #x7E
+               do (aset table fullwidth halfwidth))
+      table))
+
+  (define-translation-table 'chunyang-halfwidth-to-fullwidth
+    (let ((table (make-char-table 'translation-table)))
+      (cl-loop for fullwidth from #xFF01 to #xFF5E
+               for halfwidth from #x21 to #x7E
+               do (aset table halfwidth fullwidth))
+      table))
   )
 
 ;; Copy from https://www.danielde.dev/blog/emacs-for-swift-development
@@ -4204,6 +4220,7 @@ deletion, or > if it is flagged for displaying."
   (kele-mode 1))
 
 ;; paredit-mode 启用自动补全括号
+;; https://mumble.net/~campbell/emacs/paredit.html
 ;; 再一次paredit-mode 禁用自动补全括号
 ;; (use-package paredit
 ;;   :ensure t

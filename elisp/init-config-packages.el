@@ -4850,5 +4850,16 @@ FACE defaults to inheriting from default and highlight."
   :straight (hydra-posframe :type git :host github :repo "Ladicle/hydra-posframe")
   :hook (after-init . hydra-posframe-enable))
 
+;; Goggles highlights the modified region using pulse.
+;; Currently the commands undo, yank, kill and delete are supported.
+(use-package goggles
+  :ensure t
+  :hook ((prog-mode text-mode) . goggles-mode)
+  :config
+  (setq goggles-pulse-delay 0.5)
+  (setq-default goggles-pulse t) ;; set to nil to disable pulsing
+  )
+
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

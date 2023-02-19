@@ -4887,5 +4887,45 @@ FACE defaults to inheriting from default and highlight."
                            :files ("*.el" "index.html" "static"))
   :commands (maple-preview-mode))
 
+
+(use-package go-translate
+  :ensure t
+  :straight (:host github :repo "lorniu/go-translate")
+  :commands (go-translate go-translate-popup)
+  :bind (("C-c t g" . gts-do-translate)
+         ("C-c t p" . go-translate-at-point)
+         ("C-c t s" . go-translate-save-kill-ring))
+  :config
+  (setq go-translate-base-url "http://translate.google.cn")
+  (setq go-translate-local-language "zh-CN")
+  (setq gts-translate-list '(("en" "zh")))
+  (setq gts-default-translator
+        (gts-translator
+         :picker (gts-prompt-picker)
+         :engines (list (gts-bing-engine) (gts-google-engine))
+         :render (gts-buffer-render)))
+
+  ;; Pick directly and use Google RPC API to translate
+  (defun go-translate-at-point ()
+    (interactive)
+    (gts-translate (gts-translator
+                    :picker (gts-noprompt-picker)
+                    :engines (gts-google-rpc-engine)
+                    :render (gts-buffer-render))))
+
+  ;; Pick directly and add the results into kill-ring
+  (defun go-translate-save-kill-ring ()
+    (interactive)
+    (gts-translate (gts-translator
+                    :picker (gts-noprompt-picker)
+                    :engines (gts-google-engine
+                              :parser (gts-google-summary-parser))
+                    :render (gts-kill-ring-render))))
+  :init
+  ;; (customize-set-variable url-proxy-services
+  ;;                         '(("http"  . "127.0.0.1:10809")
+  ;;                           ("https" . "127.0.0.1:10809")))
+  )
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

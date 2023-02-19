@@ -980,7 +980,6 @@ Version: 2018-08-02 2022-05-18"
                "end") "\n"))
 
 
-
 (use-package lua-mode
   :mode "\\.lua\\'"
   :init
@@ -4796,6 +4795,60 @@ FACE defaults to inheriting from default and highlight."
               (deactivate-mark)
             (rectangle-mark-mode 1))
       "reset")))))
+
+;; Docker allows for interaction with the Docker distribution
+(use-package docker
+  :defer t
+  :diminish t
+  :commands (docker-containers
+             docker-volumes
+             docker-networks
+             docker-build
+             docker-build-buffer
+             hydra-docker/body)
+  ;; :init (progn
+  ;;         (use-package docker-image
+  ;;           :commands docker-images)
+  ;;         (use-package docker-container
+  ;;           :commands docker-containers)
+  ;;         (use-package docker-volume
+  ;;           :commands docker-volumes)
+  ;;         (use-package docker-network
+  ;;           :commands docker-containers)
+  ;;         (use-package docker-machine
+  ;;           :commands docker-machines)
+  ;;         (use-package docker-compose
+  ;;           :commands docker-compose))
+  :bind ("C-c d" . docker-containers)
+  :hydra (hydra-docker (:columns 5 :color blue)
+                       "Docker"
+                       ("c" docker-containers "Containers")
+                       ("v" docker-volumes "Volumes")
+                       ("i" docker-images "Images")
+                       ("n" docker-networks "Networks")
+                       ("b" dockerfile-build-buffer "Build Buffer")
+                       ("q" nil "Quit")))
+
+;; (use-package undo-tree
+;;   :ensure t
+;;   :init (global-undo-tree-mode)
+;;   :after hydra
+;;   :bind ("C-x C-h u" . hydra-undo-tree/body)
+;;   :hydra (hydra-undo-tree (:hint nil)
+;;                           "
+;;   _p_: undo  _n_: redo _s_: save _l_: load   "
+;;                           ("p"   undo-tree-undo)
+;;                           ("n"   undo-tree-redo)
+;;                           ("s"   undo-tree-save-history)
+;;                           ("l"   undo-tree-load-history)
+;;                           ("u"   undo-tree-visualize "visualize" :color blue)
+;;                           ("q"   nil "quit" :color blue)))
+
+;; NOTE: hydra and posframe are required
+(use-package hydra-posframe
+  :ensure t
+  :straight (hydra-posframe :type git :host github :repo "Ladicle/hydra-posframe")
+  :hook (after-init . hydra-posframe-enable))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

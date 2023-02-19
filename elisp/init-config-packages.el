@@ -395,6 +395,9 @@
    kept-new-versions 5
    delete-old-versions t
    vc-follow-symlinks t
+   ;; make cursor the width of the character it is under
+   ;; i.e. full width of a TAB
+   x-stretch-cursor t
    )
 
   ;; Hide commands in M-x which don't work in the current mode
@@ -749,6 +752,75 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
     "Align non-space columns in region BEG END."
     (interactive "r")
     (align-regexp BEG END "\\(\\s-*\\)\\S-+" 1 1 t))
+
+  (defun xah-convert-fullwidth-chars (Begin End &optional ToDirection)
+    "Convert ASCII chars to/from Unicode fullwidth version.
+Works on current line or text selection.
+
+The conversion direction is determined like this: if the command has been repeated, then toggle. Else, always do to-Unicode direction.
+
+If `universal-argument' is called first:
+
+ no C-u → Automatic.
+ C-u → to ASCII
+ C-u 1 → to ASCII
+ C-u 2 → to Unicode
+
+When called in lisp code, Begin End are region begin/end positions. ToDirection must be any of the following values: 「\"unicode\"」, 「\"ascii\"」, 「\"auto\"」.
+
+URL `http://xahlee.info/emacs/emacs/elisp_convert_chinese_punctuation.html'
+Version: 2018-08-02 2022-05-18"
+    (interactive
+     (let ($p1 $p2)
+       (if (use-region-p)
+           (setq $p1 (region-beginning) $p2 (region-end))
+         (setq $p1 (line-beginning-position) $p2 (line-end-position)))
+       (list $p1 $p2
+             (cond
+              ((equal current-prefix-arg nil) "auto")
+              ((equal current-prefix-arg '(4)) "ascii")
+              ((equal current-prefix-arg 1) "ascii")
+              ((equal current-prefix-arg 2) "unicode")
+              (t "unicode")))))
+    (let* (($ascii-unicode-map
+            [
+             ["0" "０"] ["1" "１"] ["2" "２"] ["3" "３"] ["4" "４"] ["5" "５"] ["6" "６"] ["7" "７"] ["8" "８"] ["9" "９"]
+             ["A" "Ａ"] ["B" "Ｂ"] ["C" "Ｃ"] ["D" "Ｄ"] ["E" "Ｅ"] ["F" "Ｆ"] ["G" "Ｇ"] ["H" "Ｈ"] ["I" "Ｉ"] ["J" "Ｊ"] ["K" "Ｋ"] ["L" "Ｌ"] ["M" "Ｍ"] ["N" "Ｎ"] ["O" "Ｏ"] ["P" "Ｐ"] ["Q" "Ｑ"] ["R" "Ｒ"] ["S" "Ｓ"] ["T" "Ｔ"] ["U" "Ｕ"] ["V" "Ｖ"] ["W" "Ｗ"] ["X" "Ｘ"] ["Y" "Ｙ"] ["Z" "Ｚ"]
+             ["a" "ａ"] ["b" "ｂ"] ["c" "ｃ"] ["d" "ｄ"] ["e" "ｅ"] ["f" "ｆ"] ["g" "ｇ"] ["h" "ｈ"] ["i" "ｉ"] ["j" "ｊ"] ["k" "ｋ"] ["l" "ｌ"] ["m" "ｍ"] ["n" "ｎ"] ["o" "ｏ"] ["p" "ｐ"] ["q" "ｑ"] ["r" "ｒ"] ["s" "ｓ"] ["t" "ｔ"] ["u" "ｕ"] ["v" "ｖ"] ["w" "ｗ"] ["x" "ｘ"] ["y" "ｙ"] ["z" "ｚ"]
+             ["," "，"] ["." "．"] [":" "："] [";" "；"] ["!" "！"] ["?" "？"] ["\"" "＂"] ["'" "＇"] ["`" "｀"] ["^" "＾"] ["~" "～"] ["¯" "￣"] ["_" "＿"]
+             [" " "　"]
+             ["&" "＆"] ["@" "＠"] ["#" "＃"] ["%" "％"] ["+" "＋"] ["-" "－"] ["*" "＊"] ["=" "＝"] ["<" "＜"] [">" "＞"] ["(" "（"] [")" "）"] ["[" "［"] ["]" "］"] ["{" "｛"] ["}" "｝"] ["(" "｟"] [")" "｠"] ["|" "｜"] ["¦" "￤"] ["/" "／"] ["\\" "＼"] ["¬" "￢"] ["$" "＄"] ["£" "￡"] ["¢" "￠"] ["₩" "￦"] ["¥" "￥"]
+             ]
+            )
+           ($reverse-map
+            (mapcar
+             (lambda (x) (vector (elt x 1) (elt x 0)))
+             $ascii-unicode-map))
+
+           ($stateBefore
+            (if (get 'xah-convert-fullwidth-chars 'state)
+                (get 'xah-convert-fullwidth-chars 'state)
+              (progn
+                (put 'xah-convert-fullwidth-chars 'state 0)
+                0
+                )))
+           ($stateAfter (if (eq $stateBefore 0) 1 0)))
+
+                                        ;"０\\|１\\|２\\|３\\|４\\|５\\|６\\|７\\|８\\|９\\|Ａ\\|Ｂ\\|Ｃ\\|Ｄ\\|Ｅ\\|Ｆ\\|Ｇ\\|Ｈ\\|Ｉ\\|Ｊ\\|Ｋ\\|Ｌ\\|Ｍ\\|Ｎ\\|Ｏ\\|Ｐ\\|Ｑ\\|Ｒ\\|Ｓ\\|Ｔ\\|Ｕ\\|Ｖ\\|Ｗ\\|Ｘ\\|Ｙ\\|Ｚ\\|ａ\\|ｂ\\|ｃ\\|ｄ\\|ｅ\\|ｆ\\|ｇ\\|ｈ\\|ｉ\\|ｊ\\|ｋ\\|ｌ\\|ｍ\\|ｎ\\|ｏ\\|ｐ\\|ｑ\\|ｒ\\|ｓ\\|ｔ\\|ｕ\\|ｖ\\|ｗ\\|ｘ\\|ｙ\\|ｚ"
+
+      (let ((case-fold-search nil))
+        (xah-replace-pairs-region
+         Begin End
+         (cond
+          ((string-equal ToDirection "unicode") $ascii-unicode-map)
+          ((string-equal ToDirection "ascii") $reverse-map)
+          ((string-equal ToDirection "auto")
+           (if (eq $stateBefore 0)
+               $reverse-map
+             $ascii-unicode-map))
+          (t (user-error "Your 3rd argument 「%s」 isn't valid" ToDirection)))
+         t t))
+      (put 'xah-convert-fullwidth-chars 'state $stateAfter)))
   )
 
 ;; Copy from https://www.danielde.dev/blog/emacs-for-swift-development
@@ -4525,6 +4597,26 @@ FACE defaults to inheriting from default and highlight."
   :custom
   (sqlformat-args '("-g"))
   (sqlformat-command 'pgformatter))
+
+
+;; Needed for `:after char-fold' to work
+(use-package char-fold
+  :custom
+  (char-fold-symmetric t)
+  (search-default-mode #'char-fold-to-regexp))
+
+(use-package reverse-im
+  :ensure t ; install `reverse-im' using package.el
+  :demand t ; always load it
+  :after char-fold ; but only after `char-fold' is loaded
+  :bind
+  ("M-T" . reverse-im-translate-word) ; fix a word in wrong layout
+  :custom
+  (reverse-im-char-fold t) ; use lax matching
+  (reverse-im-read-char-advice-function #'reverse-im-read-char-include)
+  (reverse-im-input-methods '("ukrainian-computer")) ; translate these methods
+  :config
+  (reverse-im-mode t)) ; turn the mode on
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

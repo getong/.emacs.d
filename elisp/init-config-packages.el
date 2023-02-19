@@ -4860,6 +4860,32 @@ FACE defaults to inheriting from default and highlight."
   (setq-default goggles-pulse t) ;; set to nil to disable pulsing
   )
 
+(use-package which-function-mode
+  :ensure nil
+  :hook ((prog-mode . which-function-mode)
+         (org-mode . which-function-mode))
+  :init
+  (setq which-func-unknown "")
+  (add-hook 'which-function-mode-hook
+            #'(lambda ()
+                (add-to-list 'which-func-functions
+                             #'(lambda ()
+                                 (when (eq major-mode 'org-mode)
+                                   (mapconcat 'identity (org-get-outline-path t)
+                                              " > "))))))
+  (add-hook 'prog-mode-hook '(lambda () (setq header-line-format
+                                              '((which-func-mode ("" which-func-format))))))
+  (add-hook 'org-mode-hook '(lambda () (setq header-line-format
+                                             '((which-func-mode ("" which-func-format))))))
+  )
+
+
+(use-package maple-preview
+  :ensure t
+  ;; :quelpa (:fetcher github :repo "honmaple/emacs-maple-preview" :files ("*.el" "index.html" "static"))
+  :straight (maple-preview :type git :host github :repo "honmaple/emacs-maple-preview"
+                           :files ("*.el" "index.html" "static"))
+  :commands (maple-preview-mode))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

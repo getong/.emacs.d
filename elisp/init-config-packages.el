@@ -2674,16 +2674,24 @@ Get it from:  <http://hasseg.org/trash/>"
 
 (use-package vertico-posframe
   :config
-  (setq vertico-posframe-min-width 60)
-  (setq vertico-posframe-truncate-lines nil)
-  (setq vertico-posframe-poshandler 'posframe-poshandler-window-top-center)
+  (setq vertico-posframe-min-width 60
+        vertico-posframe-truncate-lines nil
+        ;; vertico-posframe-poshandler 'posframe-poshandler-window-top-center
+        ;; vertico-posframe-poshandler #'posframe-poshandler-frame-top-left-corner
+        ;; vertico-posframe-poshandler #'posframe-poshandler-frame-top-center
+        ;; vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-center
+        ;; vertico-posframe-poshandler #'posframe-poshandler-frame-center ;
+        ;; 光标下面弹出
+        vertico-posframe-poshandler 'posframe-poshandler-point-window-center
+        ;; vertico-posframe-width (frame-width)
+        vertico-posframe-width (window-total-width)
+        )
 
   (defun vertico-posframe-set-cursor (&rest args)
     (with-current-buffer vertico-posframe--buffer
       (setq-local cursor-type 'bar)
       (setq-local cursor-in-non-selected-windows 'bar)))
   (advice-add 'vertico-posframe--show :after 'vertico-posframe-set-cursor)
-  (setq vertico-posframe-width (frame-width))
   (vertico-posframe-mode 1))
 
 ;; minibuffer 模糊匹配
@@ -2769,7 +2777,9 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
   :bind
   (:map minibuffer-mode-map
-        ("M-o" . embark-export))
+        ("M-o" . embark-export)
+        ("M-." . embark-act)
+        )
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'

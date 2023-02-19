@@ -44,6 +44,18 @@
   (async-byte-compile-log-file (no-littering-expand-var-file-name "async-bytecomp.log")))
 
 
+;; hydra 更接近于「功能菜单」：弹出一个「常用功能列表」.
+;; 你可以用连续击键来连续触发若干个函数。
+(use-package hydra
+  :hook (emacs-lisp-mode . hydra-add-imenu)
+  :bind (("C-c m" . hydra-magit/body)
+         ("C-c o" . hydra-org/body)
+         ))
+
+(use-package use-package-hydra
+  :ensure t
+  :after hydra)
+
 ;; benchmark-init records startup time by package so we can debug. It only records things after it's initialised, so put as early in config as possible.
 (use-package benchmark-init
   :config
@@ -4159,21 +4171,13 @@ deletion, or > if it is flagged for displaying."
             (setq eyebrowse-new-workspace t)))
 
 
-;; hydra 更接近于「功能菜单」：弹出一个「常用功能列表」.
-;; 你可以用连续击键来连续触发若干个函数。
-(use-package hydra
-  :hook (emacs-lisp-mode . hydra-add-imenu)
-  :bind (("C-c m" . hydra-magit/body)
-         ("C-c o" . hydra-org/body)
-         ))
-
 ;; git clone https://github.com/manateelazycat/color-rg
 (use-package color-rg
   :defer nil
   ;; :load-path (lambda () (expand-file-name "elpa/color-rg" user-emacs-directory))
   :straight '(color-rg :type git
-		               :host github
-		               :repo "manateelazycat/color-rg")
+		                   :host github
+		                   :repo "manateelazycat/color-rg")
   :commands (color-rg-search-input)
   :if (executable-find "rg")
   :bind

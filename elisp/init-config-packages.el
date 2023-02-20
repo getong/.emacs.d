@@ -51,10 +51,9 @@
 ;; hydra 更接近于「功能菜单」：弹出一个「常用功能列表」.
 ;; 你可以用连续击键来连续触发若干个函数。
 (use-package hydra
-  :hook (emacs-lisp-mode . hydra-add-imenu)
-  :bind (("C-c m" . hydra-magit/body)
-         ("C-c o" . hydra-org/body)
-         ))
+  :ensure t
+  :commands defhydra
+  )
 
 (use-package use-package-hydra
   :ensure t
@@ -946,51 +945,16 @@ Version: 2018-08-02 2022-05-18"
   (setq highlight-thing-case-sensitive-p t)
   )
 
-;; copy from https://immerrr.github.io/lua-mode/
-;;(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-(defun pnh-lua-completion-string-for (expr file)
-  (mapconcat 'identity
-             `("do"
-               "local clone = function(t)"
-               "  local n = {} for k,v in pairs(t) do n[k] = v end return n"
-               "end"
-               "local function cpl_for(input_parts, ctx, prefixes)"
-               "  if #input_parts == 0 and ctx ~= _G then"
-               "    return ctx"
-               "  elseif #input_parts == 1 then"
-               "    local matches = {}"
-               "    for k in pairs(ctx) do"
-               "      if k:find('^' .. input_parts[1]) then"
-               "        local parts = clone(prefixes)"
-               "        table.insert(parts, k)"
-               "        table.insert(matches, table.concat(parts, '.'))"
-               "      end"
-               "    end"
-               "    return matches"
-               "  else"
-               "    local token1 = table.remove(input_parts, 1)"
-               "    table.insert(prefixes, first_part)"
-               "    return cpl_for(input_parts, ctx[token1], prefixes)"
-               "  end"
-               "end"
-               "local i = {" ,@(mapcar (apply-partially 'format "'%s',")
-                                       (split-string expr "\\.")) "}"
-               ,(format "local f = io.open('%s', 'w')" file)
-               ;; TODO: using _G here is pretty lame! try to get local context
-               "for _,l in ipairs(cpl_for(i, _G, {})) do"
-               "  f:write(l .. string.char(10))"
-               "end"
-               "f:close()"
-               "end") "\n"))
-
 
 (use-package lua-mode
+  :ensure t
   :mode "\\.lua\\'"
   :init
   (add-hook 'lua-mode-hook
             (defun pnh-lua-mode-hook ()
               (make-variable-buffer-local 'completion-at-point-functions)
               (add-to-list 'completion-at-point-functions 'pnh-lua-complete)))
+  :interpreter ("lua" . lua-mode)
   :config
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
@@ -1008,6 +972,42 @@ Version: 2018-08-02 2022-05-18"
                             (insert-file-contents file)
                             (delete-file file)
                             (butlast (split-string (buffer-string) "\n")))))))
+  ;; copy from https://immerrr.github.io/lua-mode/
+  ;;(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+  (defun pnh-lua-completion-string-for (expr file)
+    (mapconcat 'identity
+               `("do"
+                 "local clone = function(t)"
+                 "  local n = {} for k,v in pairs(t) do n[k] = v end return n"
+                 "end"
+                 "local function cpl_for(input_parts, ctx, prefixes)"
+                 "  if #input_parts == 0 and ctx ~= _G then"
+                 "    return ctx"
+                 "  elseif #input_parts == 1 then"
+                 "    local matches = {}"
+                 "    for k in pairs(ctx) do"
+                 "      if k:find('^' .. input_parts[1]) then"
+                 "        local parts = clone(prefixes)"
+                 "        table.insert(parts, k)"
+                 "        table.insert(matches, table.concat(parts, '.'))"
+                 "      end"
+                 "    end"
+                 "    return matches"
+                 "  else"
+                 "    local token1 = table.remove(input_parts, 1)"
+                 "    table.insert(prefixes, first_part)"
+                 "    return cpl_for(input_parts, ctx[token1], prefixes)"
+                 "  end"
+                 "end"
+                 "local i = {" ,@(mapcar (apply-partially 'format "'%s',")
+                                         (split-string expr "\\.")) "}"
+                 ,(format "local f = io.open('%s', 'w')" file)
+                 ;; TODO: using _G here is pretty lame! try to get local context
+                 "for _,l in ipairs(cpl_for(i, _G, {})) do"
+                 "  f:write(l .. string.char(10))"
+                 "end"
+                 "f:close()"
+                 "end") "\n"))
   )
 
 (use-package fennel-mode
@@ -4974,6 +4974,21 @@ FACE defaults to inheriting from default and highlight."
                     :render (gts-kill-ring-render))))
 
   )
+
+;; (use-package undo-tree
+;;   :ensure t
+;;   :init (global-undo-tree-mode)
+;;   :after hydra
+;;   :bind ("C-x C-h u" . hydra-undo-tree/body)
+;;   :hydra (hydra-undo-tree (:hint nil)
+;;   "
+;;   _p_: undo  _n_: redo _s_: save _l_: load   "
+;;   ("p"   undo-tree-undo)
+;;   ("n"   undo-tree-redo)
+;;   ("s"   undo-tree-save-history)
+;;   ("l"   undo-tree-load-history)
+;;   ("u"   undo-tree-visualize "visualize" :color blue)
+;;   ("q"   nil "quit" :color blue)))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

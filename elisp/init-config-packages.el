@@ -4990,5 +4990,27 @@ FACE defaults to inheriting from default and highlight."
 ;;   ("u"   undo-tree-visualize "visualize" :color blue)
 ;;   ("q"   nil "quit" :color blue)))
 
+(use-package pdf-tools
+  :straight
+  (pdf-tools :type git :host github :repo "vedang/pdf-tools")
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :bind (:map pdf-view-mode-map
+              ;; Swiper doesn't work in pdf-tools.
+              ("C-s" . 'isearch-forward))
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page)
+  (setq pdf-annot-activate-created-annotations t)
+ )
+
+;; save pdf reading page
+(use-package saveplace-pdf-view
+  :straight
+  (saveplace-pdf-view :type git :host github :repo "nicolaisingh/saveplace-pdf-view")
+  :config
+  (save-place-mode 1)
+ )
+
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

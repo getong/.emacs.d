@@ -5,14 +5,13 @@
 
 (require 'cl-lib)
 
-;(require 'init-package)
+;;(require 'init-package)
 
 ;;; move customize-set-variable out of init.el
 ;; (setq custom-file "~/.emacs.d/custom.el")
 ;; (unless (file-exists-p custom-file)  ;; 如果该文件不存在
 ;;   (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
 ;; (load custom-file)
-
 
 (require 'init-config-packages)
 
@@ -27,6 +26,9 @@
 ;; copy from https://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory
 ;;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
+;; 安装 company-tabnine
+(unless (file-exists-p (no-littering-expand-var-file-name "company/tabnine-binaries"))
+  (company-tabnine-install-binary))
 ;; (message (emacs-init-time))
 
 (provide 'init)

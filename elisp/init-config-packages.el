@@ -43,6 +43,10 @@
   (byte-compile-warnings       '(not free-vars unresolved noruntime lexical make-local cl-functions))
   (async-byte-compile-log-file (no-littering-expand-var-file-name "async-bytecomp.log")))
 
+;; ensure straight install all the need packages
+(use-package f
+  :ensure t)
+
 
 ;; hydra 更接近于「功能菜单」：弹出一个「常用功能列表」.
 ;; 你可以用连续击键来连续触发若干个函数。
@@ -2540,6 +2544,8 @@ Get it from:  <http://hasseg.org/trash/>"
   (require 'dap-cpptools)
   ;;(dap-cpptools-setup)
   ;; (require 'dap-lldb)
+  (require 'dap-chrome)
+  (dap-chrome-setup)
   :hook
   ((dap-stopped . (lambda (arg)
                     ;; Automatically trigger the built-in dap-mode hydra when the debugger

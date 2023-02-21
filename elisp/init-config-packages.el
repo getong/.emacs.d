@@ -5014,6 +5014,58 @@ FACE defaults to inheriting from default and highlight."
   (save-place-mode 1)
   )
 
+(use-package ink
+  :ensure t
+  :straight
+  (ink :type git :host github :repo "foxfriday/ink")
+  )
+
+(use-package eaf
+  :straight (:host github :repo "emacs-eaf/emacs-application-framework" :files (:defaults "*"))
+  :commands eaf-file-sender-qrcode-in-dired +eaf-open-mail-as-html +browse-url-eaf
+  :custom
+  (eaf-start-python-process-when-require nil)
+  (browse-url-browser-function #'eaf-open-browser) ;; Make EAF Browser my default browser
+  (eaf-start-python-process-when-require t)
+  (eaf-browser-dark-mode nil)
+  (eaf-browser-enable-adblocker t)
+  (eaf-webengine-continue-where-left-off t)
+  (eaf-webengine-default-zoom 1.25)
+  (eaf-webengine-scroll-step 200)
+  (eaf-file-manager-show-preview nil)
+  (eaf-pdf-dark-mode "ignore")
+  :demand
+  :bind
+  ;; (("C-x j" . eaf-open-in-file-manager)
+  ;;  ("M-z r" . eaf-open-rss-reader)
+  ;;  ("M-m r" . eaf-open-rss-reader))
+  :config
+  ;; Require all EAF apps unconditionally, change to apps you're interested in.
+  (require 'eaf-file-manager nil t)
+  (require 'eaf-music-player nil t)
+  (require 'eaf-image-viewer nil t)
+  (require 'eaf-camera nil t)
+  (require 'eaf-demo nil t)
+  (require 'eaf-airshare nil t)
+  (require 'eaf-terminal nil t)
+  (require 'eaf-markdown-previewer nil t)
+  (require 'eaf-video-player nil t)
+  (require 'eaf-vue-demo nil t)
+  (require 'eaf-file-sender nil t)
+  (require 'eaf-pdf-viewer nil t)
+  (require 'eaf-mindmap nil t)
+  (require 'eaf-netease-cloud-music nil t)
+  (require 'eaf-jupyter nil t)
+  (require 'eaf-org-previewer nil t)
+  (require 'eaf-system-monitor nil t)
+  (require 'eaf-rss-reader nil t)
+  (require 'eaf-file-browser nil t)
+  (require 'eaf-browser nil t)
+  (require 'eaf-git nil t)
+  (when (display-graphic-p)
+    (require 'eaf-all-the-icons))
+  (defalias 'browse-web #'eaf-open-browser)
+  )
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

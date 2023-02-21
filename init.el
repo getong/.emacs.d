@@ -29,6 +29,9 @@
 ;; 安装 company-tabnine
 (unless (file-exists-p (no-littering-expand-var-file-name "company/tabnine-binaries"))
   (company-tabnine-install-binary))
+
+;; brew install pyqt
+(eaf-install-and-update)
 ;; (message (emacs-init-time))
 
 (provide 'init)

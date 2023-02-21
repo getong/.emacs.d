@@ -2678,6 +2678,8 @@ Get it from:  <http://hasseg.org/trash/>"
     (nconc (seq-filter (lambda (x) (string-suffix-p "/" x)) files)
            (seq-remove (lambda (x) (string-suffix-p "/" x)) files))))
 
+(use-package posframe :ensure t)
+
 (use-package vertico-posframe
   :config
   (setq vertico-posframe-min-width 60
@@ -3162,6 +3164,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 ;; https://github.com/Abuelodelanada/pepe-emacs-config/blob/301a42b030f4774f831de30657215ba2b489d823/use-package.el
 (use-package magit
+  :straight '(magit :type git :host github :repo "magit/magit")
   :bind (("C-x g" . magit-status))
   :custom-face
   (magit-branch-local ((t (:foreground "orange"))))
@@ -4864,7 +4867,7 @@ FACE defaults to inheriting from default and highlight."
 (use-package hydra-posframe
   :ensure t
   :straight (hydra-posframe :type git :host github :repo "Ladicle/hydra-posframe")
-  :hook (after-init . hydra-posframe-enable))
+  :hook (after-init . hydra-posframe-mode))
 
 ;; Goggles highlights the modified region using pulse.
 ;; Currently the commands undo, yank, kill and delete are supported.
@@ -5009,7 +5012,7 @@ FACE defaults to inheriting from default and highlight."
   (saveplace-pdf-view :type git :host github :repo "nicolaisingh/saveplace-pdf-view")
   :config
   (save-place-mode 1)
- )
+  )
 
 
 (provide 'init-config-packages)

@@ -32,8 +32,8 @@
 
 ;; brew install pyqt
 ;; check eaf pdf
-(unless (file-exists-p (expand-file-name "straight/repos/emacs-application-framework/app/pdf-viewer" user-emacs-directory))
-  (eaf-install-and-update))
+;;(unless (file-exists-p (expand-file-name "straight/repos/emacs-application-framework/app/pdf-viewer" user-emacs-directory))
+;;  (eaf-install-and-update))
 
 ;; (message (emacs-init-time))
 

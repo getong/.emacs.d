@@ -5023,83 +5023,83 @@ FACE defaults to inheriting from default and highlight."
   )
 
 
-(use-package eaf
-  :ensure t
-  :straight (:host github :repo "emacs-eaf/emacs-application-framework" :files (:defaults "*")
-                   ;; :post-build ("python" "install-eaf.py" "--install-core-deps")
-                   ;; :includes (eaf-pdf-viewer eaf-browser) ; Straight won't try to search for these packages when we make further use-package invocations for them
-                   :post-build (("python3" "install-eaf.py" "--install-core-deps"))
-                   )
-  ;; :commands eaf-file-sender-qrcode-in-dired +eaf-open-mail-as-html +browse-url-eaf
-  :custom
-  (eaf-apps-to-install '(browser org-previewer pdf-viewer markdown-previewer video-player))
-  (eaf-start-python-process-when-require t)
-  (browse-url-browser-function #'eaf-open-browser) ;; Make EAF Browser my default browser
-  (eaf-browser-dark-mode nil)
-  (eaf-browser-enable-adblocker t)
-  (eaf-webengine-continue-where-left-off t)
-  (eaf-webengine-default-zoom 1.25)
-  (eaf-webengine-scroll-step 200)
-  (eaf-file-manager-show-preview nil)
-  ;; (eaf-pdf-dark-mode "ignore")
-  (eaf-config-location (no-littering-expand-var-file-name "eaf/"))
-  (eaf-kill-process-after-last-buffer-closed t)
-  (eaf-fullscreen-p nil)
-  (eaf-pdf-outline-buffer-indent 2)
+;; (use-package eaf
+;;   :ensure t
+;;   :straight (:host github :repo "emacs-eaf/emacs-application-framework" :files (:defaults "*")
+;;                    ;; :post-build ("python" "install-eaf.py" "--install-core-deps")
+;;                    ;; :includes (eaf-pdf-viewer eaf-browser) ; Straight won't try to search for these packages when we make further use-package invocations for them
+;;                    :post-build (("python3" "install-eaf.py" "--install-core-deps"))
+;;                    )
+;;   ;; :commands eaf-file-sender-qrcode-in-dired +eaf-open-mail-as-html +browse-url-eaf
+;;   :custom
+;;   (eaf-apps-to-install '(browser org-previewer pdf-viewer markdown-previewer video-player))
+;;   (eaf-start-python-process-when-require t)
+;;   (browse-url-browser-function #'eaf-open-browser) ;; Make EAF Browser my default browser
+;;   (eaf-browser-dark-mode nil)
+;;   (eaf-browser-enable-adblocker t)
+;;   (eaf-webengine-continue-where-left-off t)
+;;   (eaf-webengine-default-zoom 1.25)
+;;   (eaf-webengine-scroll-step 200)
+;;   (eaf-file-manager-show-preview nil)
+;;   ;; (eaf-pdf-dark-mode "ignore")
+;;   (eaf-config-location (no-littering-expand-var-file-name "eaf/"))
+;;   (eaf-kill-process-after-last-buffer-closed t)
+;;   (eaf-fullscreen-p nil)
+;;   (eaf-pdf-outline-buffer-indent 2)
 
-  :demand
-  :bind
-  ;; (("C-x j" . eaf-open-in-file-manager)
-  ;;  ("M-z r" . eaf-open-rss-reader)
-  ;;  ("M-m r" . eaf-open-rss-reader))
-  :config
-  ;; Try to load enabled apps, and install them if they aren't installed
-  (let (not-installed-apps)
-    (dolist (app eaf-apps-to-install)
-      (unless (require (intern (format "eaf-%s" app)) nil t)
-        (push app not-installed-apps)))
-    (when not-installed-apps
-      (warn "Some apps are not installed: %s" not-installed-apps)))
-  )
+;;   :demand
+;;   :bind
+;;   ;; (("C-x j" . eaf-open-in-file-manager)
+;;   ;;  ("M-z r" . eaf-open-rss-reader)
+;;   ;;  ("M-m r" . eaf-open-rss-reader))
+;;   :config
+;;   ;; Try to load enabled apps, and install them if they aren't installed
+;;   (let (not-installed-apps)
+;;     (dolist (app eaf-apps-to-install)
+;;       (unless (require (intern (format "eaf-%s" app)) nil t)
+;;         (push app not-installed-apps)))
+;;     (when not-installed-apps
+;;       (warn "Some apps are not installed: %s" not-installed-apps)))
+;;   )
 
-(defun my-eaf-install-deps(app-dir)
-  "Install deps from dependencies.json."
-  (let* ((deps-dict (with-temp-buffer
-                      (insert-file-contents (expand-file-name "dependencies.json" app-dir))
-                      (json-parse-string (buffer-string))))
-         (pip-deps (gethash "mac" (or (gethash "pip3" deps-dict) (make-hash-table))))
-         (vue-install (gethash "vue_install" deps-dict))
-         (npm-install (gethash "npm_install" deps-dict))
-         (npm-rebuild (gethash "npm_rebuild" deps-dict))
-         (npm-cmd (if (memq system-type '(cygwin windows-nt ms-dos)) "npm" "npm")))
-    (when pip-deps
-      (dolist (pkg (append pip-deps nil))
-        (message "%s" (shell-command-to-string (format "pip3 install %s" pkg)))))
-    (when vue-install
-      (let ((default-directory app-dir))
-        (message "%s" (shell-command-to-string (format "%s install" npm)))
-        (message "%s" (shell-command-to-string (format "%s run build" npm)))))
-    (when npm-install
-      (let ((default-directory app-dir))
-        (message "%s" (shell-command-to-string (format "%s install" npm)))))
-    (when npm-rebuild
-      (let ((default-directory app-dir))
-        (message "%s" (shell-command-to-string (format "%s rebuild" npm)))))))
+;; (defun my-eaf-install-deps(app-dir)
+;;   "Install deps from dependencies.json."
+;;   (let* ((deps-dict (with-temp-buffer
+;;                       (insert-file-contents (expand-file-name "dependencies.json" app-dir))
+;;                       (json-parse-string (buffer-string))))
+;;          (pip-deps (gethash "mac" (or (gethash "pip3" deps-dict) (make-hash-table))))
+;;          (vue-install (gethash "vue_install" deps-dict))
+;;          (npm-install (gethash "npm_install" deps-dict))
+;;          (npm-rebuild (gethash "npm_rebuild" deps-dict))
+;;          (npm-cmd (if (memq system-type '(cygwin windows-nt ms-dos mac)) "npm" "npm")))
+;;     (when pip-deps
+;;       (dolist (pkg (append pip-deps nil))
+;;         (message "%s" (shell-command-to-string (format "pip3 install %s" pkg)))))
+;;     (when vue-install
+;;       (let ((default-directory app-dir))
+;;         (message "%s" (shell-command-to-string (format "%s install" npm)))
+;;         (message "%s" (shell-command-to-string (format "%s run build" npm)))))
+;;     (when npm-install
+;;       (let ((default-directory app-dir))
+;;         (message "%s" (shell-command-to-string (format "%s install" npm)))))
+;;     (when npm-rebuild
+;;       (let ((default-directory app-dir))
+;;         (message "%s" (shell-command-to-string (format "%s rebuild" npm)))))))
 
-(use-package eaf-browser
-  :after (eaf)
-  :straight (eaf-browser :type git :host github :repo "emacs-eaf/eaf-browser" :files ("*")
-                          :post-build (my-eaf-install-deps (straight--build-dir "eaf-browser"))))
+;; ;; (use-package eaf-browser
+;; ;; :after (eaf)
+;; ;; :straight (eaf-browser :type git :host github :repo "emacs-eaf/eaf-browser" :files ("*")
+;; ;; :post-build (my-eaf-install-deps (straight--build-dir "eaf-browser"))))
 
-(use-package eaf-pdf-viewer
-  :after (eaf)
-  :straight (eaf-pdf-viewer :type git :host github :repo "emacs-eaf/eaf-pdf-viewer" :files ("*")
-                            :post-build (my-eaf-install-deps (straight--build-dir "eaf-pdf-viewer"))))
+;; (use-package eaf-pdf-viewer
+;;   :after (eaf)
+;;   :straight (eaf-pdf-viewer :type git :host github :repo "emacs-eaf/eaf-pdf-viewer" :files ("*")
+;;                             :post-build (my-eaf-install-deps (straight--build-dir "eaf-pdf-viewer"))))
 
-(use-package eaf-markdown-previewer
-  :after (eaf)
-  :straight (eaf-markdown-previewer :type git :host github :repo "emacs-eaf/eaf-markdown-previewer" :files ("*")
-                                    :post-build (my-eaf-install-deps (straight--build-dir "eaf-markdown-previewer"))))
+;; ;; (use-package eaf-markdown-previewer
+;; ;;   :after (eaf)
+;; ;;   :straight (eaf-markdown-previewer :type git :host github :repo "emacs-eaf/eaf-markdown-previewer" :files ("*")
+;; ;;                                     :post-build (my-eaf-install-deps (straight--build-dir "eaf-markdown-previewer"))))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

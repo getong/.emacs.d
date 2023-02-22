@@ -472,7 +472,9 @@ Activate this advice with:
 
   (defun my-reload-emacs-configuration ()
     (interactive)
-    (load-file "~/.emacs.d/init.el"))
+    (load-file (expand-file-name"early-init.el" user-emacs-directory))
+    (load-file (expand-file-name "init.el" user-emacs-directory))
+    )
   ;; By default emacs will not delete selection text when typing on it, let's fix it
   (delete-selection-mode t)
   ;; 默认情况下，Emacs 为每个打开的文件创建一些临时的文件，这会搞乱我们的目录，不需要它。

@@ -5100,6 +5100,11 @@ FACE defaults to inheriting from default and highlight."
 ;; ;;   :after (eaf)
 ;; ;;   :straight (eaf-markdown-previewer :type git :host github :repo "emacs-eaf/eaf-markdown-previewer" :files ("*")
 ;; ;;                                     :post-build (my-eaf-install-deps (straight--build-dir "eaf-markdown-previewer"))))
+(use-package query-replace-many
+  :ensure t
+  :straight
+  (query-replace-many :type git :host github :repo "slotThe/query-replace-many")
+  :bind ("C-M-%" . query-replace-many))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

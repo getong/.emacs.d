@@ -1,9 +1,9 @@
 ;;; init.el -*- lexical-binding: t; -*-
 
 (setq use-package-compute-statistics t)
-(add-to-list 'load-path "~/.emacs.d/elisp")
+(add-to-list 'load-path (expand-file-name "elisp" user-emacs-directory))
 
-(require 'cl-lib)
+;; (require 'cl-lib)
 
 ;;(require 'init-package)
 
@@ -31,7 +31,10 @@
   (company-tabnine-install-binary))
 
 ;; brew install pyqt
-(eaf-install-and-update)
+;; check eaf pdf
+(unless (file-exists-p (expand-file-name "straight/repos/emacs-application-framework/app/pdf-viewer" user-emacs-directory))
+  (eaf-install-and-update))
+
 ;; (message (emacs-init-time))
 
 (provide 'init)

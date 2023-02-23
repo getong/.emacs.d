@@ -332,6 +332,17 @@
          ("C-M-<" . mc/skip-to-previous-like-this)
          ;; 直接多选本 buffer 所有这个单词
          ("C-c C->" . mc/mark-all-symbols-like-this)
+         ("C-c C-. ."   . mc/mark-all-dwim)
+         ("C-c C-. C-." . mc/mark-all-like-this-dwim)
+         ("C-c C-. n"   . mc/mark-next-symbol-like-this)
+         ("C-c C-. P"   . mc/mark-previous-symbol-like-this)
+         ("C-c C-. A"   . mc/mark-all-symbols-like-this)
+         ("C-c C-. f"   . mc/mark-all-like-this-in-defun)
+         ("C-c C-. l"   . mc/edit-lines)
+         ("C-c C-. e"   . mc/edit-ends-of-lines)
+         ("C-c C-<" . mc/mark-all-like-this)
+         ("C->"     . mc/mark-next-like-this)
+         ("C-<"     . mc/mark-previous-like-this)
          ))
 
 ;; copy from https://emacs-china.org/t/vterm-zsh/20497
@@ -974,6 +985,10 @@ Version: 2018-08-02 2022-05-18"
 (use-package swift-mode
   :bind (("C-c l" . print-swift-var-under-point))
   :config
+  (add-to-list 'projectile-project-root-files
+               "Package.swift")
+  (add-to-list 'lsp-file-watch-ignored-directories
+		           "[/\\\\]\\.build\\'")
   (defun print-swift-var-under-point()
     (interactive)
     (if (string-match-p (string (preceding-char)) "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
@@ -4132,7 +4147,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :init (setq gdb-many-windows t
               gdb-show-main t))
 
-;; expand-region
 
 ;; 将不同类型的buffer分组切换
 (use-package centaur-tabs
@@ -5316,6 +5330,32 @@ Fallback to `xref-go-back'."
      (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
   (setq codeium/document/text 'my-codeium/document/text)
   (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset))
+
+;; Trim spaces from end of line on save
+(use-package ws-butler
+  :hook (prog-mode . ws-butler-mode))
+
+(use-package expand-region
+  :ensure t
+  :bind (("C-=" . er/expand-region)
+         ("C-." . er/contract-region)))
+
+;; run app from desktop without emulator
+(use-package hover
+  :ensure t
+	)
+
+;; Julia
+(use-package lsp-julia
+  :hook (julia-mode . (lambda () (require 'lsp-julia))))
+
+(use-package lsp-sourcekit
+  :ensure t
+  :when (eq system-type 'darwin)
+  :after lsp-mode
+  :config
+  (setq lsp-sourcekit-executable (string-trim (shell-command-to-string "xcrun --find sourcekit-lsp")))
+  )
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

@@ -5156,27 +5156,29 @@ FACE defaults to inheriting from default and highlight."
 
 
 ;; emacspeak (manual config, no ensure)
-(use-package emacspeak  ;; Emacspeak setup
+;; (use-package emacspeak  ;; Emacspeak setup
+;;   ;; :straight
+;;   ;; (emacspeak :type git :host github :repo "tvraman/emacspeak" :files (:defaults "*")
+;;   ;;            ;; :post-build ((shell-command "make config") (shell-command "make"))
+;;   ;;            :post-build (("make" "config") ("make" "emacspeak") ("make" "espeak"))
+;;   :config
+;; ;;   (require 'cl-lib)
+;;    (setq load-path (cons "~/.emacs.d/straight/build/emacspeak/lisp" load-path))
+;; ;;   (setq emacspeak-directory "~/.emacs.d/straight/build/emacspeak")
+;; ;;   (setq dtk-program "mac")
+;; ;;   (require 'emacspeak-setup)
+;; ;;   (require 'mac-voices)
+;; ;;   (emacspeak-tts-startup-hook)
+;; ;;   (dtk-set-rate 300 t)
+;;   (setq emacspeak-directory "~/.emacs.d/straight/repos/emacspeak")
+;;   ;; (load-file "~/.emacs.d/straight/repos/emacspeak/lisp/emacspeak-setup.el")
 
-  :straight
-  (emacspeak :type git :host github :repo "tvraman/emacspeak" :files (:defaults "*")
-             ;; :post-build ((shell-command "make config") (shell-command "make"))
-             :post-build (("make" "config") ("make"))
-             )
-  :init
-  (setq load-path (cons "~/.emacs.d/straight/build/emacspeak/lisp" load-path))
-  (setq emacspeak-directory "~/.emacs.d/straight/build/emacspeak")
-  (setq dtk-program "mac")
-  :config
-  (require 'emacspeak-setup)
-  (dtk-set-rate 275 t)
-
-  ;; Fix a warning on every exit with emacspeak mac server
-  (require 'cl-lib)
-  (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-    "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-    (cl-letf (((symbol-function #'process-list) (lambda ())))
-      ad-do-it)))
+;; ;;   ;; Fix a warning on every exit with emacspeak mac server
+;; ;;   (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+;; ;;     "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+;; ;;     (cl-letf (((symbol-function #'process-list) (lambda ())))
+;; ;;       ad-do-it)))
+;;   )
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

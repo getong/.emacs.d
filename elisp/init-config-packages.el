@@ -2005,6 +2005,8 @@ Get it from:  <http://hasseg.org/trash/>"
   :ensure
   :init
   (setq rustic-treesitter-derive t)
+  :custom
+  (rustic-analyzer-command '("rustup" "run" "nightly" "rust-analyzer"))
   :bind (:map rustic-mode-map
               ("M-j" . lsp-ui-imenu)
               ("M-?" . lsp-find-references)
@@ -3630,14 +3632,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (shell-pop-shell-type '("vterm" "*vterm*" (lambda () (vterm))))
   (shell-pop-full-span t))
 
-;; view PDF in emacs
-(use-package pdf-tools
-  :ensure t
-  :config
-  (custom-set-variables
-   '(pdf-tools-handle-upgrades nil)))
-
-
 ;; C/C++
 (use-package cc-mode
   :hook
@@ -4933,7 +4927,7 @@ FACE defaults to inheriting from default and highlight."
 
 (use-package go-translate
   :ensure t
-  :straight (:host github :repo "lorniu/go-translate")
+  :straight (:type git :host github :repo "lorniu/go-translate")
   :commands (go-translate go-translate-popup)
   :bind (("C-c t g" . gts-do-translate)
          ("C-c t p" . go-translate-at-point)
@@ -5021,11 +5015,12 @@ FACE defaults to inheriting from default and highlight."
   :straight
   (pdf-tools :type git :host github :repo "vedang/pdf-tools")
   :mode ("\\.pdf\\'" . pdf-view-mode)
+  :init
+  (pdf-tools-install :no-query)
   :bind (:map pdf-view-mode-map
               ;; Swiper doesn't work in pdf-tools.
               ("C-s" . 'isearch-forward))
   :config
-  (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-page)
   (setq pdf-annot-activate-created-annotations t)
  )

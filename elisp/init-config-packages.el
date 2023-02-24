@@ -5141,5 +5141,15 @@ Fallback to `xref-go-back'."
   (its-a-him-marqueeo)
   )
 
+;; in Dired mode,C-x C-q (dired-toggle-read-only), query-replace,type C-c C-c (wdired-finish-edit)
+(use-package wdired
+  :defer t
+  :custom
+  ((dired-listing-switches "-alh --group-directories-first")
+   (wdired-allow-to-change-permissions t)
+   (wdired-create-parent-directories t)
+   )
+  )
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

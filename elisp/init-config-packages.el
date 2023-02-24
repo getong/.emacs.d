@@ -2734,7 +2734,9 @@ Get it from:  <http://hasseg.org/trash/>"
                    #'completion--in-region)
                  args))
         vterm-timer-delay 0.01
+        vertico-buffer-display-action '(display-buffer-below-selected (window-height . 13))
         )
+  (vertico-buffer-mode 1)
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   (defun sort-directories-first (files)
     (setq files (vertico-sort-history-length-alpha files))
@@ -2743,27 +2745,27 @@ Get it from:  <http://hasseg.org/trash/>"
 
 (use-package posframe :ensure t)
 
-(use-package vertico-posframe
-  :config
-  (setq vertico-posframe-min-width 60
-        vertico-posframe-truncate-lines nil
-        ;; vertico-posframe-poshandler 'posframe-poshandler-window-top-center
-        ;; vertico-posframe-poshandler #'posframe-poshandler-frame-top-left-corner
-        ;; vertico-posframe-poshandler #'posframe-poshandler-frame-top-center
-        ;; vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-center
-        ;; vertico-posframe-poshandler #'posframe-poshandler-frame-center ;
-        ;; 光标下面弹出
-        vertico-posframe-poshandler 'posframe-poshandler-point-window-center
-        ;; vertico-posframe-width (frame-width)
-        vertico-posframe-width (window-total-width)
-        )
+;; (use-package vertico-posframe
+;;   :config
+;;   (setq vertico-posframe-min-width 60
+;;         vertico-posframe-truncate-lines nil
+;;         ;; vertico-posframe-poshandler 'posframe-poshandler-window-top-center
+;;         ;; vertico-posframe-poshandler #'posframe-poshandler-frame-top-left-corner
+;;         ;; vertico-posframe-poshandler #'posframe-poshandler-frame-top-center
+;;         ;; vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-center
+;;         ;; vertico-posframe-poshandler #'posframe-poshandler-frame-center ;
+;;         ;; 光标下面弹出
+;;         vertico-posframe-poshandler 'posframe-poshandler-point-window-center
+;;         ;; vertico-posframe-width (frame-width)
+;;         vertico-posframe-width (window-total-width)
+;;         )
 
-  (defun vertico-posframe-set-cursor (&rest args)
-    (with-current-buffer vertico-posframe--buffer
-      (setq-local cursor-type 'bar)
-      (setq-local cursor-in-non-selected-windows 'bar)))
-  (advice-add 'vertico-posframe--show :after 'vertico-posframe-set-cursor)
-  (vertico-posframe-mode 1))
+;;   (defun vertico-posframe-set-cursor (&rest args)
+;;     (with-current-buffer vertico-posframe--buffer
+;;       (setq-local cursor-type 'bar)
+;;       (setq-local cursor-in-non-selected-windows 'bar)))
+;;   (advice-add 'vertico-posframe--show :after 'vertico-posframe-set-cursor)
+;;   (vertico-posframe-mode 1))
 
 ;; minibuffer 模糊匹配
 (use-package orderless

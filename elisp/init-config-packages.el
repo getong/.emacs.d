@@ -4563,6 +4563,9 @@ FACE defaults to inheriting from default and highlight."
   ;; coloca los archivos de respaldo hechos por Emacs en /tmp
   ;; (setq backup-directory-alist
   ;;       `((".*" . ,temporary-file-directory)))
+  (setq
+   backup-directory-alist
+   `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
   ;; (setq auto-save-file-name-transforms
   ;;       `((".*" "~/.cache/emacs/saves/" t)))
   ;; apaga creación de lockfiles

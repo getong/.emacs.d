@@ -848,12 +848,14 @@ Version: 2021-07-26 2021-08-21 2022-08-05"
              (if (member "Consolas" (font-family-list)) (format "Consolas-%s" $fSize) nil))
             ((string-equal system-type "darwin")
              ;; (if (member "LXGW WenKai Mono" (font-family-list)) "LXGW WenKai Mono" nil))
-             (if (member "EB Garamond" (font-family-list)) (format "EB Garamond 12 Italic %s" $fSize) nil))
+             ;; (if (member "EB Garamond" (font-family-list)) (format "EB Garamond 12 Italic %s" $fSize) nil))
+             (if (member "JetBrains Mono" (font-family-list)) (format "JetBrains Mono-%s" $fSize) nil))
             ((string-equal system-type "gnu/linux")
              (if (member "DejaVu Sans Mono" (font-family-list)) "DejaVu Sans Mono" nil))
             (t nil))
            t t)
-          (set-face-attribute 'default nil :font  (format "EB Garamond 12 Italic %s" $fSize))
+          ;; (set-face-attribute 'default nil :font  (format "EB Garamond 12 Italic %s" $fSize))
+          (set-face-attribute 'default nil :font  (format "JetBrains Mono-%s" $fSize))
           (set-fontset-font "fontset-default"
                             'han (font-spec :family "LXGW WenKai Mono"
                                             :size (string-to-number $fSize)))

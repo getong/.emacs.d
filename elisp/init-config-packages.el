@@ -2581,7 +2581,15 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; -CompanyBoxPac
 
 ;; Create / cleanup rust scratch projects quickly
-(use-package rust-playground :ensure)
+(use-package rust-playground
+  :hook ((rust-mode . rust-playground-mode))
+  :custom (rust-playground-run-command "cargo run --color never")
+  :commands (rust-playground-get-snippet-basedir)
+  :config
+  (add-hook 'conf-toml-mode 'rust-playground-mode)
+  (setq rust-playground-basedir (expand-file-name "~/test/rust/playground"))
+  )
+
 
 (use-package toml-mode
   :ensure t
@@ -5149,6 +5157,37 @@ Fallback to `xref-go-back'."
    (wdired-allow-to-change-permissions t)
    (wdired-create-parent-directories t)
    )
+  )
+
+(use-package run-command
+  :after vterm
+  :ensure-system-package (grip . "pip install grip")
+  :preface
+  (defun run-command-recipe ()
+    (list
+     ;; Run a simple command
+     (list :command-name "say-hello"
+           :command-line "echo Hello, World!")
+
+     ;; Do something with current file if it's a README
+     ;; (uses https://github.com/joeyespo/grip)
+     (when (equal (buffer-name) "README.md")
+       (list :command-name "preview-github-readme"
+             :command-line "grip --browser --norefresh"
+             :display "Preview GitHub README"))
+
+     ;; Do something with current file if it's executable
+     (let ((buffer-file (buffer-file-name)))
+       (when (and buffer-file
+                  (file-executable-p buffer-file))
+         (list :command-name "run-buffer-file"
+               :command-line buffer-file
+               :display "Run this buffer's file")))
+     )
+    )
+  :custom (run-command-selector #'run-command-selector-completing-read)
+  (run-command-default-runner #'run-command-runner-vterm)
+  (run-command-recipes '(run-command-recipe))
   )
 
 (provide 'init-config-packages)

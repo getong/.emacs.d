@@ -79,10 +79,16 @@
 (defconst *is-linux* (eq system-type 'gnu/linux))
 (defconst *is-windows* (or (eq system-type 'ms-dos) (eq system-type 'windows-nt)))
 
+(setq-default straight-base-dir (expand-file-name "var" user-emacs-directory)
+      straight-repository-branch "develop"
+      straight-vc-git-default-clone-depth '(1 single-branch)
+      straight-build-dir (format "build-%s" emacs-version)
+      straight-check-for-modifications nil)
+
 ;; 启用 straight
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" straight-base-dir))
       (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer

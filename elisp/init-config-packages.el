@@ -5128,5 +5128,16 @@ Fallback to `xref-go-back'."
   (setq lsp-sourcekit-executable (string-trim (shell-command-to-string "xcrun --find sourcekit-lsp")))
   )
 
+(use-package marqueeo
+  :ensure t
+  ;; if you use straight
+  :straight (marqueeo :type git :host github :repo "progfolio/marqueeo"
+                      :files (:defaults "*"))
+  :demand t
+  :diminish
+  :config
+  (its-a-him-marqueeo)
+  )
+
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

@@ -191,27 +191,6 @@
 (use-package no-littering
   :ensure t
   :config
-  ;; (add-to-list 'recentf-exclude no-littering-var-directory)
-  ;; (add-to-list 'recentf-exclude no-littering-etc-directory)
-  ;; (with-eval-after-load 'recentf
-  ;;   (set 'recentf-exclude
-  ;;        '(no-littering-var-directory
-  ;;          no-littering-etc-directory
-  ;;          (expand-file-name "elpa" user-emacs-directory)
-  ;;          (expand-file-name "straight" user-emacs-directory)
-  ;;          )))
-  ;; (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
-  ;; (unless (file-exists-p custom-file)  ;; 如果该文件不存在
-  ;;   (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
-  ;; (load custom-file)
-
-  ;; https://eshelyaron.com/esy.html
-  ;; (setq auto-save-file-name-transforms
-  ;;       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-  ;; 检查auto-save目录是否存在，不存在就创建
-  ;; (unless (file-directory-p (no-littering-expand-var-file-name "auto-save/"))
-  ;;   (make-directory (no-littering-expand-var-file-name "auto-save/"))
-  ;;   )
   (unless (file-directory-p (no-littering-expand-var-file-name "docsets/"))
     (make-directory (no-littering-expand-var-file-name "docsets/"))
     )
@@ -320,8 +299,6 @@
 (use-package multiple-cursors
   :ensure t
   :bind (
-         ;; 每行一个光标
-         ("C-S-c" . mc/edit-lines)
          ;; 全选光标所在单词并在下一个单词增加一个光标。通常用来启动一个流程
          ("C->" . mc/mark-next-like-this-symbol)
          ;; 跳过当前单词并跳到下一个单词，和上面在同一个流程里。
@@ -331,18 +308,18 @@
          ;; 跳过当前单词并跳到上一个单词，和上面在同一个流程里。
          ("C-M-<" . mc/skip-to-previous-like-this)
          ;; 直接多选本 buffer 所有这个单词
-         ("C-c C->" . mc/mark-all-symbols-like-this)
          ("C-c C-. ."   . mc/mark-all-dwim)
          ("C-c C-. C-." . mc/mark-all-like-this-dwim)
          ("C-c C-. n"   . mc/mark-next-symbol-like-this)
          ("C-c C-. P"   . mc/mark-previous-symbol-like-this)
          ("C-c C-. A"   . mc/mark-all-symbols-like-this)
          ("C-c C-. f"   . mc/mark-all-like-this-in-defun)
+         ;; 每行一个光标
          ("C-c C-. l"   . mc/edit-lines)
          ("C-c C-. e"   . mc/edit-ends-of-lines)
          ("C-c C-<" . mc/mark-all-like-this)
-         ("C->"     . mc/mark-next-like-this)
-         ("C-<"     . mc/mark-previous-like-this)
+         ;; ("C->"     . mc/mark-next-like-this)
+         ;; ("C-<"     . mc/mark-previous-like-this)
          ))
 
 ;; copy from https://emacs-china.org/t/vterm-zsh/20497
@@ -1417,7 +1394,6 @@ Version: 2018-08-02 2022-05-18"
     "Execute the code of the current file."
     (interactive)
     (compile (format "dart %s" (buffer-file-name))))
-  ;; (evil-leader/set-key-for-mode 'dart-mode "d" 'xref-find-definitions)
   (with-eval-after-load "projectile"
     (add-to-list 'projectile-project-root-files-bottom-up "pubspec.yaml")
     (add-to-list 'projectile-project-root-files-bottom-up "BUILD"))
@@ -1457,6 +1433,10 @@ Version: 2018-08-02 2022-05-18"
                       (directory-file-name
                        (file-name-directory (file-truename (executable-find "flutter"))))))))
 
+(use-package flutter-l10n-flycheck
+  :after flutter
+  :config (flutter-l10n-flycheck-setup))
+
 ;; Incremental code parsing for better syntax highlighting
 (use-package tree-sitter
   :ensure t
@@ -1469,23 +1449,6 @@ Version: 2018-08-02 2022-05-18"
 (use-package tree-sitter-langs
   :ensure t
   :after tree-sitter)
-
-
-;; (defun my/format-sql ()
-;;   "Format active region otherwise format the entire buffer."
-;;   (interactive)
-;;   (if (region-active-p)
-;;       (sql-format-region (region-beginning) (region-end))
-;;     (sql-format-buffer)))
-
-;; (with-eval-after-load 'sql
-;;   (add-hook 'sql-mode-hook 'flymake-sqlfluff-load)
-;;   (add-hook 'sql-mode-hook 'flymake-mode)
-;;   (define-key sql-mode-map (kbd "C-c C-f") 'my/format-sql))
-
-;; SQL linter using sqlfluff
-;; (use-package flymake-sqlfluff
-;;   :ensure t)
 
 ;; Org tree slide
 (use-package hide-mode-line
@@ -2156,25 +2119,6 @@ Get it from:  <http://hasseg.org/trash/>"
       ))
   (lsp-mode . lsp-enable-which-key-integration)
   :config
-  ;; copy from [极简Emacs开发环境配置](https://huadeyu.tech/tools/emacs-setup-notes.html)
-  ;; (add-hook 'go-mode-hook #'lsp)
-  ;; (add-hook 'python-mode-hook #'lsp)
-  ;; (add-hook 'c++-mode-hook #'lsp)
-  ;; (add-hook 'c-mode-hook #'lsp)
-  ;; (add-hook 'rust-mode-hook #'lsp)
-  ;; (add-hook 'html-mode-hook #'lsp)
-  ;; (add-hook 'php-mode-hook #'lsp)
-  ;;(add-hook 'js-mode-hook #'lsp)
-  ;;(add-hook 'typescript-mode-hook #'lsp)
-  ;; (add-hook 'json-mode-hook #'lsp)
-  ;; (add-hook 'yaml-mode-hook #'lsp)
-  ;; (add-hook 'dockerfile-mode-hook #'lsp)
-  ;; (add-hook 'shell-mode-hook #'lsp)
-  ;; (add-hook 'css-mode-hook #'lsp)
-  ;; (add-hook 'lua-mode-hook #'lsp)
-  ;; copy from https://sagot.dev/en/articles/emacs-typescript/
-  ;; (add-hook 'typescript-mode-hook 'lsp-deferred)
-  ;;(add-hook 'javascript-mode-hook 'lsp-deferred)
   (with-eval-after-load "lsp-rust"
     (lsp-register-client
      (make-lsp-client
@@ -2196,20 +2140,12 @@ Get it from:  <http://hasseg.org/trash/>"
                          (lsp-rust-analyzer-inlay-hints-mode)))
       :ignore-messages nil
       :server-id 'rust-analyzer-remote)))
-  ;; (with-eval-after-load "lsp-php"
-  ;;   (if (featurep 'no-littering)
-  ;;       (setq
-  ;;        lsp-intelephense-storage-path (no-littering-expand-var-file-name "lsp-cache")
-  ;;        lsp-intelephense-global-storage-path (no-littering-expand-var-file-name "intelephense"))
-  ;;     )
-  ;;   )
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
                     :major-modes '(python-mode)
                     :server-id 'pyls))
   (setq company-minimum-prefix-length 1
         company-idle-delay 0.500) ;; default is 0.2
-  ;;(require 'lsp-clients)
   (setq lsp-completion-provider :none) ;; 阻止 lsp 重新设置 company-backend 而覆盖我们 yasnippet 的设置
   (setq lsp-headerline-breadcrumb-enable t)
 
@@ -2224,7 +2160,6 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; lua
   ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
   (setq
-   ;; "/usr/local/Cellar/lua-language-server/3.6.6/"
    lsp-clients-lua-language-server-install-dir (substring (file-name-directory (file-truename (executable-find "lua-language-server"))) 0 -4)
    lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
    lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
@@ -2289,7 +2224,6 @@ Get it from:  <http://hasseg.org/trash/>"
    lsp-modeline-diagnostics-enable nil
    lsp-ui-peek-always-show t
    lsp-ui-sideline-ignore-duplicate t)
-  ;; (setq-local flycheck-checker 'python-flake8)
   )
 
 (use-package yasnippet
@@ -2615,32 +2549,32 @@ Get it from:  <http://hasseg.org/trash/>"
     (declare-function all-the-icons-octicon 'all-the-icons)
     (setq company-box-icons-all-the-icons
           `((Unknown . ,(all-the-icons-material "find_in_page" :height 1.0 :v-adjust -0.2))
-                        (Text . ,(all-the-icons-faicon "text-width" :height 1.0 :v-adjust -0.02))
-                        (Method . ,(all-the-icons-faicon "cube" :height 1.0 :v-adjust -0.02 :face 'all-the-icons-purple))
-                        (Function . ,(all-the-icons-faicon "cube" :height 1.0 :v-adjust -0.02 :face 'all-the-icons-purple))
-                        (Constructor . ,(all-the-icons-faicon "cube" :height 1.0 :v-adjust -0.02 :face 'all-the-icons-purple))
-                        (Field . ,(all-the-icons-octicon "tag" :height 1.1 :v-adjust 0 :face 'all-the-icons-lblue))
-                        (Variable . ,(all-the-icons-octicon "tag" :height 1.1 :v-adjust 0 :face 'all-the-icons-lblue))
-                        (Class . ,(all-the-icons-material "settings_input_component" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-orange))
-                        (Interface . ,(all-the-icons-material "share" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-lblue))
-                        (Module . ,(all-the-icons-material "view_module" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-lblue))
-                        (Property . ,(all-the-icons-faicon "wrench" :height 1.0 :v-adjust -0.02))
-                        (Unit . ,(all-the-icons-material "settings_system_daydream" :height 1.0 :v-adjust -0.2))
-                        (Value . ,(all-the-icons-material "format_align_right" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-lblue))
-                        (Enum . ,(all-the-icons-material "storage" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-orange))
-                        (Keyword . ,(all-the-icons-material "filter_center_focus" :height 1.0 :v-adjust -0.2))
-                        (Snippet . ,(all-the-icons-material "format_align_center" :height 1.0 :v-adjust -0.2))
-                        (Color . ,(all-the-icons-material "palette" :height 1.0 :v-adjust -0.2))
-                        (File . ,(all-the-icons-faicon "file-o" :height 1.0 :v-adjust -0.02))
-                        (Reference . ,(all-the-icons-material "collections_bookmark" :height 1.0 :v-adjust -0.2))
-                        (Folder . ,(all-the-icons-faicon "folder-open" :height 1.0 :v-adjust -0.02))
-                        (EnumMember . ,(all-the-icons-material "format_align_right" :height 1.0 :v-adjust -0.2))
-                        (Constant . ,(all-the-icons-faicon "square-o" :height 1.0 :v-adjust -0.1))
-                        (Struct . ,(all-the-icons-material "settings_input_component" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-orange))
-                        (Event . ,(all-the-icons-octicon "zap" :height 1.0 :v-adjust 0 :face 'all-the-icons-orange))
-                        (Operator . ,(all-the-icons-material "control_point" :height 1.0 :v-adjust -0.2))
-                        (TypeParameter . ,(all-the-icons-faicon "arrows" :height 1.0 :v-adjust -0.02))
-                        (Template . ,(all-the-icons-material "format_align_left" :height 1.0 :v-adjust -0.2)))
+            (Text . ,(all-the-icons-faicon "text-width" :height 1.0 :v-adjust -0.02))
+            (Method . ,(all-the-icons-faicon "cube" :height 1.0 :v-adjust -0.02 :face 'all-the-icons-purple))
+            (Function . ,(all-the-icons-faicon "cube" :height 1.0 :v-adjust -0.02 :face 'all-the-icons-purple))
+            (Constructor . ,(all-the-icons-faicon "cube" :height 1.0 :v-adjust -0.02 :face 'all-the-icons-purple))
+            (Field . ,(all-the-icons-octicon "tag" :height 1.1 :v-adjust 0 :face 'all-the-icons-lblue))
+            (Variable . ,(all-the-icons-octicon "tag" :height 1.1 :v-adjust 0 :face 'all-the-icons-lblue))
+            (Class . ,(all-the-icons-material "settings_input_component" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-orange))
+            (Interface . ,(all-the-icons-material "share" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-lblue))
+            (Module . ,(all-the-icons-material "view_module" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-lblue))
+            (Property . ,(all-the-icons-faicon "wrench" :height 1.0 :v-adjust -0.02))
+            (Unit . ,(all-the-icons-material "settings_system_daydream" :height 1.0 :v-adjust -0.2))
+            (Value . ,(all-the-icons-material "format_align_right" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-lblue))
+            (Enum . ,(all-the-icons-material "storage" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-orange))
+            (Keyword . ,(all-the-icons-material "filter_center_focus" :height 1.0 :v-adjust -0.2))
+            (Snippet . ,(all-the-icons-material "format_align_center" :height 1.0 :v-adjust -0.2))
+            (Color . ,(all-the-icons-material "palette" :height 1.0 :v-adjust -0.2))
+            (File . ,(all-the-icons-faicon "file-o" :height 1.0 :v-adjust -0.02))
+            (Reference . ,(all-the-icons-material "collections_bookmark" :height 1.0 :v-adjust -0.2))
+            (Folder . ,(all-the-icons-faicon "folder-open" :height 1.0 :v-adjust -0.02))
+            (EnumMember . ,(all-the-icons-material "format_align_right" :height 1.0 :v-adjust -0.2))
+            (Constant . ,(all-the-icons-faicon "square-o" :height 1.0 :v-adjust -0.1))
+            (Struct . ,(all-the-icons-material "settings_input_component" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-orange))
+            (Event . ,(all-the-icons-octicon "zap" :height 1.0 :v-adjust 0 :face 'all-the-icons-orange))
+            (Operator . ,(all-the-icons-material "control_point" :height 1.0 :v-adjust -0.2))
+            (TypeParameter . ,(all-the-icons-faicon "arrows" :height 1.0 :v-adjust -0.02))
+            (Template . ,(all-the-icons-material "format_align_left" :height 1.0 :v-adjust -0.2)))
           company-box-icons-alist 'company-box-icons-all-the-icons)))
 ;; -CompanyBoxPac
 
@@ -2670,13 +2604,7 @@ Get it from:  <http://hasseg.org/trash/>"
     (if current-prefix-arg
         (call-interactively 'dap-debug)
       (dap-debug-last)))
-  ;;(require 'dap-gdb-lldb)
-  ;;(dap-gdb-lldb-setup)
-  ;;(require 'dap-codelldb)
-  ;;(dap-codelldb-setup)
   (require 'dap-cpptools)
-  ;;(dap-cpptools-setup)
-  ;; (require 'dap-lldb)
   (require 'dap-chrome)
   (dap-chrome-setup)
   :hook
@@ -3145,23 +3073,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
         (toggle-truncate-lines 1))
       buf))
   (advice-add #'deadgrep--buffer :around #'my/deadgrep-fix-buffer-advice))
-
-;; perspective 在 Emacs 中标记工作区，类似于窗口管理器中的工作区，窗口管理器类似 Awesome 和 XMonad
-;; (use-package perspective
-;;   :demand t
-;;   :init
-;;   ;; (setq persp-show-modestring 'header)
-;;   (setq persp-sort 'created)
-;;   (setq persp-suppress-no-prefix-key-warning t)
-;;   :bind (("C-M-k" . persp-switch)
-;;          ("C-M-n" . persp-next)
-;;          ("C-x k" . persp-kill-buffer*))
-;;   :custom
-;;   (persp-initial-frame-name "Pinfo")
-;;   :config
-;;   ;; Running `persp-mode' multiple times resets the perspective list...
-;;   (unless (equal persp-mode t)
-;;     (persp-mode)))
 
 (use-package flycheck-package
   :after flycheck
@@ -4539,11 +4450,6 @@ FACE defaults to inheriting from default and highlight."
   ("C-x 7 d" . watch-other-window-up)
   ;; 隔壁窗口向下翻一屏
   ("C-x 7 u" . watch-other-window-down)
-  ;; (define-key evil-motion-state-map (kbd "C-j") #'watch-other-window-up-line)
-  ;; (define-key evil-motion-state-map (kbd "C-k") #'watch-other-window-down-line)
-  ;; (define-key evil-motion-state-map (kbd "M-j") #'watch-other-window-up)
-  ;; (define-key evil-motion-state-map (kbd "M-k") #'watch-other-window-down)
-  ;; )
   )
 
 (use-package vc-svn
@@ -4864,19 +4770,6 @@ FACE defaults to inheriting from default and highlight."
              docker-build
              docker-build-buffer
              hydra-docker/body)
-  ;; :init (progn
-  ;;         (use-package docker-image
-  ;;           :commands docker-images)
-  ;;         (use-package docker-container
-  ;;           :commands docker-containers)
-  ;;         (use-package docker-volume
-  ;;           :commands docker-volumes)
-  ;;         (use-package docker-network
-  ;;           :commands docker-containers)
-  ;;         (use-package docker-machine
-  ;;           :commands docker-machines)
-  ;;         (use-package docker-compose
-  ;;           :commands docker-compose))
   :bind ("C-c d" . docker-containers)
   :hydra (hydra-docker (:columns 5 :color blue)
                        "Docker"
@@ -4886,21 +4779,6 @@ FACE defaults to inheriting from default and highlight."
                        ("n" docker-networks "Networks")
                        ("b" dockerfile-build-buffer "Build Buffer")
                        ("q" nil "Quit")))
-
-;; (use-package undo-tree
-;;   :ensure t
-;;   :init (global-undo-tree-mode)
-;;   :after hydra
-;;   :bind ("C-x C-h u" . hydra-undo-tree/body)
-;;   :hydra (hydra-undo-tree (:hint nil)
-;;                           "
-;;   _p_: undo  _n_: redo _s_: save _l_: load   "
-;;                           ("p"   undo-tree-undo)
-;;                           ("n"   undo-tree-redo)
-;;                           ("s"   undo-tree-save-history)
-;;                           ("l"   undo-tree-load-history)
-;;                           ("u"   undo-tree-visualize "visualize" :color blue)
-;;                           ("q"   nil "quit" :color blue)))
 
 ;; NOTE: hydra and posframe are required
 (use-package hydra-posframe
@@ -5017,21 +4895,6 @@ FACE defaults to inheriting from default and highlight."
 
   )
 
-;; (use-package undo-tree
-;;   :ensure t
-;;   :init (global-undo-tree-mode)
-;;   :after hydra
-;;   :bind ("C-x C-h u" . hydra-undo-tree/body)
-;;   :hydra (hydra-undo-tree (:hint nil)
-;;   "
-;;   _p_: undo  _n_: redo _s_: save _l_: load   "
-;;   ("p"   undo-tree-undo)
-;;   ("n"   undo-tree-redo)
-;;   ("s"   undo-tree-save-history)
-;;   ("l"   undo-tree-load-history)
-;;   ("u"   undo-tree-visualize "visualize" :color blue)
-;;   ("q"   nil "quit" :color blue)))
-
 (use-package pdf-tools
   :straight
   (pdf-tools :type git :host github :repo "vedang/pdf-tools")
@@ -5044,7 +4907,7 @@ FACE defaults to inheriting from default and highlight."
   :config
   (setq-default pdf-view-display-size 'fit-page)
   (setq pdf-annot-activate-created-annotations t)
- )
+  )
 
 ;; save pdf reading page
 (use-package saveplace-pdf-view
@@ -5060,84 +4923,6 @@ FACE defaults to inheriting from default and highlight."
   (ink :type git :host github :repo "foxfriday/ink")
   )
 
-
-;; (use-package eaf
-;;   :ensure t
-;;   :straight (:host github :repo "emacs-eaf/emacs-application-framework" :files (:defaults "*")
-;;                    ;; :post-build ("python" "install-eaf.py" "--install-core-deps")
-;;                    ;; :includes (eaf-pdf-viewer eaf-browser) ; Straight won't try to search for these packages when we make further use-package invocations for them
-;;                    :post-build (("python3" "install-eaf.py" "--install-core-deps"))
-;;                    )
-;;   ;; :commands eaf-file-sender-qrcode-in-dired +eaf-open-mail-as-html +browse-url-eaf
-;;   :custom
-;;   (eaf-apps-to-install '(browser org-previewer pdf-viewer markdown-previewer video-player))
-;;   (eaf-start-python-process-when-require t)
-;;   (browse-url-browser-function #'eaf-open-browser) ;; Make EAF Browser my default browser
-;;   (eaf-browser-dark-mode nil)
-;;   (eaf-browser-enable-adblocker t)
-;;   (eaf-webengine-continue-where-left-off t)
-;;   (eaf-webengine-default-zoom 1.25)
-;;   (eaf-webengine-scroll-step 200)
-;;   (eaf-file-manager-show-preview nil)
-;;   ;; (eaf-pdf-dark-mode "ignore")
-;;   (eaf-config-location (no-littering-expand-var-file-name "eaf/"))
-;;   (eaf-kill-process-after-last-buffer-closed t)
-;;   (eaf-fullscreen-p nil)
-;;   (eaf-pdf-outline-buffer-indent 2)
-
-;;   :demand
-;;   :bind
-;;   ;; (("C-x j" . eaf-open-in-file-manager)
-;;   ;;  ("M-z r" . eaf-open-rss-reader)
-;;   ;;  ("M-m r" . eaf-open-rss-reader))
-;;   :config
-;;   ;; Try to load enabled apps, and install them if they aren't installed
-;;   (let (not-installed-apps)
-;;     (dolist (app eaf-apps-to-install)
-;;       (unless (require (intern (format "eaf-%s" app)) nil t)
-;;         (push app not-installed-apps)))
-;;     (when not-installed-apps
-;;       (warn "Some apps are not installed: %s" not-installed-apps)))
-;;   )
-
-;; (defun my-eaf-install-deps(app-dir)
-;;   "Install deps from dependencies.json."
-;;   (let* ((deps-dict (with-temp-buffer
-;;                       (insert-file-contents (expand-file-name "dependencies.json" app-dir))
-;;                       (json-parse-string (buffer-string))))
-;;          (pip-deps (gethash "mac" (or (gethash "pip3" deps-dict) (make-hash-table))))
-;;          (vue-install (gethash "vue_install" deps-dict))
-;;          (npm-install (gethash "npm_install" deps-dict))
-;;          (npm-rebuild (gethash "npm_rebuild" deps-dict))
-;;          (npm-cmd (if (memq system-type '(cygwin windows-nt ms-dos mac)) "npm" "npm")))
-;;     (when pip-deps
-;;       (dolist (pkg (append pip-deps nil))
-;;         (message "%s" (shell-command-to-string (format "pip3 install %s" pkg)))))
-;;     (when vue-install
-;;       (let ((default-directory app-dir))
-;;         (message "%s" (shell-command-to-string (format "%s install" npm)))
-;;         (message "%s" (shell-command-to-string (format "%s run build" npm)))))
-;;     (when npm-install
-;;       (let ((default-directory app-dir))
-;;         (message "%s" (shell-command-to-string (format "%s install" npm)))))
-;;     (when npm-rebuild
-;;       (let ((default-directory app-dir))
-;;         (message "%s" (shell-command-to-string (format "%s rebuild" npm)))))))
-
-;; ;; (use-package eaf-browser
-;; ;; :after (eaf)
-;; ;; :straight (eaf-browser :type git :host github :repo "emacs-eaf/eaf-browser" :files ("*")
-;; ;; :post-build (my-eaf-install-deps (straight--build-dir "eaf-browser"))))
-
-;; (use-package eaf-pdf-viewer
-;;   :after (eaf)
-;;   :straight (eaf-pdf-viewer :type git :host github :repo "emacs-eaf/eaf-pdf-viewer" :files ("*")
-;;                             :post-build (my-eaf-install-deps (straight--build-dir "eaf-pdf-viewer"))))
-
-;; ;; (use-package eaf-markdown-previewer
-;; ;;   :after (eaf)
-;; ;;   :straight (eaf-markdown-previewer :type git :host github :repo "emacs-eaf/eaf-markdown-previewer" :files ("*")
-;; ;;                                     :post-build (my-eaf-install-deps (straight--build-dir "eaf-markdown-previewer"))))
 (use-package query-replace-many
   :ensure t
   :straight
@@ -5170,31 +4955,6 @@ FACE defaults to inheriting from default and highlight."
     (advice-add #'nov-content-unique-identifier :override #'my-nov-content-unique-identifier))
   )
 
-
-;; emacspeak (manual config, no ensure)
-;; (use-package emacspeak  ;; Emacspeak setup
-;;   ;; :straight
-;;   ;; (emacspeak :type git :host github :repo "tvraman/emacspeak" :files (:defaults "*")
-;;   ;;            ;; :post-build ((shell-command "make config") (shell-command "make"))
-;;   ;;            :post-build (("make" "config") ("make" "emacspeak") ("make" "espeak"))
-;;   :config
-;; ;;   (require 'cl-lib)
-;;    (setq load-path (cons "~/.emacs.d/straight/build/emacspeak/lisp" load-path))
-;; ;;   (setq emacspeak-directory "~/.emacs.d/straight/build/emacspeak")
-;; ;;   (setq dtk-program "mac")
-;; ;;   (require 'emacspeak-setup)
-;; ;;   (require 'mac-voices)
-;; ;;   (emacspeak-tts-startup-hook)
-;; ;;   (dtk-set-rate 300 t)
-;;   (setq emacspeak-directory "~/.emacs.d/straight/repos/emacspeak")
-;;   ;; (load-file "~/.emacs.d/straight/repos/emacspeak/lisp/emacspeak-setup.el")
-
-;; ;;   ;; Fix a warning on every exit with emacspeak mac server
-;; ;;   (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-;; ;;     "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-;; ;;     (cl-letf (((symbol-function #'process-list) (lambda ())))
-;; ;;       ad-do-it)))
-;;   )
 
 ;; Ctags IDE on the True Editor
 ;; @see https://github.com/universal-ctags/citre#quick-start
@@ -5349,8 +5109,7 @@ Fallback to `xref-go-back'."
 
 ;; run app from desktop without emulator
 (use-package hover
-  :ensure t
-	)
+  :ensure t)
 
 ;; Julia
 (use-package lsp-julia

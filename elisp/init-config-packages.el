@@ -4143,9 +4143,16 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 (use-package gdb-mi
   :ensure t
+  :custom
+  (gud-chdir-before-run nil)
+  ;;(setq gdb-use-separate-io-buffer t)
+  ;;(setq gud-tooltip-echo-area t)
   :defer t
-  :init (setq gdb-many-windows t
-              gdb-show-main t))
+  :init
+  (setq gdb-many-windows t
+              gdb-show-main t)
+ :hook
+  (gdb-mode . gud-tooltip-mode))
 
 
 ;; 将不同类型的buffer分组切换

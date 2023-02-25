@@ -1398,8 +1398,14 @@ Version: 2018-08-02 2022-05-18"
     (compile (format "dart %s" (buffer-file-name))))
   (with-eval-after-load "projectile"
     (add-to-list 'projectile-project-root-files-bottom-up "pubspec.yaml")
-    (add-to-list 'projectile-project-root-files-bottom-up "BUILD"))
-  :hook (dart-mode . flutter-test-mode)
+    (add-to-list 'projectile-project-root-files-bottom-up "BUILD")
+    (add-to-list 'projectile-globally-ignored-file-suffixes "inject.dart")
+    (add-to-list 'projectile-globally-ignored-file-suffixes "inject.summary")
+   )
+  :hook
+  ((dart-mode . flutter-test-mode)
+   (dart-mode . lsp-mode)
+   )
   )
 
 ;; copy from https://devbins.github.io/post/emacs_flutter/
@@ -2979,6 +2985,15 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :init
   (advice-add #'register-preview :override #'consult-register-window)
   :config
+  (defun start-with-current-line (lines)
+    (cl-loop
+     with current = (line-number-at-pos (point) consult-line-numbers-widen)
+     for (line . after) on (cdr lines)
+     while (< (cdr (get-text-property 0 'consult-location line)) current)
+     collect line into before
+     finally (return (cons (car lines) (append after before)))))
+
+  (advice-add 'consult--line-candidates :filter-return #'start-with-current-line)
   (setq
    consult-preview-key  nil
    register-preview-delay 0.5

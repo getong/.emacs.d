@@ -2180,8 +2180,21 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; :requires use-package-hydra
   :commands lsp-ui-mode
   :custom-face
+  ;; (lsp-ui-doc-background :inherit 'tooltip)
+  ;; (lsp-ui-peek-filename :inherit 'mode-line-buffer-id)
+  ;; (lsp-ui-peek-header :foreground fg :background (doom-lighten bg 0.1) :bold bold)
+  ;; (lsp-ui-peek-selection :foreground bg :background blue :bold bold)
+  ;; (lsp-ui-peek-list :background (doom-darken bg 0.1))
+  ;; (lsp-ui-peek-peek :background (doom-darken bg 0.1))
+  ;; (lsp-ui-peek-highlight :inherit 'lsp-ui-peek-header :background region :foreground bg :box t)
+  ;; (lsp-ui-peek-line-number :foreground success)
+  ;; (lsp-ui-sideline-code-action :foreground (doom-blend highlight bg 0.85))
+  ;; (lsp-ui-sideline-current-symbol :inherit 'highlight)
+  ;; (lsp-ui-sideline-symbol-info :foreground (doom-blend comments bg 0.85)
+  ;;                              :background bg-alt :extend t)
   (lsp-ui-doc-background ((t (:background "yellow"))))
   (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+  (lsp-ui-peek-highlight ((t (:inherit nil :background nil :foreground nil :weight semi-bold :box (:line-width -1)))))
   :bind
   (:map lsp-ui-mode-map
         ;; 查询符号定义：使用 LSP 来查询。通常是 M-.

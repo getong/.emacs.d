@@ -1986,7 +1986,8 @@ Get it from:  <http://hasseg.org/trash/>"
   :init
   (setq rustic-treesitter-derive t)
   :custom
-  (rustic-analyzer-command '("rustup" "run" "nightly" "rust-analyzer"))
+  ;; (rustic-analyzer-command '("rustup" "run" "nightly" "rust-analyzer"))
+  (rustic-analyzer-command (list (string-trim (shell-command-to-string "rustup which rust-analyzer"))))
   :bind (:map rustic-mode-map
               ("M-j" . lsp-ui-imenu)
               ("M-?" . lsp-find-references)
@@ -2095,6 +2096,8 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; (vconcat ["**/exclude_me/**"] lsp-intelephense-files-exclude))
   ;; Reduce max file size to 100kb
   (lsp-intelephense-files-max-size 100000)
+  ;; copy from https://fasterthanli.me/articles/the-bottom-emoji-breaks-rust-analyzer
+  (lsp-rust-analyzer-server-command (list (string-trim (shell-command-to-string "rustup which rust-analyzer"))))
 
   :hook
   ;; (php-mode . lsp)
@@ -2176,6 +2179,9 @@ Get it from:  <http://hasseg.org/trash/>"
   :after (lsp-mode)
   ;; :requires use-package-hydra
   :commands lsp-ui-mode
+  :custom-face
+  (lsp-ui-doc-background ((t (:background "yellow"))))
+  (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
   :bind
   (:map lsp-ui-mode-map
         ;; 查询符号定义：使用 LSP 来查询。通常是 M-.
@@ -2682,26 +2688,26 @@ Get it from:  <http://hasseg.org/trash/>"
 
 
 ;; copy from https://zenn.dev/yukit/articles/25a88b33a35633
-(cond
- ((string-equal system-type "windows-nt") ; Microsoft Windows
-  (progn
-    (add-to-list 'exec-path (expand-file-name  "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin"))
-    (add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
-    ))
- ((string-equal system-type "darwin") ; Mac OS X
-  (progn
-    (add-to-list 'exec-path (expand-file-name  "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin"))
-    (add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
-    (setq rustic-analyzer-command '("~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
-    (setq lsp-rust-analyzer-server-command '("~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
-    ))
- ((string-equal system-type "gnu/linux") ; linux
-  (progn
-    (add-to-list 'exec-path (expand-file-name "/backup/backup/rust_installation/cargo/bin"))
-    (add-to-list 'exec-path (expand-file-name "/backup/backup/rust_installation/rustup/toolchains/nightly-x86_64-apple-darwin/bin"))
-    (setq rustic-analyzer-command '("/backup/backup/rust_installation/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"))
-    (setq lsp-rust-analyzer-server-command '("/backup/backup/rust_installation/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"))
-    )))
+;; (cond
+;;  ((string-equal system-type "windows-nt") ; Microsoft Windows
+;;   (progn
+;;     (add-to-list 'exec-path (expand-file-name  "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin"))
+;;     (add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
+;;     ))
+;;  ((string-equal system-type "darwin") ; Mac OS X
+;;   (progn
+;;     (add-to-list 'exec-path (expand-file-name  "~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin"))
+;;     (add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
+;;     (setq rustic-analyzer-command '("~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
+;;     (setq lsp-rust-analyzer-server-command '("~/.rustup/toolchains/nightly-x86_64-apple-darwin/bin/rust-analyzer"))
+;;     ))
+;;  ((string-equal system-type "gnu/linux") ; linux
+;;   (progn
+;;     (add-to-list 'exec-path (expand-file-name "/backup/backup/rust_installation/cargo/bin"))
+;;     (add-to-list 'exec-path (expand-file-name "/backup/backup/rust_installation/rustup/toolchains/nightly-x86_64-apple-darwin/bin"))
+;;     (setq rustic-analyzer-command '("/backup/backup/rust_installation/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"))
+;;     (setq lsp-rust-analyzer-server-command '("/backup/backup/rust_installation/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"))
+;;     )))
 
 
 ;; 正在从ivy、swiper、counsel、hydra转向vertico、consult、embark、orderless。
@@ -2718,6 +2724,10 @@ Get it from:  <http://hasseg.org/trash/>"
                ("M-RET" . vertico-exit-input)
                ("DEL" . vertico-directory-delete-char)
                ("M-DEL" . vertico-directory-delete-word)))
+  :custom
+  (vertico-cycle t)
+  :custom-face
+  (vertico-current ((t (:background "green" :weight bold :foreground "blue"))))
   :init
   (setq vertico-resize nil
         vertico-scroll-margin 0
@@ -2894,7 +2904,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package consult
   ;; :demand
   :bind
-
   (
    ;; 重新映射命令
    ;; ([remap goto-line] . consult-goto-line)
@@ -5197,6 +5206,8 @@ Fallback to `xref-go-back'."
   (run-command-default-runner #'run-command-runner-vterm)
   (run-command-recipes '(run-command-recipe))
   )
+
+;; 如果你用emacs打开一个文件，却编辑不了它（提示该buffer是read-only的），那么用Ctrl-x，Ctrl-q就可以解除锁定。
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

@@ -5351,16 +5351,9 @@ Fallback to `xref-go-back'."
 (use-package devdocs
   :autoload (devdocs--installed-docs devdocs--available-docs)
   :bind (:map prog-mode-map
-              ;; ("M-<f1>" . devdocs-dwim)
+              ("M-<f1>" . devdocs-dwim)
               ("C-h D"  . devdocs-dwim))
   :init
-  ;; (setq devdocs-lang-list
-  ;;       '(
-  ;;         '((name . "Rust") (slug . "rust") (type . "rust") (links (home . "https://www.rust-lang.org/") (code . "https://github.com/rust-lang/rust")) (release . "1.65.0") (mtime . 1668056584) (db_size . 55992577) (attribution . "&copy; 2010 The Rust Project Developers<br>
-  ;;     Licensed under the Apache License, Version 2.0 or the MIT license, at your option."))
-
-  ;;         )
-  ;; '('("rust") '("elisp") '("julia~1.8") '("dart~2")))
   (defconst devdocs-major-mode-docs-alist
     '((c-mode          . ("c"))
       (c++-mode        . ("cpp"))
@@ -5400,22 +5393,13 @@ Install the doc if it's not installed."
          (mapc
           (lambda (doc)
             (when (string= (alist-get 'slug doc) slug)
-              (message doc)
               (devdocs-install doc)))
           (devdocs--available-docs))))
      (alist-get major-mode devdocs-major-mode-docs-alist))
 
     ;; Lookup the symbol at point
-    (devdocs-lookup nil (thing-at-point 'symbol t)))
-  :config
-  ;; (devdocs--available-docs)
-  ;; (dolist (doc-package devdocs-lang-list)
-  ;; (call-interactively (devdocs-install doc-package)))
+    (devdocs-lookup nil (thing-at-point 'symbol t))))
 
-  ;; (call-interactively (devdocs-install '("rust")))
-  ;;   )
-
-  )
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

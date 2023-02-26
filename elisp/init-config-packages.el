@@ -5371,6 +5371,7 @@ Fallback to `xref-go-back'."
       (css-mode        . ("css"))
       (html-mode       . ("html"))
       (julia-mode      . ("julia~1.8"))
+      (dart-mode      . ("dart~2"))
       (js-mode         . ("javascript" "jquery"))
       (js2-mode        . ("javascript" "jquery"))
       (emacs-lisp-mode . ("elisp")))

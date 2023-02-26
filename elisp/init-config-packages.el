@@ -279,10 +279,10 @@
            (dest (vundo-m-parent source)))
       (if (or (not dest) (eq source dest))
           (message "vundo diff not available.")
-	    (let ((buf (make-temp-name (concat (buffer-name orig) "-vundo-diff"))))
+	      (let ((buf (make-temp-name (concat (buffer-name orig) "-vundo-diff"))))
           (vundo--move-to-node source dest orig vundo--prev-mod-list)
           (with-current-buffer (get-buffer-create buf)
-	        (insert-buffer orig))
+	          (insert-buffer orig))
           (vundo--refresh-buffer orig (current-buffer) 'incremental)
           (vundo--move-to-node dest source orig vundo--prev-mod-list)
           (vundo--refresh-buffer orig (current-buffer) 'incremental)
@@ -1279,9 +1279,9 @@ Version: 2018-08-02 2022-05-18"
     "Keycast mode"
     :global t
     (if keycast-mode
-	(progn
-	  (add-to-list 'global-mode-string '("" keycast-mode-line " "))
-	  (add-hook 'pre-command-hook 'keycast--update t) )
+	      (progn
+	        (add-to-list 'global-mode-string '("" keycast-mode-line " "))
+	        (add-hook 'pre-command-hook 'keycast--update t) )
       (remove-hook 'pre-command-hook 'keycast--update)
       (setq global-mode-string (delete '("" keycast-mode-line " ") global-mode-string)))))
 ;; 在后面，上面在前面
@@ -1401,7 +1401,7 @@ Version: 2018-08-02 2022-05-18"
     (add-to-list 'projectile-project-root-files-bottom-up "BUILD")
     (add-to-list 'projectile-globally-ignored-file-suffixes "inject.dart")
     (add-to-list 'projectile-globally-ignored-file-suffixes "inject.summary")
-   )
+    )
   :hook
   ((dart-mode . flutter-test-mode)
    (dart-mode . lsp-mode)
@@ -2676,7 +2676,7 @@ Get it from:  <http://hasseg.org/trash/>"
   (setq dap-lldb-debug-program '((executable-find "lldb-vscode")))
   ;; ask user for executable to debug if not specified explicitly (c++)
   (setq dap-lldb-debugged-program-function
-	    (lambda () (read-file-name "Select file to debug: "))))
+	      (lambda () (read-file-name "Select file to debug: "))))
 
 ;; copy from https://gitter.im/emacs-lsp/lsp-mode?at=5f7fea9824a20801a8d60649
 (use-package rust-mode
@@ -3042,13 +3042,13 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :ensure nil
   :hook (after-init . savehist-mode)
   :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
-	          history-length 1000
-	          savehist-additional-variables '(mark-ring
-					                          global-mark-ring
-					                          search-ring
-					                          regexp-search-ring
-					                          extended-command-history)
-	          savehist-autosave-interval 300)
+	            history-length 1000
+	            savehist-additional-variables '(mark-ring
+					                                    global-mark-ring
+					                                    search-ring
+					                                    regexp-search-ring
+					                                    extended-command-history)
+	            savehist-autosave-interval 300)
   :config
   ;; (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
   (setq savehist-file (no-littering-expand-var-file-name "savehist")
@@ -3365,10 +3365,10 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (defun --set-emoji-font (frame)
     "Adjust the font settings of FRAME so Emacs can display emoji properly."
     (if (eq system-type 'darwin)
-	    ;; For NS/Cocoa
-	    (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
-	  ;; For Linux
-	  (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
+	      ;; For NS/Cocoa
+	      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+	    ;; For Linux
+	    (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
 
   ;; For when Emacs is started in GUI mode:
   (--set-emoji-font nil)
@@ -3455,7 +3455,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :diminish dumb-jump-mode
   :pretty-hydra
   ((:title (pretty-hydra-title "Dump Jump" 'faicon "anchor")
-    :color blue :quit-key ("q" "C-g"))
+           :color blue :quit-key ("q" "C-g"))
    ("Jump"
     (("j" dumb-jump-go "Go")
      ("o" dumb-jump-go-other-window "Go other window")
@@ -3476,7 +3476,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (setq dumb-jump-prefer-searcher 'rg)
   :config
   (setq xref-show-definitions-function #'xref-show-definitions-completing-read)
- )
+  )
 
 
 ;; Color Identifier
@@ -3765,13 +3765,13 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (dimmer-fraction 0.5)
   (dimmer-exclusion-regexp-list
    '(".*Minibuf.*"
-	 ".*which-key.*"
-	 ".*NeoTree.*"
-	 ".*Messages.*"
-	 ".*Async.*"
-	 ".*Warnings.*"
-	 ".*LV.*"
-	 ".*Ilist.*"))
+	   ".*which-key.*"
+	   ".*NeoTree.*"
+	   ".*Messages.*"
+	   ".*Async.*"
+	   ".*Warnings.*"
+	   ".*LV.*"
+	   ".*Ilist.*"))
   :config
   (dimmer-mode t))
 
@@ -3814,12 +3814,12 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (setq wgrep-auto-save-buffer t
         wgrep-change-readonly-file t)
   :bind (:map wgrep-mode-map
-		      ;; Added keybinding to echo Magit behavior
-		      ("C-c C-c" . save-buffer)
-		      :map grep-mode-map
-		      ("e" . wgrep-change-to-wgrep-mode)
-		      :map ripgrep-search-mode-map
-		      ("e" . wgrep-change-to-wgrep-mode)))
+		          ;; Added keybinding to echo Magit behavior
+		          ("C-c C-c" . save-buffer)
+		          :map grep-mode-map
+		          ("e" . wgrep-change-to-wgrep-mode)
+		          :map ripgrep-search-mode-map
+		          ("e" . wgrep-change-to-wgrep-mode)))
 
 
 (use-package kind-icon
@@ -3882,73 +3882,73 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :hook (php-mode . flycheck-mode)
   :config
   (add-hook 'php-mode-hook
-	        #'(lambda ()
+	          #'(lambda ()
 	       ;;; PHP-mode settings:
                 (setq indent-tabs-mode nil
-		              c-basic-offset 4
+		                  c-basic-offset 4
                       php-template-compatibility nil)
 
                 (php-enable-psr2-coding-style)
 
 	       ;;; PHP_CodeSniffer settings:
                 ;; (use-package phpcbf
-	            ;; :init
-	            ;; (setq phpcbf-executable "~/.composer/vendor/squizlabs/php_codesniffer/scripts/phpcbf"
-	            ;; phpcbf-standard "PSR2"))
+	              ;; :init
+	              ;; (setq phpcbf-executable "~/.composer/vendor/squizlabs/php_codesniffer/scripts/phpcbf"
+	              ;; phpcbf-standard "PSR2"))
 
 	       ;;; Company-mode settings:
-	            ;; Using :with and company-sort-by-backend-importance makes
-	            ;; it so that company-lsp entries will always appear before
-	            ;; company-dabbrev-code.
+	              ;; Using :with and company-sort-by-backend-importance makes
+	              ;; it so that company-lsp entries will always appear before
+	              ;; company-dabbrev-code.
                 ;; TODO Add in support for company-gtags/capf
-	            (use-package company-php)
-	            (ac-php-core-eldoc-setup)
+	              (use-package company-php)
+	              (ac-php-core-eldoc-setup)
                 (setq-local company-dabbrev-char-regexp "\\\`$sw")
                 (setq-local company-dabbrev-code-everywhere t)
                 ;; (setq-local company-transformers '(company-sort-by-backend-importance))
-	            (set (make-local-variable 'company-backends)
-		             ;;'((company-ac-php-backend company-dabbrev-code)))
-		             ;;'((company-ac-php-backend company-dabbrev-code :separate)))
-		             '((company-dabbrev-code company-ac-php-backend)))
-	            ;;'((company-ac-php-backend :with company-dabbrev-code)))
+	              (set (make-local-variable 'company-backends)
+		                 ;;'((company-ac-php-backend company-dabbrev-code)))
+		                 ;;'((company-ac-php-backend company-dabbrev-code :separate)))
+		                 '((company-dabbrev-code company-ac-php-backend)))
+	              ;;'((company-ac-php-backend :with company-dabbrev-code)))
                 ;; '((company-lsp :with company-dabbrev-code)))
 
 	       ;;; LSP (Language Server Protocol) Settings:
                 ;; (add-to-list 'load-path "~/.emacs.d/lsp-php")
                 ;; (require 'lsp-php)
-	            ;; (custom-set-variables
-	            ;; Composer.json detection after Projectile.
-	            ;; 	'(lsp-php-workspace-root-detectors (quote (lsp-php-root-projectile lsp-php-root-composer-json lsp-php-root-vcs)))
-	            ;; )
+	              ;; (custom-set-variables
+	              ;; Composer.json detection after Projectile.
+	              ;; 	'(lsp-php-workspace-root-detectors (quote (lsp-php-root-projectile lsp-php-root-composer-json lsp-php-root-vcs)))
+	              ;; )
                 ;; (lsp-php-enable)
 
 	       ;;; Flycheck Settings:
-	            (defvar-local flycheck-checker 'php-phpcs)
+	              (defvar-local flycheck-checker 'php-phpcs)
                 (setq-local flycheck-check-syntax-automatically '(save))
 
 	       ;;; Key Bindings:
-	            ;; (dumb-jump-mode)
-	            ;; (ggtags-mode 1)
-	            ;; [J]ump to a function definition (at point)
+	              ;; (dumb-jump-mode)
+	              ;; (ggtags-mode 1)
+	              ;; [J]ump to a function definition (at point)
                 (local-set-key (kbd "C-c j") 'ac-php-find-symbol-at-point)
-	            ;; (local-set-key (kbd "C-c j") 'dumb-jump-go)
-	            ;; (local-set-key (kbd "C-c j") 'ggtags-find-definition)
+	              ;; (local-set-key (kbd "C-c j") 'dumb-jump-go)
+	              ;; (local-set-key (kbd "C-c j") 'ggtags-find-definition)
 
-	            ;; Find [r]eferences (at point)
-	            ;; (local-set-key (kbd "C-c r") 'ggtags-find-reference)
+	              ;; Find [r]eferences (at point)
+	              ;; (local-set-key (kbd "C-c r") 'ggtags-find-reference)
 
                 ;; Go [b]ack, after jumping
-	            ;; (local-set-key (kbd "C-c b") 'dumb-jump-back)
+	              ;; (local-set-key (kbd "C-c b") 'dumb-jump-back)
                 (local-set-key (kbd "C-c b") 'ac-php-location-stack-back)
-	            ;; (local-set-key (kbd "C-c b") 'ggtags-prev-mark)
+	              ;; (local-set-key (kbd "C-c b") 'ggtags-prev-mark)
 
                 ;; Go [f]orward
                 (local-set-key (kbd "C-c f") 'ac-php-location-stack-forward)
-	            ;; (local-set-key (kbd "C-c f") 'ggtags-next-mark)
+	              ;; (local-set-key (kbd "C-c f") 'ggtags-next-mark)
 
                 ;; [S]how a function definition (at point)
                 (local-set-key (kbd "C-c s") 'ac-php-show-tip)
-	            ;; (local-set-key (kbd "C-c q") 'dumb-jump-quick-look)
+	              ;; (local-set-key (kbd "C-c q") 'dumb-jump-quick-look)
 
                 ;; Re[m]ake the tags (after a source has changed)
                 (local-set-key (kbd "C-c m") 'ac-php-remake-tags)
@@ -3956,31 +3956,31 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
                 ;; Show [p]roject info
                 (local-set-key (kbd "C-c p") 'ac-php-show-cur-project-info)
 
-	            ;; Bring up [i]menu
-	            (local-set-key (kbd "C-c i") 'helm-imenu)))
+	              ;; Bring up [i]menu
+	              (local-set-key (kbd "C-c i") 'helm-imenu)))
   )
 
 
-	       ;; (require 'bind-key)
-	       ;; (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-               ;; (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+;; (require 'bind-key)
+;; (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+;; (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
 
-               ;; ;; [j]ump to definition
-               ;; (bind-key "C-c j" 'lsp-ui-peek-find-definitions)
-	       ;; ;; jump [f]oward
-	       ;; (bind-key "C-c f" 'lsp-ui-peek-jump-forward)
-	       ;; ;; jump [b]ack
-	       ;; (bind-key "C-c b" 'lsp-ui-peek-jump-backward)
-               ;; ;; find all [r]eferences
-               ;; (bind-key "C-c r" 'lsp-ui-peek-find-references)
-               ;; ;; [r]ename
-               ;; (bind-key "C-c r" 'lsp-rename)
-               ;; ;; [d]escribe thing at point
-               ;; (bind-key "C-c d" 'lsp-describe-thing-at-point)
-               ;; ;; show documentation [u]nder point
-               ;; (bind-key "C-c u" 'lsp-info-under-point)
-               ;; ;; [h]ighlight all relevant references to the symbol under point
-               ;; (bind-key "C-c h" 'lsp-symbol-highlight))))
+;; ;; [j]ump to definition
+;; (bind-key "C-c j" 'lsp-ui-peek-find-definitions)
+;; ;; jump [f]oward
+;; (bind-key "C-c f" 'lsp-ui-peek-jump-forward)
+;; ;; jump [b]ack
+;; (bind-key "C-c b" 'lsp-ui-peek-jump-backward)
+;; ;; find all [r]eferences
+;; (bind-key "C-c r" 'lsp-ui-peek-find-references)
+;; ;; [r]ename
+;; (bind-key "C-c r" 'lsp-rename)
+;; ;; [d]escribe thing at point
+;; (bind-key "C-c d" 'lsp-describe-thing-at-point)
+;; ;; show documentation [u]nder point
+;; (bind-key "C-c u" 'lsp-info-under-point)
+;; ;; [h]ighlight all relevant references to the symbol under point
+;; (bind-key "C-c h" 'lsp-symbol-highlight))))
 
 (use-package flycheck-phpstan
   :ensure t
@@ -4048,7 +4048,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package smart-hungry-delete
   :ensure t
   :bind (("<backspace>" . smart-hungry-delete-backward-char)
-		 ("C-d" . smart-hungry-delete-forward-char))
+		     ("C-d" . smart-hungry-delete-forward-char))
   :defer nil ;; dont defer so we can add our functions to hooks
   :config (smart-hungry-delete-add-default-hooks)
   )
@@ -4118,8 +4118,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :defer t
   :init
   (setq gdb-many-windows t
-              gdb-show-main t)
- :hook
+        gdb-show-main t)
+  :hook
   (gdb-mode . gud-tooltip-mode))
 
 
@@ -4127,10 +4127,10 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package centaur-tabs
   :ensure t
   :config (setq centaur-tabs-set-bar 'over
-		        centaur-tabs-set-icons t
-		        centaur-tabs-gray-out-icons 'buffer
-		        centaur-tabs-set-modified-marker t
-		        centaur-tabs-modifier-marker ".")
+		            centaur-tabs-set-icons t
+		            centaur-tabs-gray-out-icons 'buffer
+		            centaur-tabs-set-modified-marker t
+		            centaur-tabs-modifier-marker ".")
   (centaur-tabs-mode t))
 
 ;; Bookmark
@@ -4402,7 +4402,7 @@ deletion, or > if it is flagged for displaying."
   :custom
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable)
-   :after pretty-hydra
+  :after pretty-hydra
   :pretty-hydra
   ((:color teal :quit-key "q")
    ("Helpful"
@@ -4519,9 +4519,9 @@ FACE defaults to inheriting from default and highlight."
 (use-package affe
   :after (consult)
   :bind (("M-s M-f" . affe-find)
-	 ("M-s f"   . affe-find)
-	 ;; ("M-s M-g" . affe-grep)
-	 ("M-s g"   . affe-grep)
+	       ("M-s f"   . affe-find)
+	       ;; ("M-s M-g" . affe-grep)
+	       ("M-s g"   . affe-grep)
          )
   :config
   (defun affe-orderless-regexp-compiler (input _type _ignorecase)
@@ -5236,6 +5236,117 @@ Fallback to `xref-go-back'."
   )
 
 ;; 如果你用emacs打开一个文件，却编辑不了它（提示该buffer是read-only的），那么用Ctrl-x，Ctrl-q就可以解除锁定。
+(use-package zone
+  :ensure nil
+  :defer 5
+  :config
+  ;; (zone-when-idle 600) ; in seconds
+  (defun zone-choose (pgm)
+    "Choose a PGM to run for `zone'."
+    (interactive
+     (list
+      (completing-read
+       "Program: "
+       (mapcar 'symbol-name zone-programs))))
+    (let ((zone-programs (list (intern pgm))))
+      (zone)))
+
+  (defvar total-count 0)
+
+  (defun zone-waves-animate (c col wend)
+    (let ((fall-p nil)
+          (o (point))
+          (p (point))
+          (insert-char " ")
+          (halt-char " ")
+          (counter 0))
+
+      (while (< counter 10)
+        (let ((next-char     (char-after p))
+              (previous-char (char-after (- p 1))))
+
+          ;;(progn (forward-line 1) (move-to-column col) (looking-at halt-char))
+          ;;          (when (< counter 50)    (move-to-column (mod counter 150)))
+
+          (when (< (random 100) 50)  (move-to-column counter))
+
+          (setq counter (+ 1 counter))
+          (setq total-count (+ 1 total-count))
+
+          (when (< (random 100) 80)  (insert (if (< (point) wend)  "." "\n")))
+
+          (if (and (not (looking-at ")"))
+                   (not (looking-at "(")))
+              (progn
+                (save-excursion
+                  (when (= 0 (mod counter 1)) (dotimes (_ (random counter)) (insert insert-char)))
+                  (when (= 0 (mod counter 4))
+                    (when (< (random 100) 10) (insert "(:music => :code)"))
+                    (when (< (random 100) 12) (insert "(:code => :art)"))
+                    (when (< (random 100) 1) (insert "(   )"))
+                    (when (< (random 100) 1) (insert "(    )"))
+
+                    ;;(goto-char (+ p 1))
+                    (delete-char (random counter))
+                    )
+                  ;;(goto-char o)
+
+
+                  (sit-for 0))
+                (if (<= 5 (mod counter 10))
+                    (setq p (- (point) 1))
+                  (setq p (+ (point) 1))
+                  ))
+
+            ))
+        )
+      fall-p))
+
+  (defun zone-waves ()
+    (set 'truncate-lines nil)
+    (setq total-count 0)
+    (let* ((ww (1- (window-width)))
+           (wh (window-height))
+           (mc 0)                         ; miss count
+           (total (* ww wh))
+           (fall-p nil)
+           (wend 100)
+           (wbeg 1))
+      (goto-char (point-min))
+      (while (not (eobp))
+        (end-of-line)
+        (let ((cc (current-column)))
+          (if (< cc ww)
+              (insert (make-string (- ww cc) ? ))
+            ;;    (delete-char (- ww cc))
+            ))
+        (unless (eobp) (forward-char 1)))
+
+      (catch 'done; ugh
+        (while (not (input-pending-p))
+          (goto-char (point-min))
+          (let ((wbeg (window-start))
+                (wend (window-end)))
+            (setq mc 0)
+
+            (goto-char (+ wbeg (random (- wend wbeg))))
+            (while (looking-at "[\t\n ]") (goto-char (+ wbeg (random (- wend wbeg)))))
+            ;; character animation sequence
+            (let ((p (point)))
+              (goto-char p)
+              (zone-waves-animate (zone-cpos p) (current-column) wend)))
+          ;; assuming current-column has not changed...
+          ))))
+
+  (Eval-after-load "zone"
+                   '(unless (memq 'zone-waves (append zone-programs nil))
+                      (setq zone-programs [zone-waves])))
+  )
+
+;; M-x format-all-buffer
+(use-package format-all
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'format-all-mode))
 
 (provide 'init-config-packages)
 ;;;; init-config-packages ends here

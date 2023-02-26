@@ -5338,7 +5338,7 @@ Fallback to `xref-go-back'."
           ;; assuming current-column has not changed...
           ))))
 
-  (Eval-after-load "zone"
+  (eval-after-load "zone"
                    '(unless (memq 'zone-waves (append zone-programs nil))
                       (setq zone-programs [zone-waves])))
   )
@@ -5348,5 +5348,73 @@ Fallback to `xref-go-back'."
   :config
   (add-hook 'emacs-lisp-mode-hook 'format-all-mode))
 
+(use-package devdocs
+  :autoload (devdocs--installed-docs devdocs--available-docs)
+  :bind (:map prog-mode-map
+              ;; ("M-<f1>" . devdocs-dwim)
+              ("C-h D"  . devdocs-dwim))
+  :init
+  ;; (setq devdocs-lang-list
+  ;;       '(
+  ;;         '((name . "Rust") (slug . "rust") (type . "rust") (links (home . "https://www.rust-lang.org/") (code . "https://github.com/rust-lang/rust")) (release . "1.65.0") (mtime . 1668056584) (db_size . 55992577) (attribution . "&copy; 2010 The Rust Project Developers<br>
+  ;;     Licensed under the Apache License, Version 2.0 or the MIT license, at your option."))
+
+  ;;         )
+  ;; '('("rust") '("elisp") '("julia~1.8") '("dart~2")))
+  (defconst devdocs-major-mode-docs-alist
+    '((c-mode          . ("c"))
+      (c++-mode        . ("cpp"))
+      (python-mode     . ("python~3.10" "python~2.7"))
+      (ruby-mode       . ("ruby~3.1"))
+      (go-mode         . ("go"))
+      (rustic-mode     . ("rust"))
+      (css-mode        . ("css"))
+      (html-mode       . ("html"))
+      (julia-mode      . ("julia~1.8"))
+      (js-mode         . ("javascript" "jquery"))
+      (js2-mode        . ("javascript" "jquery"))
+      (emacs-lisp-mode . ("elisp")))
+    "Alist of major-mode and docs.")
+
+  (mapc
+   (lambda (mode)
+     (add-hook (intern (format "%s-hook" (car mode)))
+               (lambda ()
+                 (setq-local devdocs-current-docs (cdr mode)))))
+   devdocs-major-mode-docs-alist)
+
+  (setq devdocs-data-dir (no-littering-expand-var-file-name "devdocs"))
+
+  (defun devdocs-dwim()
+    "Look up a DevDocs documentation entry.
+Install the doc if it's not installed."
+    (interactive)
+    ;; Install the doc if it's not installed
+    (mapc
+     (lambda (slug)
+       (unless (member slug (let ((default-directory devdocs-data-dir))
+                              (seq-filter #'file-directory-p
+                                          (when (file-directory-p devdocs-data-dir)
+                                            (directory-files "." nil "^[^.]")))))
+         (mapc
+          (lambda (doc)
+            (when (string= (alist-get 'slug doc) slug)
+              (message doc)
+              (devdocs-install doc)))
+          (devdocs--available-docs))))
+     (alist-get major-mode devdocs-major-mode-docs-alist))
+
+    ;; Lookup the symbol at point
+    (devdocs-lookup nil (thing-at-point 'symbol t)))
+  :config
+  ;; (devdocs--available-docs)
+  ;; (dolist (doc-package devdocs-lang-list)
+  ;; (call-interactively (devdocs-install doc-package)))
+
+  ;; (call-interactively (devdocs-install '("rust")))
+  ;;   )
+
+  )
+
 (provide 'init-config-packages)
-;;;; init-config-packages ends here
+;;; init-config-packages ends here

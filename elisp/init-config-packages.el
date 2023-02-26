@@ -2130,6 +2130,7 @@ Get it from:  <http://hasseg.org/trash/>"
       ))
   (lsp-mode . lsp-enable-which-key-integration)
   :config
+  (setq lsp-erlang-server-path "~/.emacs.d/var/erlang_ls/bin/erlang_ls")
   (with-eval-after-load "lsp-rust"
     (lsp-register-client
      (make-lsp-client
@@ -5400,6 +5401,14 @@ Install the doc if it's not installed."
     ;; Lookup the symbol at point
     (devdocs-lookup nil (thing-at-point 'symbol t))))
 
+(use-package erlang
+  :if (executable-find "erl")
+  :mode (("\\.erl\\'" . erlang-mode))
+  :defer
+
+  :hook
+  (erlang-mode . lsp)
+  )
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

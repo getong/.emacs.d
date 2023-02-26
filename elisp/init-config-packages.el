@@ -2198,7 +2198,7 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; (lsp-ui-sideline-current-symbol :inherit 'highlight)
   ;; (lsp-ui-sideline-symbol-info :foreground (doom-blend comments bg 0.85)
   ;;                              :background bg-alt :extend t)
-  (lsp-ui-doc-background ((t (:background "yellow"))))
+  (lsp-ui-doc-background ((t (:background nil))))
   (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
   (lsp-ui-peek-highlight ((t (:inherit nil :background nil :foreground nil :weight semi-bold :box (:line-width -1)))))
   :bind

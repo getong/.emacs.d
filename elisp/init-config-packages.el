@@ -5339,8 +5339,8 @@ Fallback to `xref-go-back'."
           ))))
 
   (eval-after-load "zone"
-                   '(unless (memq 'zone-waves (append zone-programs nil))
-                      (setq zone-programs [zone-waves])))
+    '(unless (memq 'zone-waves (append zone-programs nil))
+       (setq zone-programs [zone-waves])))
   )
 
 ;; M-x format-all-buffer

@@ -4543,7 +4543,7 @@ FACE defaults to inheriting from default and highlight."
   (which-key-posframe-parameters '((left-fringe . 5) (right-fringe . 5)))
   :custom-face
   (which-key-posframe ((t (:background "black" ))))
-  (which-key-posframe-border ((t (:background " green"))))
+  (which-key-posframe-border ((t (:background "green"))))
   :hook
   (dashboard-after-initialize . which-key-posframe-mode)
   (dashboard-after-initialize . which-key-mode))

@@ -1373,9 +1373,20 @@ Version: 2018-08-02 2022-05-18"
 ;; copy fromhttps://devbins.github.io/post/emacs_flutter/
 (use-package lsp-dart
   :ensure t
-  :after dap-mode
-  :init
-  (setq lsp-dart-sdk-dir (concat (file-name-directory (file-truename (executable-find "flutter"))) "cache/dart-sdk"))
+  ;; :after dap-mode
+  :config
+  (defun find-path-by-executable (exec)
+    (when-let (path (executable-find exec))
+      (file-name-directory
+       (directory-file-name
+        (file-name-directory
+         (file-chase-links path))))))
+
+  ;; (setq lsp-dart-sdk-dir (concat (file-name-directory (file-truename (executable-find "flutter"))) "cache/dart-sdk"))
+  (setq lsp-dart-sdk-dir (find-path-by-executable "dart")
+        lsp-flutter-sdk-dir (find-path-by-executable "flutter")
+        )
+
   (dap-register-debug-template "Flutter :: Custom debug"
                                (list :flutterPlatform "x86_64"
                                      :program "lib/main_debug.dart"

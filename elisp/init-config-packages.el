@@ -2767,7 +2767,7 @@ Get it from:  <http://hasseg.org/trash/>"
   :custom
   (vertico-cycle t)
   :custom-face
-  (vertico-current ((t (:background "green" :weight bold :foreground "blue"))))
+  (vertico-current ((t (:background nil :weight bold :foreground "yellow"))))
   :init
   (setq vertico-resize nil
         vertico-scroll-margin 0

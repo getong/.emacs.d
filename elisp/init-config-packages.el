@@ -1383,15 +1383,23 @@ Version: 2018-08-02 2022-05-18"
          (file-chase-links path))))))
 
   ;; (setq lsp-dart-sdk-dir (concat (file-name-directory (file-truename (executable-find "flutter"))) "cache/dart-sdk"))
-  (setq lsp-dart-sdk-dir (find-path-by-executable "dart")
-        lsp-flutter-sdk-dir (find-path-by-executable "flutter")
-        )
+  ;; copy from https://jwill.dev/blog/2022/01/24/EmacsAsIDE-Flutter.html
+  ;; copy from https://github.com/thiagokokada/dotfiles/blob/28ba3b683c1c9cda5b0d98d0ca7505be188a9e02/doom-emacs/.config/doom/config.el#L181
+  (setq
+   lsp-dart-sdk-dir (find-path-by-executable "dart")
+   lsp-flutter-sdk-dir (find-path-by-executable "flutter")
+   lsp-dart-flutter-sdk (find-path-by-executable "flutter")
+   flutter-sdk-path (find-path-by-executable "flutter")
+   )
 
   (dap-register-debug-template "Flutter :: Custom debug"
                                (list :flutterPlatform "x86_64"
                                      :program "lib/main_debug.dart"
                                      :args '("--flavor" "customer_a")))
   :hook (dart-mode . lsp))
+
+(use-package lsp-treemacs
+  :ensure t)
 
 (use-package dart-mode
   :ensure t
@@ -1445,12 +1453,13 @@ Version: 2018-08-02 2022-05-18"
               ("C-c C-r" . #'flutter-run-or-hot-reload)
               ("C-c C-l" . #'my/flutter-goto-logs-buffer))
   :hook (dart-mode . flutter-test-mode)
-  :custom
-  ;; sdk path will be the parent-parent directory of flutter cli
-  (flutter-sdk-path (directory-file-name
-                     (file-name-directory
-                      (directory-file-name
-                       (file-name-directory (file-truename (executable-find "flutter"))))))))
+  ;; :custom
+  ;; ;; sdk path will be the parent-parent directory of flutter cli
+  ;; (flutter-sdk-path (directory-file-name
+  ;;                    (file-name-directory
+  ;;                     (directory-file-name
+  ;;                      (file-name-directory (file-truename (executable-find "flutter")))))))
+  )
 
 (use-package flutter-l10n-flycheck
   :after flutter

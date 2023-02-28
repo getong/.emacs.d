@@ -2098,7 +2098,10 @@ Get it from:  <http://hasseg.org/trash/>"
     )
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
-
+;; lsp-workspace-restart switching lsp-mode on and off
+;; lsp-describe-session will print a nice tree showing what’s running and which buffers are connected with which backends.
+;; lsp-version should return the version of lsp-mode
+;; lsp-doctor is a diagnostic convenience functions
 ;; copy from https://nyk.ma/posts/emacs-write-your-own/
 ;; 由于 lsp-mode 的一次大更新，把使用方式变成如今调用 (lsp) 即可，所以目前 eglot 竞争力不强了。
 (use-package lsp-mode
@@ -5478,6 +5481,7 @@ Install the doc if it's not installed."
   :ensure t
   :defer t)
 
+;; use for terminal theme
 (use-package moe-theme
   :ensure t)
 

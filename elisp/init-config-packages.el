@@ -5244,13 +5244,13 @@ Fallback to `xref-go-back'."
   (add-hook 'julia-mode-hook #'lsp-julia-enable)
   :config
   (setq
-	lsp-julia-command "julia"
-	lsp-julia-package-dir "@emacs-lspconfig"
-	lsp-julia-flags `(,(concat "--project=" lsp-julia-package-dir)
-			  "--startup-file=no"
-			  "--history-file=no"
-			  ,(concat "-J" (getenv "HOME") "/.julia/environments/emacs-lspconfig/languageserver.so"))
-	lsp-julia-default-environment (shell-command-to-string "julia --startup-file=no --history-file=no -e 'print(dirname(Base.active_project()))'")))
+	 lsp-julia-command "julia"
+	 lsp-julia-package-dir "@emacs-lspconfig"
+	 lsp-julia-flags `(,(concat "--project=" lsp-julia-package-dir)
+			               "--startup-file=no"
+			               "--history-file=no"
+			               ,(concat "-J" (getenv "HOME") "/.julia/environments/emacs-lspconfig/languageserver.so"))
+	 lsp-julia-default-environment (shell-command-to-string "julia --startup-file=no --history-file=no -e 'print(dirname(Base.active_project()))'")))
 
 (use-package lsp-sourcekit
   :ensure t
@@ -5494,6 +5494,59 @@ Install the doc if it's not installed."
 ;; use for terminal theme
 (use-package moe-theme
   :ensure t)
+
+;; Another AES algorithm encrypt/decrypt string with password.
+(use-package kaesar
+  :ensure t)
+
+;; Find Emacs Lisp definitions
+(use-package elisp-def
+  :ensure t
+  :config
+  (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+    (add-hook hook #'elisp-def-mode)))
+
+;; unity use csharp
+(use-package csharp-mode
+  :ensure t
+  :interpreter ("csharp" . csharp-mode)
+
+  :mode (("\\.cs$" . csharp-mode))
+  :config
+  (setq lsp-csharp-server-path (executable-find "omnisharp"))
+  )
+
+;; Following https://joshwolfe.ca/posts/emacs-csharp-development/ ,
+;; omnisharp gives us code completion in C#.
+;;
+;; Note: This doesn't use lsp-mode, it implements some things on its own.
+;;
+;; Useful:
+;;   omnisharp-solution-errors
+;;
+;; Also
+;; use-package docs: https://github.com/jwiegley/use-package
+(use-package omnisharp
+  :after company
+  :ensure t
+  :config
+  (add-hook 'csharp-mode-hook 'omnisharp-mode)
+  (add-to-list 'company-backends 'company-omnisharp)
+  (define-key csharp-mode-map (kbd "<C-return>") 'omnisharp-go-to-definition)
+  (define-key csharp-mode-map (kbd "<M-left>") 'pop-tag-mark)
+  )
+
+(use-package graphql-mode
+  :ensure t)
+
+(use-package zig-mode
+  :mode "\\.zig\\'"
+  :hook zig-mode)
+
+;; GLSL (OpenGL shading language) emacs major mode
+(use-package glsl-mode
+  :mode "\\.frag\\'"
+  :hook glsl-mode)
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

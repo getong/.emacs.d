@@ -5240,7 +5240,17 @@ Fallback to `xref-go-back'."
 
 ;; Julia
 (use-package lsp-julia
-  :hook (julia-mode . (lambda () (require 'lsp-julia))))
+  :after (lsp-mode julia-mode)
+  (add-hook 'julia-mode-hook #'lsp-julia-enable)
+  :config
+  (setq
+	lsp-julia-command "julia"
+	lsp-julia-package-dir "@emacs-lspconfig"
+	lsp-julia-flags `(,(concat "--project=" lsp-julia-package-dir)
+			  "--startup-file=no"
+			  "--history-file=no"
+			  ,(concat "-J" (getenv "HOME") "/.julia/environments/emacs-lspconfig/languageserver.so"))
+	lsp-julia-default-environment (shell-command-to-string "julia --startup-file=no --history-file=no -e 'print(dirname(Base.active_project()))'")))
 
 (use-package lsp-sourcekit
   :ensure t

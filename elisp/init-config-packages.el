@@ -373,14 +373,45 @@
     (kill-ring-save (point) (vterm-end-of-line))
     (vterm-send-key "k" nil nil t))
   (defun turn-off-chrome ()
+    ;; in vterm mode, C-h m , check what mode is on
+    ;; Enabled minor modes: All-The-Icons-Completion Anzu Async-Bytecomp-Package
+    ;; Auto-Compile-On-Load Auto-Compile-On-Save Auto-Composition Auto-Compression
+    ;; Auto-Dim-Other-Buffers Auto-Encryption Beacon Blink-Cursor Bufler-Workspace
+    ;; Centaur-Tabs Column-Number Company Company-Box Delete-Selection Desktop-Save
+    ;; Diff-Hl-Flydiff Dired-Async Diredfl-Global Dirvish-Override-Dired Display-Time
+    ;; Doom-Modeline Electric-Indent Explain-Pause Eyebrowse File-Name-Shadow Font-Lock
+    ;; Gcmh Global-Aggressive-Indent Global-Anzu Global-Auto-Revert Global-Company
+    ;; Global-Diff-Hl Global-Display-Line-Numbers Global-Eldoc Global-Emojify
+    ;; Global-Flycheck Global-Font-Lock Global-Highlight-Thing Global-Lentic
+    ;; Global-Pangu-Spacing Global-So-Long Global-Superword Global-Syntax-Subword
+    ;; Global-Whitespace-Cleanup Google-This Highlight-Thing Hydra-Posframe Kele
+    ;; Keycast-Mode-Line Keyfreq Keyfreq-Autosave Lentic Line-Number Marginalia
+    ;; Menu-Bar Mouse-Wheel Nameframe-Projectile Nyan Org-Pretty-Tags-Global
+    ;; Override-Global Pangu-Spacing Pdf-Occur-Global Projectile Pulsar Pulsar-Global
+    ;; Recentf Recursion-Indicator Reverse-Im Save-Place Savehist Shell-Dirtrack
+    ;; Show-Paren Size-Indication Straight-Package-Neutering Straight-Use-Package
+    ;; Super-Save Superword Syntax-Subword Transient-Mark Treemacs-Filewatch
+    ;; Treemacs-Follow Treemacs-Fringe-Indicator Treemacs-Git Ue-Global Vertico
+    ;; Vertico-Buffer Vertico-Multiform Which-Function Which-Key-Posframe
+    ;; Whitespace-Cleanup Winner Zoom
     ;; vterm 模式下禁用hl-line-mode
     (hl-line-mode -1)
     ;; vterm 模式下禁用display-line-numbers-mode
     (display-line-numbers-mode -1)
     ;; vterm 模式下禁用emojify-mode
     (emojify-mode -1)
-    ;; 关闭flycheck
+    ;; vterm 模式下禁用flycheck
     (flycheck-mode -1)
+    ;; vterm 模式下禁用which-key
+    (which-key-mode -1)
+    (super-save-mode -1)
+    (all-the-icons-completion-mode -1)
+    (so-long-mode -1)
+    (which-function-mode -1)
+    (which-key-posframe-mode -1)
+    (aggressive-indent-mode -1)
+    (recentf-mode -1)
+    (kele-mode -1)
     (setq-local global-hl-line-mode nil)
     (turn-off-smartparens-strict-mode)
     (turn-off-smartparens-mode)

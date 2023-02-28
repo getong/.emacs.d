@@ -2078,7 +2078,6 @@ Get it from:  <http://hasseg.org/trash/>"
   (setq rustic-format-trigger 'on-compile)
   (setq compilation-read-command nil) ;; not prompt on minibuffer when do compile.
   (push 'rustic-clippy flycheck-checkers)
-  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
   ;; (setq lsp-rust-analyzer-cargo-watch-enable nil)
   ;; comment to disable rustfmt on save
   (setq rustic-format-on-save nil)
@@ -2129,13 +2128,6 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; This controls the overlays that display type and other hints inline. Enable
   ;; / disable as you prefer. Well require a `lsp-workspace-restart' to have an
   ;; effect on open projects.
-  (lsp-rust-analyzer-server-display-inlay-hints t)
-  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-  (lsp-rust-analyzer-display-chaining-hints t)
-  (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
-  (lsp-rust-analyzer-display-closure-return-type-hints t)
-  (lsp-rust-analyzer-display-parameter-hints nil)
-  (lsp-rust-analyzer-display-reborrow-hints nil)
   (lsp-headerline-breadcrumb-segments '(file symbols))
   (lsp-modeline-diagnostics-enable  t)
   (lsp-modeline-diagnostics-scope  :project)
@@ -2161,9 +2153,6 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; (vconcat ["**/exclude_me/**"] lsp-intelephense-files-exclude))
   ;; Reduce max file size to 100kb
   (lsp-intelephense-files-max-size 100000)
-  ;; copy from https://fasterthanli.me/articles/the-bottom-emoji-breaks-rust-analyzer
-  (lsp-rust-analyzer-server-command (list (string-trim (shell-command-to-string "rustup which rust-analyzer"))))
-
   :hook
   ;; (php-mode . lsp)
   ;; 在哪些语言 major mode 下启用 LSP
@@ -2312,6 +2301,23 @@ Get it from:  <http://hasseg.org/trash/>"
    lsp-ui-peek-always-show t
    lsp-ui-sideline-ignore-duplicate t)
   )
+
+ ;;; lsp-rust
+(use-package lsp-rust
+  :ensure nil
+  :defer t
+  :custom
+  ;; copy from https://fasterthanli.me/articles/the-bottom-emoji-breaks-rust-analyzer
+  (lsp-rust-analyzer-server-command (list (string-trim (shell-command-to-string "rustup which rust-analyzer"))))
+  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+  (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+  (lsp-rust-analyzer-display-closure-return-type-hints t)
+  (lsp-rust-analyzer-display-reborrow-hints nil)
+  (lsp-rust-server 'rust-analyzer)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-rust-analyzer-server-display-inlay-hints t)
+  (lsp-rust-analyzer-display-parameter-hints t)
+  (lsp-rust-analyzer-display-chaining-hints t))
 
 (use-package yasnippet
   :ensure
@@ -5547,6 +5553,52 @@ Install the doc if it's not installed."
 (use-package glsl-mode
   :mode "\\.frag\\'"
   :hook glsl-mode)
+
+(use-package align                      ; Align text in buffers
+  :bind (("C-c A a" . align)
+         ("C-c A c" . align-current)
+         ("C-c A r" . align-regexp)))
+
+(use-package mark-align                 ; Align visualized (via Marking)
+  :ensure nil
+  :commands mark-align-mode)
+
+(use-package easy-kill                  ; Easy killing and marking on C-w
+  :disabled t
+  :ensure t
+  :bind (([remap kill-ring-save] . easy-kill) ; M-w
+         ([remap mark-sexp]      . easy-mark) ; C-M-SPC
+         ))
+
+(use-package adaptive-wrap              ; Choose wrap prefix automatically
+  :disabled t
+  :ensure t
+  :defer t
+  :init (add-hook 'visual-line-mode-hook #'adaptive-wrap-prefix-mode))
+
+(use-package visual-fill-column         ; `fill-column' for `visual-line-mode'
+  :disabled t
+  ;; TODO: use-package: 自定义关键词
+  ;; :description "定制 Emacs 自带 visual-line-mode 的宽度"
+  ;; :url "foobar"
+  :ensure t
+  :defer t
+  :init
+  (setq visual-fill-column-width fill-column)
+  ;; (setq visual-fill-column-fringes-outside-margins nil)
+  (add-hook 'visual-line-mode-hook
+            (defun visual-fill-column-toggle ()
+              (visual-fill-column-mode (or visual-line-mode -1)))))
+
+(use-package kotlin-mode
+  :after (lsp-mode dap-mode)
+  :config
+  (lsp-kotlin-lens-mode)
+  (require 'dap-kotlin)
+  ;; should probably have been in dap-kotlin instead of lsp-kotlin
+  (setq lsp-kotlin-debug-adapter-path (or (executable-find "kotlin-debug-adapter") ""))
+  :hook
+  (kotlin-mode . lsp))
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

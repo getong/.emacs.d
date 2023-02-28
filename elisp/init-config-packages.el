@@ -379,6 +379,8 @@
     (display-line-numbers-mode -1)
     ;; vterm 模式下禁用emojify-mode
     (emojify-mode -1)
+    ;; 关闭flycheck
+    (flycheck-mode -1)
     (setq-local global-hl-line-mode nil)
     (turn-off-smartparens-strict-mode)
     (turn-off-smartparens-mode)

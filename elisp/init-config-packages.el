@@ -415,6 +415,7 @@
     (setq-local global-hl-line-mode nil)
     (turn-off-smartparens-strict-mode)
     (turn-off-smartparens-mode)
+    (load-theme 'moe-dark t)
     )
   :hook
   (vterm-mode . turn-off-chrome)
@@ -3361,6 +3362,12 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (magit-section-highlight ((t (:background "gray20"))))
   :init
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+  ;; load theme after magit
+  (add-hook 'magit-mode-hook
+            (lambda ()
+              ;; (load-theme 'doom-one t t)
+              (load-theme 'moe-dark t t)
+              ))
   ;; (add-hook 'magit-mode-hook 'my-inhibit-global-linum-mode)
   (remove-hook 'server-switch-hook 'magit-commit-diff))
 
@@ -5470,6 +5477,9 @@ Install the doc if it's not installed."
 (use-package magit-stats
   :ensure t
   :defer t)
+
+(use-package moe-theme
+  :ensure t)
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

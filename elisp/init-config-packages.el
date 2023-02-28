@@ -5466,5 +5466,10 @@ Install the doc if it's not installed."
   (erlang-mode . lsp)
   )
 
+;; show git commit info
+(use-package magit-stats
+  :ensure t
+  :defer t)
+
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

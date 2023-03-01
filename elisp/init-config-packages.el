@@ -4428,6 +4428,7 @@ deletion, or > if it is flagged for displaying."
 (use-package kele
   :ensure t
   ;; :straight t
+  :disabled t
   :config
   (kele-mode 1))
 
@@ -4942,10 +4943,10 @@ FACE defaults to inheriting from default and highlight."
                                  (when (eq major-mode 'org-mode)
                                    (mapconcat 'identity (org-get-outline-path t)
                                               " > "))))))
-  (add-hook 'prog-mode-hook '(lambda () (setq header-line-format
+  (add-hook 'prog-mode-hook #'(lambda () (setq header-line-format
+                                               '((which-func-mode ("" which-func-format))))))
+  (add-hook 'org-mode-hook #'(lambda () (setq header-line-format
                                               '((which-func-mode ("" which-func-format))))))
-  (add-hook 'org-mode-hook '(lambda () (setq header-line-format
-                                             '((which-func-mode ("" which-func-format))))))
   )
 
 

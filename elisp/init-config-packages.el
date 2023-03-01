@@ -2973,28 +2973,17 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-;; Consult users will also want the embark-consult package.
-(use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
-  ;; :after (embark consult)
-  :demand t ; only necessary if you have the hook below
-  ;; if you want to have consult previews as you move around an
-  ;; auto-updating embark collect buffer
-  :hook
-  ;; (embark-collect-mode . consult-preview-at-point-mode)
-  (embark-collect-mode . embark-consult-preview-minor-mode)
-  )
-
 
 (use-package consult
+  :straight (consult :type git :host github :repo "minad/consult")
   ;; :demand
   :bind
   (
    ;; 重新映射命令
    ;; ([remap goto-line] . consult-goto-line)
-   ([remap isearch-forward] . consult-line)
-   ([remap isearch-forward-regexp] . consult-line)
-   ([remap switch-to-buffer] . consult-buffer)
+   ;; ([remap isearch-forward] . consult-line)
+   ;; ([remap isearch-forward-regexp] . consult-line)
+   ;; ([remap switch-to-buffer] . consult-buffer)
    ;; C-c bindings (mode-specific-map)
    ("C-s" . consult-line)
    ("C-r" . consult-line)
@@ -3003,8 +2992,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
    ("C-c k" . consult-kmacro)
    ;; C-x bindings (ctl-x-map)
    ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-   ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-   ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+   ;; ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+   ;; ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
    ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
    ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
    ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
@@ -3101,6 +3090,18 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :commands consult-flyspell)
 
 (use-package consult-flycheck)
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  ;; :after (embark consult)
+  :demand t ; only necessary if you have the hook below
+  ;; if you want to have consult previews as you move around an
+  ;; auto-updating embark collect buffer
+  :hook
+  ;; (embark-collect-mode . consult-preview-at-point-mode)
+  (embark-collect-mode . embark-consult-preview-minor-mode)
+  )
 
 ;; 保存光标历史，记住上个命令
 ;; copy from https://book.emacs-china.org/#orga142e60

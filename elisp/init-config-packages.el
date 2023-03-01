@@ -472,6 +472,8 @@
   ;; no tabs
   ;; (setq indent-tabs-mode nil)
   (setq-default indent-tabs-mode nil)
+  ;; always open large size files
+  (setq large-file-warning-threshold nil)
   ;; keep everything under vc
   ;; (setq make-backup-files nil)
   ;; no need to create lockfiles

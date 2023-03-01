@@ -1693,7 +1693,8 @@ Get it from:  <http://hasseg.org/trash/>"
 
   (add-to-list 'dirvish-preview-dispatchers 'exa)
 
-  (setq insert-directory-program "gls")
+  (when (eq system-type 'darwin)
+  (setq insert-directory-program "gls"))
   ;; 不预览epub文件
   (setq dirvish-preview-dispatchers (remove 'epub dirvish-preview-dispatchers))
   ;; 异步读取含 10000 个以上文件的文件夹

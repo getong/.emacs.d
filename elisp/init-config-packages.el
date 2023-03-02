@@ -1261,10 +1261,10 @@ Version: 2018-08-02 2022-05-18"
    '(rainbow-delimiters-depth-9-face ((t (:foreground "hotpink" :weight bold))))
    '(rainbow-delimiters-unmatched-face ((t (:background "green" :foreground "blue" :weight bold)))))
   :hook
-  ((css-mode . rainbow-mode)
-   (sass-mode . rainbow-mode)
-   (scss-mode . rainbow-mode)
-   (rust-mode . rainbow-mode)
+  ((css-mode . rainbow-delimiters-mode)
+   (sass-mode . rainbow-delimiters-mode)
+   (scss-mode . rainbow-delimiters-mode)
+   (rust-mode . rainbow-delimiters-mode)
    (prog-mode . rainbow-delimiters-mode)))
 
 (use-package highlight-indent-guides
@@ -2214,27 +2214,6 @@ Get it from:  <http://hasseg.org/trash/>"
   (lsp-mode . lsp-enable-which-key-integration)
   :config
   (setq lsp-erlang-server-path "~/.emacs.d/var/erlang_ls/bin/erlang_ls")
-  (with-eval-after-load "lsp-rust"
-    (lsp-register-client
-     (make-lsp-client
-      :new-connection (lsp-stdio-connection
-                       (lambda ()
-                         `(,(or (executable-find
-                                 (cl-first lsp-rust-analyzer-server-command))
-                                (lsp-package-path 'rust-analyzer)
-                                "rust-analyzer")
-                           ,@(cl-rest lsp-rust-analyzer-server-args))))
-      :remote? t
-      :major-modes '(rust-mode rustic-mode)
-      :initialization-options 'lsp-rust-analyzer--make-init-options
-      :notification-handlers (ht<-alist lsp-rust-notification-handlers)
-      :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
-      :library-folders-fn (lambda (_workspace) lsp-rust-library-directories)
-      :after-open-fn (lambda ()
-                       (when lsp-rust-analyzer-server-display-inlay-hints
-                         (lsp-rust-analyzer-inlay-hints-mode)))
-      :ignore-messages nil
-      :server-id 'rust-analyzer-remote)))
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
                     :major-modes '(python-mode)
@@ -2342,7 +2321,30 @@ Get it from:  <http://hasseg.org/trash/>"
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-rust-analyzer-server-display-inlay-hints t)
   (lsp-rust-analyzer-display-parameter-hints t)
-  (lsp-rust-analyzer-display-chaining-hints t))
+  (lsp-rust-analyzer-display-chaining-hints t)
+  :config
+  (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-stdio-connection
+                       (lambda ()
+                         `(,(or (executable-find
+                                 (cl-first lsp-rust-analyzer-server-command))
+                                (lsp-package-path 'rust-analyzer)
+                                "rust-analyzer")
+                           ,@(cl-rest lsp-rust-analyzer-server-args))))
+      :remote? t
+      :major-modes '(rust-mode rustic-mode)
+      :initialization-options 'lsp-rust-analyzer--make-init-options
+      :notification-handlers (ht<-alist lsp-rust-notification-handlers)
+      :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
+      :library-folders-fn (lambda (_workspace) lsp-rust-library-directories)
+      :after-open-fn (lambda ()
+                       (when lsp-rust-analyzer-server-display-inlay-hints
+                         (lsp-rust-analyzer-inlay-hints-mode)))
+      :ignore-messages nil
+      :priority -1
+      :server-id 'rust-analyzer-remote))
+ )
 
 (use-package yasnippet
   :ensure

@@ -2306,7 +2306,7 @@ Get it from:  <http://hasseg.org/trash/>"
 
  ;;; lsp-rust
 (use-package lsp-rust
-  :ensure nil
+  :ensure lsp-mode
   :defer t
   :custom
   ;; copy from https://fasterthanli.me/articles/the-bottom-emoji-breaks-rust-analyzer

@@ -5674,5 +5674,35 @@ Install the doc if it's not installed."
   :hook (nxml-mode . lsp)
   :mode ("\\.\\(xml\\|xsd\\|wsdl\\)\\'"))
 
+(use-package sh-script
+  :ensure nil
+  :mode
+  ("/\\.env\\'" . sh-mode)
+  ("/\\.env\\." . sh-mode)
+  ("/\\.envrc\\'" . sh-mode)
+  ("/\\.envrc\\." . sh-mode)
+  ("\\.zsh\\'" . sh-mode)
+  ("/zshenv\\'" . sh-mode)
+  ("/zshrc\\'" . sh-mode)
+  ("\\.tmux\\'" . sh-mode)
+  ("\\.tmuxsh\\'" . sh-mode)
+  ("\\.tmuxtheme\\'" . sh-mode)
+
+  :custom
+  (sh-basic-offset 2)
+  (sh-indentation 2)
+  (sh-indent-after-continuation 'always))
+
+(use-package lsp-bash
+  :ensure lsp-mode
+  :hook
+  (sh-mode-hook . lsp)
+  :config
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("bash-language-server" "start"))
+                    :major-modes '(sh-mode)
+                    :server-id 'bash-ls))
+  )
+
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

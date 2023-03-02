@@ -1339,8 +1339,7 @@ Version: 2018-08-02 2022-05-18"
 
 ;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
 (use-package doom-modeline
-  :straight
-  (doom-modeline :type git :host github :repo "seagle0128/doom-modeline")
+  :straight (doom-modeline :type git :host github :repo "seagle0128/doom-modeline")
   :ensure t
   :defer t
   :init
@@ -3086,8 +3085,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :commands consult-dir)
 (use-package consult-tramp
   :commands consult-tramp
-  :straight
-  (consult-tramp :type git :host github :repo "Ladicle/consult-tramp")
+  :straight (consult-tramp :type git :host github :repo "Ladicle/consult-tramp")
   :init (setq consult-tramp-method "sshx"))
 (use-package consult-flyspell
   :commands consult-flyspell)
@@ -4500,7 +4498,7 @@ deletion, or > if it is flagged for displaying."
 
 ;; Highlight matching parens
 (use-package paren
-  :straight (:type built-in)
+  ;; :straight (:type built-in)
   :hook (after-init . show-paren-mode)
   :init (setq show-paren-when-point-inside-paren nil
               show-paren-when-point-in-periphery nil)
@@ -5034,8 +5032,7 @@ FACE defaults to inheriting from default and highlight."
   )
 
 (use-package pdf-tools
-  :straight
-  (pdf-tools :type git :host github :repo "vedang/pdf-tools")
+  :straight (pdf-tools :type git :host github :repo "vedang/pdf-tools")
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :init
   (pdf-tools-install :no-query)
@@ -5049,22 +5046,19 @@ FACE defaults to inheriting from default and highlight."
 
 ;; save pdf reading page
 (use-package saveplace-pdf-view
-  :straight
-  (saveplace-pdf-view :type git :host github :repo "nicolaisingh/saveplace-pdf-view")
+  :straight (saveplace-pdf-view :type git :host github :repo "nicolaisingh/saveplace-pdf-view")
   :config
   (save-place-mode 1)
   )
 
 (use-package ink
   :ensure t
-  :straight
-  (ink :type git :host github :repo "foxfriday/ink")
+  :straight (ink :type git :host github :repo "foxfriday/ink")
   )
 
 (use-package query-replace-many
   :ensure t
-  :straight
-  (query-replace-many :type git :host github :repo "slotThe/query-replace-many")
+  :straight (query-replace-many :type git :host github :repo "slotThe/query-replace-many")
   :bind ("C-M-%" . query-replace-many))
 
 

@@ -411,7 +411,7 @@
     ;; (which-key-posframe-mode -1)
     (aggressive-indent-mode -1)
     (recentf-mode -1)
-    (kele-mode -1)
+    ;; (kele-mode -1)
     (setq-local global-hl-line-mode nil)
     (turn-off-smartparens-strict-mode)
     (turn-off-smartparens-mode)

@@ -2149,10 +2149,10 @@ Get it from:  <http://hasseg.org/trash/>"
    lsp-auto-guess-root t
    ;; 多少时间idle后向服务器刷新信息
    lsp-idle-delay 0.500
-   sp-server-install-dir (no-littering-expand-var-file-name "lsp/")
+   lsp-server-install-dir (no-littering-expand-var-file-name "lsp/")
    ;; 给缓存文件换一个位置
-   lsp-session-file (concat lsp-server-install-dir (file-name-nondirectory ".lsp-session-v1"))
-   lsp-eslint-library-choices-file (concat lsp-server-install-dir ".lsp-eslint-choices")
+   lsp-session-file (concat lsp-server-install-dir "lsp-session-v1")
+   lsp-eslint-library-choices-file (concat lsp-server-install-dir "lsp-eslint-choices")
    lsp-yaml-schema-store-local-db (concat lsp-server-install-dir "lsp-yaml-schemas.json")
    lsp-vetur-global-snippets-dir (no-littering-expand-etc-file-name "yasnippet/snippets/vetur")
    )
@@ -2160,10 +2160,13 @@ Get it from:  <http://hasseg.org/trash/>"
   ;; what to use when checking on-save. "check" is default, I prefer clippy
   ;;(lsp-eldoc-render-all t)
   (lsp-enable-snippet t)
-  (lsp-keep-workspace-alive t)
+  ;; Auto-kill LSP server once you've killed the last buffer associated with its
+  ;; project.
+  (lsp-keep-workspace-alive nil)
   (lsp-enable-xref t)
   (lsp-enable-imenu t)
   (lsp-enable-completion-at-point t)
+  (lsp-enable-suggest-server-download t)
   ;; copy from https://github.com/emacs-lsp/lsp-mode/issues/3231
   ;; This controls the overlays that display type and other hints inline. Enable
   ;; / disable as you prefer. Well require a `lsp-workspace-restart' to have an
@@ -2218,8 +2221,8 @@ Get it from:  <http://hasseg.org/trash/>"
       ))
   (lsp-mode . lsp-enable-which-key-integration)
   ;; https://github.com/emacs-lsp/lsp-mode/issues/3055
-  (lsp-mode . (lambda () (mapc (lambda (client) (setf (lsp-client-download-server-fn client) nil))
-                               (ht-values lsp-clients))))
+  ;; (lsp-mode . (lambda () (mapc (lambda (client) (setf (lsp-client-download-server-fn client) nil))
+  ;;                              (ht-values lsp-clients))))
   :config
 
   (setq company-minimum-prefix-length 1

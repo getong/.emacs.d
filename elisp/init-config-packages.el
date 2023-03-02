@@ -3519,18 +3519,26 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 ;; How to rename or delete file and buffer
 (use-package crux
   :ensure t
-  :bind (
-         ("C-c r" . crux-rename-file-and-buffer)
-         ("C-c D" . crux-delete-file-and-buffer)
-         ;; 优化版的回到行首
-         ("C-a" . crux-move-beginning-of-line)
-         ;; 快速连接两行等
-         ("C-c ^" . crux-top-join-line)
-         ;; 快速打开Emacs配置文件
-         ("C-x ," . crux-find-user-init-file)
-         ("C-c k" . crux-smart-kill-line)
-         ))
-
+  :bind
+  (
+   ("C-c r" . crux-rename-file-and-buffer)
+   ("C-c D" . crux-delete-file-and-buffer)
+   ;; 优化版的回到行首
+   ("C-a" . crux-move-beginning-of-line)
+   ;; 快速连接两行等
+   ("C-c ^" . crux-top-join-line)
+   ;; 快速打开Emacs配置文件
+   ("C-x ," . crux-find-user-init-file)
+   ("C-c k" . crux-smart-kill-line)
+   ("C-x 4 t" . crux-transpose-windows)
+   ("C-x K" . crux-kill-other-buffers)
+   )
+  :config
+  (crux-with-region-or-buffer indent-region)
+  (crux-with-region-or-buffer untabify)
+  (crux-with-region-or-point-to-eol kill-ring-save)
+  (defalias 'rename-file-and-buffer #'crux-rename-file-and-buffer)
+  )
 
 ;; How to delete consecutive space at once
 (use-package smart-hungry-delete
@@ -5703,6 +5711,39 @@ Install the doc if it's not installed."
                     :major-modes '(sh-mode)
                     :server-id 'bash-ls))
   )
+
+;; 诸如软回车这样的空白符号转换成一条水平线
+(use-package page-break-lines
+  :ensure t
+  :diminish
+  :init (global-page-break-lines-mode))
+
+(use-package flycheck-posframe
+  :custom-face
+  (flycheck-posframe-face ((t (:foreground ,(face-foreground 'success)))))
+  (flycheck-posframe-info-face ((t (:foreground ,(face-foreground 'success)))))
+  :hook (flycheck-mode . flycheck-posframe-mode)
+  :custom
+  (flycheck-posframe-position 'window-bottom-left-corner)
+  (flycheck-posframe-border-width 3)
+  (flycheck-posframe-inhibit-functions
+   '((lambda (&rest _) (bound-and-true-p company-backend)))))
+(use-package flycheck-pos-tip
+  :defines flycheck-pos-tip-timeout
+  :hook (flycheck-mode . flycheck-pos-tip-mode)
+  :custom (flycheck-pos-tip-timeout 30))
+
+(use-package flycheck-popup-tip
+  :hook (flycheck-mode . flycheck-popup-tip-mode))
+
+(use-package quickrun
+  :custom
+  (quickrun-timeout-seconds 60)
+  :bind
+  (("<f5>" . quickrun)
+   ("M-<f5>" . quickrun-shell)
+   ("C-c e" . quickrun)
+   ("C-c C-e" . quickrun-shell)))
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

@@ -1168,16 +1168,16 @@ Version: 2018-08-02 2022-05-18"
 
   :config
   (setq lsp-lua-workspace-max-preload 8192
-   lsp-lua-workspace-preload-file-size 1024
-   ;; copy from https://github.com/emacs-lsp/lsp-mode/issues/2818
-   ;; lsp-lua-workspace-library (ht ("~/vbox_share/cpp_client/game/Debug_x86"  t))
-   ;; copy from https://emacs-china.org/t/doom-emacs-lsp-lua-mode/16432/7
-   ;; lua
-   ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
-   lsp-clients-lua-language-server-install-dir (substring (file-name-directory (file-truename (executable-find "lua-language-server"))) 0 -4)
-   lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
-   lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
-   )
+        lsp-lua-workspace-preload-file-size 1024
+        ;; copy from https://github.com/emacs-lsp/lsp-mode/issues/2818
+        ;; lsp-lua-workspace-library (ht ("~/vbox_share/cpp_client/game/Debug_x86"  t))
+        ;; copy from https://emacs-china.org/t/doom-emacs-lsp-lua-mode/16432/7
+        ;; lua
+        ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
+        lsp-clients-lua-language-server-install-dir (substring (file-name-directory (file-truename (executable-find "lua-language-server"))) 0 -4)
+        lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
+        lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
+        )
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection lsp-clients-lua-language-server-bin)
                     :major-modes '(lua-mode)
@@ -1186,7 +1186,7 @@ Version: 2018-08-02 2022-05-18"
                     :notification-handlers
                     (lsp-ht
                      ("emmy/progressReport" 'ignore))
-                   ))
+                    ))
   )
 
 (use-package fennel-mode
@@ -2213,11 +2213,7 @@ Get it from:  <http://hasseg.org/trash/>"
       ))
   (lsp-mode . lsp-enable-which-key-integration)
   :config
-  (setq lsp-erlang-server-path "~/.emacs.d/var/erlang_ls/bin/erlang_ls")
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
-                    :major-modes '(python-mode)
-                    :server-id 'pyls))
+
   (setq company-minimum-prefix-length 1
         company-idle-delay 0.500) ;; default is 0.2
   (setq lsp-completion-provider :none) ;; 阻止 lsp 重新设置 company-backend 而覆盖我们 yasnippet 的设置
@@ -2324,27 +2320,27 @@ Get it from:  <http://hasseg.org/trash/>"
   (lsp-rust-analyzer-display-chaining-hints t)
   :config
   (lsp-register-client
-     (make-lsp-client
-      :new-connection (lsp-stdio-connection
-                       (lambda ()
-                         `(,(or (executable-find
-                                 (cl-first lsp-rust-analyzer-server-command))
-                                (lsp-package-path 'rust-analyzer)
-                                "rust-analyzer")
-                           ,@(cl-rest lsp-rust-analyzer-server-args))))
-      :remote? t
-      :major-modes '(rust-mode rustic-mode)
-      :initialization-options 'lsp-rust-analyzer--make-init-options
-      :notification-handlers (ht<-alist lsp-rust-notification-handlers)
-      :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
-      :library-folders-fn (lambda (_workspace) lsp-rust-library-directories)
-      :after-open-fn (lambda ()
-                       (when lsp-rust-analyzer-server-display-inlay-hints
-                         (lsp-rust-analyzer-inlay-hints-mode)))
-      :ignore-messages nil
-      :priority -1
-      :server-id 'rust-analyzer-remote))
- )
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection
+                     (lambda ()
+                       `(,(or (executable-find
+                               (cl-first lsp-rust-analyzer-server-command))
+                              (lsp-package-path 'rust-analyzer)
+                              "rust-analyzer")
+                         ,@(cl-rest lsp-rust-analyzer-server-args))))
+    :remote? t
+    :major-modes '(rust-mode rustic-mode)
+    :initialization-options 'lsp-rust-analyzer--make-init-options
+    :notification-handlers (ht<-alist lsp-rust-notification-handlers)
+    :action-handlers (ht ("rust-analyzer.runSingle" #'lsp-rust--analyzer-run-single))
+    :library-folders-fn (lambda (_workspace) lsp-rust-library-directories)
+    :after-open-fn (lambda ()
+                     (when lsp-rust-analyzer-server-display-inlay-hints
+                       (lsp-rust-analyzer-inlay-hints-mode)))
+    :ignore-messages nil
+    :priority -1
+    :server-id 'rust-analyzer-remote))
+  )
 
 (use-package yasnippet
   :ensure
@@ -5624,6 +5620,23 @@ Install the doc if it's not installed."
   (setq lsp-kotlin-debug-adapter-path (or (executable-find "kotlin-debug-adapter") ""))
   :hook
   (kotlin-mode . lsp))
+
+;; lsp python server
+(use-package lsp-pyright
+  :hook (python-mode . (lambda () (require 'lsp-pyright) (lsp)))
+  :init (when (executable-find "python3")
+          (setq lsp-pyright-python-executable-cmd "python3"))
+  :config
+  (setq lsp-pyright-disable-organize-imports t
+        lsp-pyright-log-level "error")
+  )
+
+;; lsp erlang server
+(use-package lsp-erlang
+  :ensure lsp-mode
+  :config
+  (setq lsp-erlang-server-path (no-littering-expand-var-file-name "erlang_ls/bin/erlang_ls"))
+  )
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

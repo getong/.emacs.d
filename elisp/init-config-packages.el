@@ -1187,6 +1187,12 @@ Version: 2018-08-02 2022-05-18"
                     (lsp-ht
                      ("emmy/progressReport" 'ignore))
                     ))
+  ;; (lsp-register-client
+  ;;  (make-lsp-client
+  ;;   :new-connection (lsp-stdio-connection '("python3" "-m" "ffi_navigator.langserver"))
+  ;;   :major-modes '(lua-mode python-mode c++-mode)
+  ;;   :server-id 'ffi-navigator
+  ;;   :add-on? t))
   )
 
 (use-package fennel-mode

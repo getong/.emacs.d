@@ -3018,7 +3018,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :straight (consult :type git :host github :repo "minad/consult")
   ;; :demand
   :bind
-  (
+  (;; C-c bindings (mode-specific-map)
    ;; 重新映射命令
    ;; ([remap goto-line] . consult-goto-line)
    ;; ([remap isearch-forward] . consult-line)
@@ -3030,17 +3030,20 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
    ("C-c h" . consult-history)
    ("C-c m" . consult-mode-command)
    ("C-c k" . consult-kmacro)
+
    ;; C-x bindings (ctl-x-map)
    ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-   ;; ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-   ;; ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+   ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+   ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
    ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
    ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
    ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+
    ;; Custom M-# bindings for fast register access
    ("M-#" . consult-register-load)
    ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
    ("C-M-#" . consult-register)
+
    ;; Other custom bindings
    ("M-y" . consult-yank-pop)                ;; orig. yank-pop
    ("<help> a" . consult-apropos)            ;; orig. apropos-command
@@ -3054,6 +3057,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
    ("M-g k" . consult-global-mark)
    ("M-g i" . consult-imenu)
    ("M-g I" . consult-imenu-multi)
+
    ;; M-s bindings (search-map)
    ("M-s d" . consult-find)
    ("M-s D" . consult-locate)
@@ -3065,6 +3069,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
    ("M-s m" . consult-multi-occur)
    ("M-s k" . consult-keep-lines)
    ("M-s u" . consult-focus-lines)
+
    ;; Isearch integration
    ("M-s e" . consult-isearch-history)
    :map isearch-mode-map
@@ -3073,13 +3078,22 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
    ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
    ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
    ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+
    ;; Minibuffer history
    :map minibuffer-local-map
    ("M-s" . consult-history)                 ;; orig. next-matching-history-element
    ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
   :init
-  (advice-add #'register-preview :override #'consult-register-window)
+  ;; Set narrow key
+  (setq consult-narrow-key (kbd "<")
+        consult-widen-key (kbd ">"))
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function 'consult-xref
+        xref-show-definitions-function 'consult-xref)
   :config
+  (advice-add #'register-preview :override #'consult-register-window)
   (defun start-with-current-line (lines)
     (cl-loop
      with current = (line-number-at-pos (point) consult-line-numbers-widen)
@@ -3090,13 +3104,11 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
   (advice-add 'consult--line-candidates :filter-return #'start-with-current-line)
   (setq
-   consult-preview-key  nil
    register-preview-delay 0.5
    register-preview-function #'consult-register-format
    xref-show-xrefs-function #'consult-xref
    xref-show-definitions-function #'consult-xref
    ;; Optionally configure the narrowing key.m
-   consult-narrow-key "<" ;; (kbd "C-+")
    consult-line-numbers-widen t
    consult-async-min-input 2
    consult-async-refresh-delay  0.15
@@ -3104,12 +3116,13 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
    consult-async-input-debounce 0.1
    consult-project-root-function #'projectile-project-root)
   (consult-customize
+   consult-theme
+   :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult--source-buffer consult-recent-file consult-xref
-   consult--source-recent-file consult--source-project-recent-file
-   consult--source-bookmark consult--source-project-buffer
-   :preview-key (kbd "C-M-m")
-   consult-theme (list :debounce 1.0 (kbd "C-M-m")))
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-recent-file
+   consult--source-project-recent-file
+   :preview-key 'any)
 
   ;; custom functions
   (defun zw/consult-line-multi ()

@@ -3977,7 +3977,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 	              ;; it so that company-lsp entries will always appear before
 	              ;; company-dabbrev-code.
                 ;; TODO Add in support for company-gtags/capf
-	              (use-package company-php)
+
 	              (ac-php-core-eldoc-setup)
                 (setq-local company-dabbrev-char-regexp "\\\`$sw")
                 (setq-local company-dabbrev-code-everywhere t)
@@ -4035,6 +4035,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 	              ;; Bring up [i]menu
 	              (local-set-key (kbd "C-c i") 'helm-imenu)))
   )
+(use-package company-php)
 
 
 ;; (require 'bind-key)

@@ -2149,8 +2149,13 @@ Get it from:  <http://hasseg.org/trash/>"
    lsp-auto-guess-root t
    ;; 多少时间idle后向服务器刷新信息
    lsp-idle-delay 0.500
+   sp-server-install-dir (no-littering-expand-var-file-name "lsp/")
    ;; 给缓存文件换一个位置
-   lsp-session-file (no-littering-expand-var-file-name "lsp-sessions"))
+   lsp-session-file (concat lsp-server-install-dir (file-name-nondirectory ".lsp-session-v1"))
+   lsp-eslint-library-choices-file (concat lsp-server-install-dir ".lsp-eslint-choices")
+   lsp-yaml-schema-store-local-db (concat lsp-server-install-dir "lsp-yaml-schemas.json")
+   lsp-vetur-global-snippets-dir (no-littering-expand-etc-file-name "yasnippet/snippets/vetur")
+   )
   :custom
   ;; what to use when checking on-save. "check" is default, I prefer clippy
   ;;(lsp-eldoc-render-all t)
@@ -2212,6 +2217,9 @@ Get it from:  <http://hasseg.org/trash/>"
       (which-function-mode)
       ))
   (lsp-mode . lsp-enable-which-key-integration)
+  ;; https://github.com/emacs-lsp/lsp-mode/issues/3055
+  (lsp-mode . (lambda () (mapc (lambda (client) (setf (lsp-client-download-server-fn client) nil))
+                               (ht-values lsp-clients))))
   :config
 
   (setq company-minimum-prefix-length 1
@@ -5637,6 +5645,12 @@ Install the doc if it's not installed."
   :config
   (setq lsp-erlang-server-path (no-littering-expand-var-file-name "erlang_ls/bin/erlang_ls"))
   )
+
+;; xml mode
+(use-package nxml-mode
+  :ensure nil
+  :hook (nxml-mode . lsp)
+  :mode ("\\.\\(xml\\|xsd\\|wsdl\\)\\'"))
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

@@ -1156,6 +1156,39 @@ Version: 2018-08-02 2022-05-18"
                  "end") "\n"))
   )
 
+(use-package lsp-lua
+  :ensure lsp-mode
+
+  :hook
+  (lua-mode . lsp)
+
+  :custom
+  (lsp-lua-hint-enable t)
+  (lsp-lua-telemetry-enable nil)
+
+  :config
+  (setq lsp-lua-workspace-max-preload 8192
+   lsp-lua-workspace-preload-file-size 1024
+   ;; copy from https://github.com/emacs-lsp/lsp-mode/issues/2818
+   ;; lsp-lua-workspace-library (ht ("~/vbox_share/cpp_client/game/Debug_x86"  t))
+   ;; copy from https://emacs-china.org/t/doom-emacs-lsp-lua-mode/16432/7
+   ;; lua
+   ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
+   lsp-clients-lua-language-server-install-dir (substring (file-name-directory (file-truename (executable-find "lua-language-server"))) 0 -4)
+   lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
+   lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
+   )
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection lsp-clients-lua-language-server-bin)
+                    :major-modes '(lua-mode)
+                    :server-id 'lua-langserver
+                    :priority -1
+                    :notification-handlers
+                    (lsp-ht
+                     ("emmy/progressReport" 'ignore))
+                   ))
+  )
+
 (use-package fennel-mode
   :ensure t)
 
@@ -2218,16 +2251,6 @@ Get it from:  <http://hasseg.org/trash/>"
   (setq lsp-auto-guess-root t) ; auto detect workspace and start lang server
   (setq lsp-rust-analyzer-proc-macro-enable t)
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-  ;; copy from https://emacs-china.org/t/doom-emacs-lsp-lua-mode/16432/7
-  ;; lua
-  ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-lua-language-server/
-  (setq
-   lsp-clients-lua-language-server-install-dir (substring (file-name-directory (file-truename (executable-find "lua-language-server"))) 0 -4)
-   lsp-clients-lua-language-server-bin (f-join lsp-clients-lua-language-server-install-dir "bin/lua-language-server")
-   lsp-clients-lua-language-server-main-location (f-join lsp-clients-lua-language-server-install-dir "libexec/main.lua")
-   lsp-lua-workspace-max-preload 8192
-   lsp-lua-workspace-preload-file-size 1024
-   )
   )
 
 (use-package lsp-ui

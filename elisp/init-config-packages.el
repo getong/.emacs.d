@@ -2181,7 +2181,7 @@ Get it from:  <http://hasseg.org/trash/>"
   (lsp-headerline-breadcrumb-segments '(file symbols))
   (lsp-modeline-diagnostics-enable  t)
   (lsp-modeline-diagnostics-scope  :project)
-  (lsp-completion-provider  :capf)
+  ;; (lsp-completion-provider  :capf)
   ;; Disable "use" statement insertion.
   (lsp-intelephense-completion-insert-use-declaration nil)
   ;; Decrease completion suggestions to 25.

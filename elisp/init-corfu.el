@@ -3,6 +3,7 @@
 (use-package corfu
   :ensure t
   :bind((:map corfu-map
+              ([tab] . corfu-next)
               ("C-n" . #'corfu-next)
               ("C-p" . #'corfu-previous)
               ("<escape>" . #'corfu-quit)
@@ -18,15 +19,15 @@
   (tab-always-indent 'complete)
   (completion-cycle-threshold nil)      ; Always show candidates in menu
 
-  (corfu-auto nil)
-  (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.25)
+  (corfu-auto t)
+  (corfu-auto-prefix 1)
+  (corfu-auto-delay 0.1)
 
   (corfu-min-width 80)
   (corfu-max-width corfu-min-width)     ; Always have the same width
   (corfu-count 14)
   (corfu-scroll-margin 4)
-  (corfu-cycle nil)
+  (corfu-cycle t)
 
   ;; `nil' means to ignore `corfu-separator' behavior, that is, use the older
   ;; `corfu-quit-at-boundary' = nil behavior. Set this to separator if using
@@ -39,7 +40,7 @@
   (corfu-separator ?\s)            ; Use space
   (corfu-quit-no-match 'separator) ; Don't quit if there is `corfu-separator' inserted
   (corfu-preview-current 'insert)  ; Preview first candidate. Insert on input if only one
-  (corfu-preselect-first t)        ; Preselect first candidate?
+  (corfu-preselect-first nil)        ; Preselect first candidate?
 
   ;; Other
   (corfu-echo-documentation nil)        ; Already use corfu-doc
@@ -89,6 +90,7 @@
   ;; package which moves directories of other packages to sane locations.
   ;; (svg-lib-icons-dir (no-littering-expand-var-file-name "svg-lib/cache/")) ; Change cache dir
   :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   ;; (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
 
   ;; Add hook to reset cache so the icon colors match my theme

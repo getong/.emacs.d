@@ -13,7 +13,7 @@
 ;;   (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
 ;; (load custom-file)
 
-(require 'init-company)
+;;(require 'init-company)
 
 (require 'init-corfu)
 

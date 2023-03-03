@@ -74,6 +74,7 @@
   :hook (corfu-mode . corfu-popupinfo-mode))
 
 
+;; kind-icon 已经增加了一个命令，M-x kind-icon-preview-all 执行就可以预览全部预设的图标，并自动下载全部图标到 ~/.emacs.d/.cache/svg-lib 文件夹。
 (use-package kind-icon :straight t
   :after corfu
   :custom

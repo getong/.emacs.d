@@ -2232,8 +2232,9 @@ Get it from:  <http://hasseg.org/trash/>"
   ;;                              (ht-values lsp-clients))))
   :config
 
-  (setq company-minimum-prefix-length 1
-        company-idle-delay 0.500) ;; default is 0.2
+  ;; (setq company-minimum-prefix-length 1
+  ;;       company-idle-delay 0.500)
+  ;; default is 0.2
   (setq lsp-completion-provider :none) ;; 阻止 lsp 重新设置 company-backend 而覆盖我们 yasnippet 的设置
   (setq lsp-headerline-breadcrumb-enable t)
 
@@ -3438,29 +3439,30 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
                                   '(warning . c/c++-googlelint)))))
 
 ;; google style, but with 4 space indent.
-(defun google-set-c-style-with-4-indent ()
-  "Set current buffer to google style, but with 4 space indent."
-  (interactive)
-  (make-local-variable 'c-tab-always-indent)
-  (setq c-tab-always-indent t)
-  (c-add-style "Google" google-c-style t)
-  (setq tab-width 4
-        c-indent-tabs-mode t
-        c-indent-level 4
-        c-basic-offset 4))
+;; (defun google-set-c-style-with-4-indent ()
+;;   "Set current buffer to google style, but with 4 space indent."
+;;   (interactive)
+;;   (make-local-variable 'c-tab-always-indent)
+;;   (setq c-tab-always-indent t)
+;;   (c-add-style "Google" google-c-style t)
+;;   (setq tab-width 4
+;;         c-indent-tabs-mode t
+;;         c-indent-level 4
+;;         c-basic-offset 4))
 
-(use-package google-c-style)
-(add-hook 'c-mode-common-hook 'google-set-c-style-with-4-indent)
+;; (use-package google-c-style)
+;; (add-hook 'c-mode-common-hook 'google-set-c-style-with-4-indent)
 
-;; copy from https://emacs-lsp.github.io/lsp-mode/tutorials/CPP-guide/
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
-(setq gc-cons-threshold (* 100 1024 1024)
-      read-process-output-max (* 1024 1024)
-      ;; treemacs-space-between-root-nodes nil
-      company-idle-delay 0.0
-      company-minimum-prefix-length 1
-      lsp-idle-delay 0.1)  ;; clangd is fast
+;; ;; copy from https://emacs-lsp.github.io/lsp-mode/tutorials/CPP-guide/
+;; (add-hook 'c-mode-hook 'lsp)
+;; (add-hook 'c++-mode-hook 'lsp)
+;; (setq gc-cons-threshold (* 100 1024 1024)
+;;       read-process-output-max (* 1024 1024)
+;;       ;; treemacs-space-between-root-nodes nil
+;;       company-idle-delay 0.0
+;;       company-minimum-prefix-length 1
+;;       lsp-idle-delay 0.1)
+;; clangd is fast
 
 ;;以前是ivy用户，现在则是仅使用vertico, embark和consult了
 
@@ -3684,13 +3686,13 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
                 ;; TODO Add in support for company-gtags/capf
 
 	              (ac-php-core-eldoc-setup)
-                (setq-local company-dabbrev-char-regexp "\\\`$sw")
-                (setq-local company-dabbrev-code-everywhere t)
+                ;; (setq-local company-dabbrev-char-regexp "\\\`$sw")
+                ;; (setq-local company-dabbrev-code-everywhere t)
                 ;; (setq-local company-transformers '(company-sort-by-backend-importance))
-	              (set (make-local-variable 'company-backends)
-		                 ;;'((company-ac-php-backend company-dabbrev-code)))
-		                 ;;'((company-ac-php-backend company-dabbrev-code :separate)))
-		                 '((company-dabbrev-code company-ac-php-backend)))
+	              ;; (set (make-local-variable 'company-backends)
+		            ;;      ;;'((company-ac-php-backend company-dabbrev-code)))
+		            ;;      ;;'((company-ac-php-backend company-dabbrev-code :separate)))
+		            ;;      '((company-dabbrev-code company-ac-php-backend)))
 	              ;;'((company-ac-php-backend :with company-dabbrev-code)))
                 ;; '((company-lsp :with company-dabbrev-code)))
 
@@ -3859,7 +3861,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 (use-package mmm-mode
   :ensure t
-  :hook ((mmm-mode . company-mode)
+  :hook (
+         ;; (mmm-mode . company-mode)
          (mmm-mdoe . flycheck-mode)
          (mmm-mode . eldoc-mode))
   :config
@@ -5236,11 +5239,11 @@ Install the doc if it's not installed."
 ;; Also
 ;; use-package docs: https://github.com/jwiegley/use-package
 (use-package omnisharp
-  :after company
+  ;; :after company
   :ensure t
   :config
   (add-hook 'csharp-mode-hook 'omnisharp-mode)
-  (add-to-list 'company-backends 'company-omnisharp)
+  ;; (add-to-list 'company-backends 'company-omnisharp)
   (define-key csharp-mode-map (kbd "<C-return>") 'omnisharp-go-to-definition)
   (define-key csharp-mode-map (kbd "<M-left>") 'pop-tag-mark)
   )
@@ -5371,8 +5374,9 @@ Install the doc if it's not installed."
   :custom
   (flycheck-posframe-position 'window-bottom-left-corner)
   (flycheck-posframe-border-width 3)
-  (flycheck-posframe-inhibit-functions
-   '((lambda (&rest _) (bound-and-true-p company-backend)))))
+  ;; (flycheck-posframe-inhibit-functions '((lambda (&rest _) (bound-and-true-p company-backend))))
+  )
+
 (use-package flycheck-pos-tip
   :defines flycheck-pos-tip-timeout
   :hook (flycheck-mode . flycheck-pos-tip-mode)

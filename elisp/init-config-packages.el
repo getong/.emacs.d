@@ -3276,8 +3276,9 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package elixir-mode
   :ensure t)
 
-(use-package alchemist
-  :ensure t)
+;; disable company
+;; (use-package alchemist
+  ;; :ensure t)
 
 ;; Emacs has a great built in C/C++ mode, but we can improve on it with irony-mode for code completion via libclang.
 (use-package irony

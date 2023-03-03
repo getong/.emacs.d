@@ -64,7 +64,11 @@
                   corfu-popupinfo-delay nil)
       (corfu-mode 1)))
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-  :hook (after-init . global-corfu-mode))
+  :hook
+  (after-init . global-corfu-mode)
+  ;;(after-init . (lambda ()
+  ;;                (company-mode -1)))
+  )
 
 (use-package corfu-echo
   :ensure corfu

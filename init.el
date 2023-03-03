@@ -13,6 +13,8 @@
 ;;   (write-region "" nil custom-file)) ;; 写入一个空内容，相当于 touch 一下它
 ;; (load custom-file)
 
+(require 'init-company)
+
 (require 'init-config-packages)
 
 (require 'init-font)
@@ -26,9 +28,7 @@
 ;; copy from https://stackoverflow.com/questions/1217180/how-do-i-byte-compile-everything-in-my-emacs-d-directory
 ;;(byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
-;; 安装 company-tabnine
-(unless (file-exists-p (no-littering-expand-var-file-name "company/tabnine-binaries"))
-  (company-tabnine-install-binary))
+
 
 ;; brew install pyqt
 ;; check eaf pdf

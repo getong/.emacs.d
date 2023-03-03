@@ -15,6 +15,8 @@
 
 (require 'init-company)
 
+(require 'init-corfu)
+
 (require 'init-config-packages)
 
 (require 'init-lisp)

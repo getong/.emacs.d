@@ -3117,13 +3117,12 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
    consult-async-input-debounce 0.1
    consult-project-root-function #'projectile-project-root)
   (consult-customize
-   consult-theme
-   :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-recent-file
-   consult--source-project-recent-file
-   :preview-key 'any)
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   :preview-key '(:debounce 0.2 any)
+   )
 
   ;; custom functions
   (defun zw/consult-line-multi ()

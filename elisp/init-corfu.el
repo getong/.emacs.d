@@ -77,7 +77,7 @@
   :ensure corfu
   :config
   ;; NOTE: should be unconditionally depend on `savehist`?
-  (add-to-list 'savehist-additional-variables 'corfu-history)
+  ;; (add-to-list 'savehist-additional-variables 'corfu-history)
   (corfu-history-mode 1))
 
 ;; kind-icon 已经增加了一个命令，M-x kind-icon-preview-all 执行就可以预览全部预设的图标，并自动下载全部图标到 ~/.emacs.d/.cache/svg-lib 文件夹。

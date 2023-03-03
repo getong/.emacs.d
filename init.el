@@ -17,6 +17,8 @@
 
 (require 'init-config-packages)
 
+(require 'init-lisp)
+
 (require 'init-font)
 
 (require 'init-macro)

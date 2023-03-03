@@ -1182,6 +1182,7 @@ Version: 2018-08-02 2022-05-18"
    (make-lsp-client :new-connection (lsp-stdio-connection lsp-clients-lua-language-server-bin)
                     :major-modes '(lua-mode)
                     :server-id 'lua-langserver
+                    :remote? nil
                     :priority -1
                     :notification-handlers
                     (lsp-ht
@@ -2345,7 +2346,7 @@ Get it from:  <http://hasseg.org/trash/>"
                               (lsp-package-path 'rust-analyzer)
                               "rust-analyzer")
                          ,@(cl-rest lsp-rust-analyzer-server-args))))
-    :remote? t
+    :remote? nil
     :major-modes '(rust-mode rustic-mode)
     :initialization-options 'lsp-rust-analyzer--make-init-options
     :notification-handlers (ht<-alist lsp-rust-notification-handlers)
@@ -5709,6 +5710,7 @@ Install the doc if it's not installed."
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection '("bash-language-server" "start"))
                     :major-modes '(sh-mode)
+                    :remote? nil
                     :server-id 'bash-ls))
   )
 

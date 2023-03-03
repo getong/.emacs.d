@@ -2,17 +2,18 @@
 
 (use-package corfu
   :ensure t
-  :bind((:map corfu-map
-              ([tab] . corfu-next)
-              ("C-n" . #'corfu-next)
-              ("C-p" . #'corfu-previous)
-              ("<escape>" . #'corfu-quit)
-              ("<return>" . #'corfu-insert)
-              ("H-SPC" . #'corfu-insert-separator)
-              ;; "SPC" #'corfu-insert-separator ; Use when `corfu-quit-at-boundary' is non-nil
-              ("M-d" . #'corfu-show-documentation)
-              ("C-g" . #'corfu-quit)
-              ("M-l" . #'corfu-show-location)))
+  :bind
+  ((:map corfu-map
+         ([tab] . #'corfu-next)
+         ("C-n" . #'corfu-next)
+         ("C-p" . #'corfu-previous)
+         ("<escape>" . #'corfu-quit)
+         ("<return>" . #'corfu-insert)
+         ("H-SPC" . #'corfu-insert-separator)
+         ;; "SPC" #'corfu-insert-separator ; Use when `corfu-quit-at-boundary' is non-nil
+         ("M-d" . #'corfu-show-documentation)
+         ("C-g" . #'corfu-quit)
+         ("M-l" . #'corfu-show-location)))
   :custom
   ;; works with `indent-for-tab-command'. Make sure tab doesn't indent when you
   ;; want to perform completion
@@ -44,16 +45,10 @@
 
   ;; Other
   (corfu-echo-documentation nil)        ; Already use corfu-doc
-  (lsp-completion-provider :none)       ; Use corfu instead for lsp completions
+  (corfu-preselect 'prompt)
+  (corfu-on-exact-match nil)
+
   :config
-  (setq corfu-cycle t)
-  (setq corfu-auto t)
-  (setq corfu-auto-prefix 2)
-  (setq corfu-auto-delay 0.0)
-  (setq corfu-preselect 'valid)
-
-  (setq-default corfu-quit-no-match 'separator)
-
   (defun corfu-enable-always-in-minibuffer ()
     "Enable Corfu in the minibuffer if Vertico/Mct are not active."
     (unless (or (bound-and-true-p mct--active)
@@ -78,6 +73,12 @@
   :ensure corfu
   :hook (corfu-mode . corfu-popupinfo-mode))
 
+(use-package corfu-history
+  :ensure corfu
+  :config
+  ;; NOTE: should be unconditionally depend on `savehist`?
+  (add-to-list 'savehist-additional-variables 'corfu-history)
+  (corfu-history-mode 1))
 
 ;; kind-icon 已经增加了一个命令，M-x kind-icon-preview-all 执行就可以预览全部预设的图标，并自动下载全部图标到 ~/.emacs.d/.cache/svg-lib 文件夹。
 (use-package kind-icon :straight t
@@ -106,26 +107,7 @@
   ;; function unless you use something similar
   (add-hook 'kb/themes-hooks #'(lambda () (interactive) (kind-icon-reset-cache))))
 
-;; (use-package corfu-doc
-;;   ;; NOTE 2022-02-05: At the time of writing, `corfu-doc' is not yet on melpa
-;;   :straight (corfu-doc :type git :host github :repo "galeo/corfu-doc")
-;;   :after corfu
-;;   :hook (corfu-mode . corfu-doc-mode)
-;;   :bind ((:map corfu-map
-;;                      ;; This is a manual toggle for the documentation popup.
-;;                     ([remap corfu-show-documentation] . #'corfu-doc-toggle)  ; Remap the default doc command
-;;                      ;; Scroll in the documentation window
-;;                     ( "M-n" . #'corfu-doc-scroll-up)
-;;                     ("M-p" . #'corfu-doc-scroll-down)))
-;;   :custom
-;;   (corfu-doc-delay 0.5)
-;;   (corfu-doc-max-width 70)
-;;   (corfu-doc-max-height 20)
 
-;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
-;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
-;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
-;;   (corfu-echo-documentation nil))
 (use-package cape
   :bind (("C-c p p" . completion-at-point) ;; capf
          ("C-c p t" . complete-tag)        ;; etags
@@ -158,6 +140,34 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   )
 
+(use-package tabnine-capf
+  :after cape
+  :straight (:host github :repo "50ways2sayhard/tabnine-capf" :files ("*.el" "*.sh"))
+  :hook (kill-emacs . tabnine-capf-kill-process)
+  :config
+  (add-to-list 'completion-at-point-functions #'tabnine-completion-at-point))
 
+(use-package tempel
+  :straight t
+  :defer 10
+  :custom
+  ;; (tempel-path "~/.dotfiles/Emacs/templates")
+  (tempel-path (no-littering-expand-var-file-name "templ-templates"))
+  :hook ((prog-mode text-mode) . tempel-setup-capf)
+  :bind (("M-+" . tempel-insert) ;; Alternative tempel-expand
+         :map tempel-map
+         ([remap keyboard-escape-quit] . tempel-done)
+         ("TAB" . tempel-next)
+         ("<backtab>" . tempel-previous)
+         :map corfu-map
+         ("C-M-i" . tempel-expand))
+  ;; :map tempel-map
+  ;; ("M-]" . tempel-next)
+  ;; ("M-[" . tempel-previous))
+  :init
+  (defun tempel-setup-capf ()
+    (setq-local completion-at-point-functions
+                (cons #'tempel-complete
+                      completion-at-point-functions))))
 
 (provide 'init-corfu)

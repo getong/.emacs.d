@@ -2161,7 +2161,7 @@ Get it from:  <http://hasseg.org/trash/>"
    lsp-session-file (concat lsp-server-install-dir "lsp-session-v1")
    lsp-eslint-library-choices-file (concat lsp-server-install-dir "lsp-eslint-choices")
    lsp-yaml-schema-store-local-db (concat lsp-server-install-dir "lsp-yaml-schemas.json")
-   lsp-vetur-global-snippets-dir (no-littering-expand-etc-file-name "yasnippet/snippets/vetur")
+   ;; lsp-vetur-global-snippets-dir (no-littering-expand-etc-file-name "yasnippet/snippets/vetur")
    )
   :custom
   ;; what to use when checking on-save. "check" is default, I prefer clippy
@@ -2361,12 +2361,12 @@ Get it from:  <http://hasseg.org/trash/>"
     :server-id 'rust-analyzer-remote))
   )
 
-(use-package yasnippet
-  :ensure
-  :config
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook 'yas-minor-mode)
-  (add-hook 'text-mode-hook 'yas-minor-mode))
+;; (use-package yasnippet
+;;   :ensure
+;;   :config
+;;   (yas-reload-all)
+;;   (add-hook 'prog-mode-hook 'yas-minor-mode)
+;;   (add-hook 'text-mode-hook 'yas-minor-mode))
 
 
 ;; Create / cleanup rust scratch projects quickly
@@ -2787,8 +2787,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
     (consult-line-multi t)))
 
 ;; custom consult packages
-(use-package consult-yasnippet
-  :commands consult-yasnippet)
+;; (use-package consult-yasnippet
+;;   :commands consult-yasnippet)
 (use-package consult-dir
   :commands consult-dir)
 (use-package consult-tramp
@@ -2892,8 +2892,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   )
 
 
-(use-package yasnippet-snippets
-  :disabled)
+;; (use-package yasnippet-snippets
+;;   :disabled)
 
 
 (use-package deadgrep

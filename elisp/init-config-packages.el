@@ -1919,6 +1919,10 @@ Get it from:  <http://hasseg.org/trash/>"
 
   :custom-face
   (hl-line ((nil (:background "light green"))))
+  :hook
+  ((after-init . global-hl-line-mode)
+   ((dashboard-mode eshell-mode shell-mode term-mode vterm-mode) .
+    (lambda () (setq-local global-hl-line-mode nil))))
   )
 
 ;; 隐藏、显示结构化数据，如 { } 里的内容。对于单函数较长的情况比较有用。
@@ -2819,14 +2823,15 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package savehist
   :ensure nil
   :hook (after-init . savehist-mode)
-  :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
-	            history-length 1000
-	            savehist-additional-variables '(mark-ring
-					                                    global-mark-ring
-					                                    search-ring
-					                                    regexp-search-ring
-					                                    extended-command-history)
-	            savehist-autosave-interval 300)
+  :init
+  (setq
+	 history-length 1000
+	 savehist-additional-variables '(mark-ring
+					                         global-mark-ring
+					                         search-ring
+					                         regexp-search-ring
+					                         extended-command-history)
+	 savehist-autosave-interval 300)
   :config
   ;; (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
   (setq savehist-file (no-littering-expand-var-file-name "savehist")
@@ -3280,7 +3285,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 ;; disable company
 ;; (use-package alchemist
-  ;; :ensure t)
+;; :ensure t)
 
 ;; Emacs has a great built in C/C++ mode, but we can improve on it with irony-mode for code completion via libclang.
 (use-package irony
@@ -5408,9 +5413,9 @@ Install the doc if it's not installed."
   (blamer-min-offset 70)
   :custom-face
   (blamer-face ((t :foreground "#7a88cf"
-                    :background nil
-                    :height 140
-                    :italic t)))
+                   :background nil
+                   :height 140
+                   :italic t)))
   :config
   (global-blamer-mode 1))
 
@@ -5425,9 +5430,13 @@ Install the doc if it's not installed."
   (rustic-mode  . apheleia-mode)
   :config
   (setf (alist-get 'isort apheleia-formatters)
-      '("isort" "--stdout" "-"))
+        '("isort" "--stdout" "-"))
   (setf (alist-get 'python-mode apheleia-mode-alist)
         '(isort black)))
+
+(use-package volatile-highlights
+  :diminish
+  :hook (after-init . volatile-highlights-mode))
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

@@ -59,8 +59,16 @@
                   corfu-popupinfo-delay nil)
       (corfu-mode 1)))
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+
+  ;; Setup lsp to use corfu for lsp completion
+  (defun kb/corfu-setup-lsp ()
+    "Use orderless completion style with lsp-capf instead of the
+default lsp-passthrough."
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
   :hook
   (after-init . global-corfu-mode)
+  (lsp-completion-mode . kb/corfu-setup-lsp) ; Use corfu for lsp completion
   ;;(after-init . (lambda ()
   ;;                (company-mode -1)))
   )

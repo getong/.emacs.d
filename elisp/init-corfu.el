@@ -143,7 +143,7 @@ default lsp-passthrough."
      (variable "va" :icon "adjust" :face font-lock-variable-name-face)))
   :config
   (unless (file-exists-p svg-lib-icons-dir)
-    (call-interactively 'kind-icon-preview-all))
+    (call-interactively #'kind-icon-preview-all))
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   ;; (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
 

@@ -1097,11 +1097,12 @@ Version: 2018-08-02 2022-05-18"
 (use-package lua-mode
   :ensure t
   :mode "\\.lua\\'"
-  :init
-  (add-hook 'lua-mode-hook
-            (defun pnh-lua-mode-hook ()
-              (make-variable-buffer-local 'completion-at-point-functions)
-              (add-to-list 'completion-at-point-functions 'pnh-lua-complete)))
+  :hook
+  (lua-mode . (lambda ()
+                (aggressive-indent-mode -1)
+                (make-variable-buffer-local 'completion-at-point-functions)
+                (add-to-list 'completion-at-point-functions 'pnh-lua-complete)
+                ))
   :interpreter ("lua" . lua-mode)
   :config
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))

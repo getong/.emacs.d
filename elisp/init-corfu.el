@@ -94,7 +94,8 @@ default lsp-passthrough."
   )
 
 ;; kind-icon 已经增加了一个命令，M-x kind-icon-preview-all 执行就可以预览全部预设的图标，并自动下载全部图标到 ~/.emacs.d/.cache/svg-lib 文件夹。
-(use-package kind-icon :straight t
+(use-package kind-icon
+  :straight t
   :after corfu
   :custom
   (kind-icon-use-icons t)
@@ -155,22 +156,23 @@ default lsp-passthrough."
 
 
 (use-package cape
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p i" . cape-ispell)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
+  :bind
+  (("C-c p p" . completion-at-point) ;; capf
+   ("C-c p t" . complete-tag)        ;; etags
+   ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+   ("C-c p h" . cape-history)
+   ("C-c p f" . cape-file)
+   ("C-c p k" . cape-keyword)
+   ("C-c p s" . cape-symbol)
+   ("C-c p a" . cape-abbrev)
+   ("C-c p i" . cape-ispell)
+   ("C-c p l" . cape-line)
+   ("C-c p w" . cape-dict)
+   ("C-c p \\" . cape-tex)
+   ("C-c p _" . cape-tex)
+   ("C-c p ^" . cape-tex)
+   ("C-c p &" . cape-sgml)
+   ("C-c p r" . cape-rfc1345))
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
@@ -191,7 +193,11 @@ default lsp-passthrough."
   :straight (:host github :repo "50ways2sayhard/tabnine-capf" :files ("*.el" "*.sh"))
   :hook (kill-emacs . tabnine-capf-kill-process)
   :config
-  (add-to-list 'completion-at-point-functions #'tabnine-completion-at-point))
+  (add-to-list 'completion-at-point-functions #'tabnine-completion-at-point)
+
+  (unless (file-exists-p (no-littering-expand-var-file-name "tabnine-capf/tabnine-binaries"))
+    (tabnine-capf-install-binary))
+  )
 
 (use-package tempel
   :straight t
@@ -226,5 +232,11 @@ default lsp-passthrough."
   ;; Other useful Dabbrev configurations.
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
+
+
+(use-package tmux-capf
+  :straight (:host github :repo "theFool32/tmux-capf" :files ("*.el" "*.sh"))
+  :after cape
+  :commands tmux-capf)
 
 (provide 'init-corfu)

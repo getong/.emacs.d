@@ -562,6 +562,8 @@
   (push '(vertical-scroll-bars) default-frame-alist)
 
   (global-superword-mode t)
+  ;;自动折行设置
+  (toggle-truncate-lines 1)
   (mouse-avoidance-mode 'animate) ;;光标靠近鼠标指针时，让鼠标指针自动让开，别挡住视线。
 
 

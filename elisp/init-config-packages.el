@@ -1337,6 +1337,11 @@ Version: 2018-08-02 2022-05-18"
   ;; (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
   ;; (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
   ;; (set-fontset-font t 'symbol "Symbola" nil 'append)
+  :config
+  (when (string-equal system-type "gnu/linux");
+    (setq all-the-icons-fonts-subdirectory (no-littering-expand-var-file-name "all-the-icons")))
+  ;;(unless (file-exists-p all-the-icons-fonts-subdirectory)
+  ;;    (call-interactively #'all-the-icons-install-fonts))
   )
 
 (use-package all-the-icons-completion
@@ -2173,7 +2178,7 @@ Get it from:  <http://hasseg.org/trash/>"
   :custom
   ;; what to use when checking on-save. "check" is default, I prefer clippy
   ;;(lsp-eldoc-render-all t)
-  ;; (lsp-enable-snippet t)
+  (lsp-enable-snippet nil)
   ;; Auto-kill LSP server once you've killed the last buffer associated with its
   ;; project.
   (lsp-keep-workspace-alive nil)

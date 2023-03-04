@@ -1102,7 +1102,6 @@ Version: 2018-08-02 2022-05-18"
                 (aggressive-indent-mode -1)
                 (make-variable-buffer-local 'completion-at-point-functions)
                 (add-to-list 'completion-at-point-functions 'pnh-lua-complete)
-                (setq-local global-whitespace-cleanup-mode nil)
                 ))
   :interpreter ("lua" . lua-mode)
   :config

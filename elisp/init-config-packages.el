@@ -2098,7 +2098,7 @@ Get it from:  <http://hasseg.org/trash/>"
   (setq rustic-treesitter-derive t)
   :custom
   ;; (rustic-analyzer-command '("rustup" "run" "nightly" "rust-analyzer"))
-  (rustic-analyzer-command (list (string-trim (shell-command-to-string "rustup which rust-analyzer"))))
+  (rustic-analyzer-command (list (string-trim (shell-command-to-string "which rust-analyzer"))))
   :bind (:map rustic-mode-map
               ("M-j" . lsp-ui-imenu)
               ("M-?" . lsp-find-references)

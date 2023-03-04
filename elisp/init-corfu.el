@@ -21,7 +21,7 @@
   (completion-cycle-threshold nil)      ; Always show candidates in menu
 
   (corfu-auto t)
-  (corfu-auto-prefix 1)
+  (corfu-auto-prefix 2)
   (corfu-auto-delay 0.1)
 
   (corfu-min-width 80)
@@ -74,11 +74,16 @@
   :hook (corfu-mode . corfu-popupinfo-mode))
 
 (use-package corfu-history
+  ;; 记录最近一次补全 在下一次出现同样的触发按键时排第一位
   :ensure corfu
+  :after savehist
   :config
   ;; NOTE: should be unconditionally depend on `savehist`?
   ;; (add-to-list 'savehist-additional-variables 'corfu-history)
-  (corfu-history-mode 1))
+  (corfu-history-mode 1)
+  (savehist-mode 1)
+  (add-to-list 'savehist-additional-variables 'corfu-history)
+  )
 
 ;; kind-icon 已经增加了一个命令，M-x kind-icon-preview-all 执行就可以预览全部预设的图标，并自动下载全部图标到 ~/.emacs.d/.cache/svg-lib 文件夹。
 (use-package kind-icon :straight t
@@ -202,5 +207,16 @@
     (setq-local completion-at-point-functions
                 (cons #'tempel-complete
                       completion-at-point-functions))))
+
+;; Use Dabbrev with Corfu!
+(use-package dabbrev
+  :ensure t
+  ;; Swap M-/ and C-M-/
+  ;;
+  :bind (("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand))
+  ;; Other useful Dabbrev configurations.
+  :custom
+  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
 (provide 'init-corfu)

@@ -5412,5 +5412,20 @@ Install the doc if it's not installed."
   :config
   (global-blamer-mode 1))
 
+(use-package apheleia
+  :ensure t
+  :hook
+  (tuareg-mode  . apheleia-mode)
+  (caml-mode    . apheleia-mode)
+  (python-mode  . apheleia-mode)
+  (fsharp-mode  . apheleia-mode)
+  (kotlin-mode  . apheleia-mode)
+  (rustic-mode  . apheleia-mode)
+  :config
+  (setf (alist-get 'isort apheleia-formatters)
+      '("isort" "--stdout" "-"))
+  (setf (alist-get 'python-mode apheleia-mode-alist)
+        '(isort black)))
+
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

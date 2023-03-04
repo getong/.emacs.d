@@ -1102,6 +1102,7 @@ Version: 2018-08-02 2022-05-18"
                 (aggressive-indent-mode -1)
                 (make-variable-buffer-local 'completion-at-point-functions)
                 (add-to-list 'completion-at-point-functions 'pnh-lua-complete)
+                (setq-local global-whitespace-cleanup-mode nil)
                 ))
   :interpreter ("lua" . lua-mode)
   :config
@@ -2173,7 +2174,7 @@ Get it from:  <http://hasseg.org/trash/>"
   :custom
   ;; what to use when checking on-save. "check" is default, I prefer clippy
   ;;(lsp-eldoc-render-all t)
-  (lsp-enable-snippet t)
+  ;; (lsp-enable-snippet t)
   ;; Auto-kill LSP server once you've killed the last buffer associated with its
   ;; project.
   (lsp-keep-workspace-alive nil)

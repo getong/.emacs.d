@@ -58,6 +58,7 @@
       (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
                   corfu-popupinfo-delay nil)
       (corfu-mode 1)))
+  (add-hook 'after-save-hook #'corfu-quit)
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
   ;; Setup lsp to use corfu for lsp completion

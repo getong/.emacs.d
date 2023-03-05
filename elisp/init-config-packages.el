@@ -463,6 +463,9 @@
   ;; :bind ("C-c L" . prot/scroll-centre-cursor-mode)
 
   :init
+  ;; enable magitask password prompt
+  (setenv "LANG" "en_US.UTF-8")
+  (set-locale-environment "en_US.UTF-8")
   ;; use super-save mode
   (setq auto-save-default nil)
   ;; TAB cycle if there are only few candidates

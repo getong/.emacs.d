@@ -5459,15 +5459,61 @@ Install the doc if it's not installed."
   ((markdown-mode
     git-commit-mode) . fci-mode))
 
+;; Minimap
 (use-package minimap
-  ;; A little unpredictable. For instance, does not work well with org-mode.
-  :disabled
-  :demand t
-  :custom
-  (minimap-window-location 'right)
+  :straight t
+  :diminish minimap-mode
+  :preface
+  (defun dark-minimap ()
+	  "Dark minimap."
+	  (interactive)
+	  (custom-set-faces
+	   '(minimap-active-region-background
+	     ((((background dark)) (:background "#121212121212")) ;;#15
+		    (t (:background "#121212121212"))) ;;#ce
+	     "Face for the active region in the minimap.
+  By default, this is only a different background color."
+	     :group 'minimap)))
+  (defun light-minimap ()
+	  "Light minimap."
+	  (interactive)
+	  (custom-set-faces
+	   '(minimap-active-region-background
+	     ((((background dark)) (:background "#151515151515"))
+		    (t (:background "#d9d9d9d9d9d9"))) ;;#ce
+	     "Face for the active region in the minimap.
+  By default, this is only a different background color."
+	     :group 'minimap)))
+  (defun minimap/enable ()
+	  "Enable minimap."
+	  (interactive)
+	  (minimap-mode t)
+	  (put 'minimap-toggle 'state t))
+  (defun minimap/disable ()
+	  "Disable minimap."
+	  (interactive)
+	  (minimap-kill)
+	  (put 'minimap-toggle 'state nil))
+  (defun minimap/toggle ()
+	  "Toggle minimap."
+	  (interactive)
+	  (if (get 'minimap-toggle 'state)
+		    (minimap/disable)
+	    (minimap/enable)))
+  (defun minimap/refresh ()
+	  "Refresh minimap."
+	  (interactive)
+	  (minimap/disable)
+	  (minimap/enable))
   :config
-  ;; Enable minimap-mode globally.
-  (minimap-mode 1))
+  (setq minimap-window-location 'right)
+  (setq minimap-width-fraction 0.05)
+  (setq minimap-minimum-width 15)
+  (setq minimap-hide-fringes t)
+  ;;(setq minimap-major-modes '(typescript-mode typescriptreact-mode js-mode js2-mode))
+  (setq minimap-major-modes '(prog-mode))
+  ;;(setq minimap-update-delay 0)
+  (light-minimap))
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

@@ -19,6 +19,8 @@
 
 (require 'init-config-packages)
 
+(require 'init-magit)
+
 (require 'init-lisp)
 
 (require 'init-font)
@@ -39,7 +41,7 @@
 ;;(unless (file-exists-p (expand-file-name "straight/repos/emacs-application-framework/app/pdf-viewer" user-emacs-directory))
 ;;  (eaf-install-and-update))
 
-;; (message (emacs-init-time))
+(message (emacs-init-time))
 
 (provide 'init)
 ;;; init.el ends here

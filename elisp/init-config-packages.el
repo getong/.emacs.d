@@ -2931,6 +2931,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 (use-package dashboard
   :ensure t
+  :diminish
+  (dashboard-mode page-break-lines-mode)
   :init
   (dashboard-setup-startup-hook)
   :config
@@ -5450,6 +5452,22 @@ Install the doc if it's not installed."
 (use-package volatile-highlights
   :diminish
   :hook (after-init . volatile-highlights-mode))
+
+(use-package fill-column-indicator
+  :ensure t
+  :hook
+  ((markdown-mode
+    git-commit-mode) . fci-mode))
+
+(use-package minimap
+  ;; A little unpredictable. For instance, does not work well with org-mode.
+  :disabled
+  :demand t
+  :custom
+  (minimap-window-location 'right)
+  :config
+  ;; Enable minimap-mode globally.
+  (minimap-mode 1))
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

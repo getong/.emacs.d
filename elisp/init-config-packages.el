@@ -2462,18 +2462,19 @@ Get it from:  <http://hasseg.org/trash/>"
   :hook
   (rust-mode . flycheck-mode)
   (rust-mode . lsp)
+  (rust-mode . flycheck-rust-setup)
   :init (setq lsp-rust-server 'rust-analyzer)
   :config
   (setq rust-format-on-save t)
-  (setq lsp-completion-provider :capf)
+  ;;(setq lsp-completion-provider :capf)
   (setq lsp-progress-via-spinner t)
-  (require 'lsp-mode)
-  (add-hook 'rust-mode-hook (lambda ()
-                              (flycheck-rust-setup)
-                              (lsp)
-                              (flycheck-mode)
-                              (yas-minor-mode)
-                              ))
+  ;;(require 'lsp-mode)
+  ;; (add-hook 'rust-mode-hook (lambda ()
+  ;;                             (flycheck-rust-setup)
+  ;;                             (lsp)
+  ;;                             (flycheck-mode)
+  ;;                             (yas-minor-mode)
+  ;;                             ))
   )
 
 (use-package cargo

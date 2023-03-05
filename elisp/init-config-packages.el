@@ -750,6 +750,7 @@ Activate this advice with:
       (indent-according-to-mode)))
 
   (global-set-key (kbd "C-o") 'open-next-line)
+  (global-set-key (kbd "C-c z") 'toggle-frame-fullscreen)
 
   ;; Behave like vi's O command
   (defun open-previous-line (arg)
@@ -3092,6 +3093,8 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
       :weight bold))))
   (magit-section-highlight ((t (:background "gray20"))))
   :init
+  (setq magit-process-extreme-logging t)
+  (setq magit-git-debug t)
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
   ;; load theme after magit
   (add-hook 'magit-mode-hook

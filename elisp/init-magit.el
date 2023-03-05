@@ -39,7 +39,7 @@
       :weight bold))))
   (magit-section-highlight ((t (:background "gray20"))))
   :config
-  (setq auth-sources '("~/.authinfo"))
+  ;;(setq auth-sources '("~/.authinfo"))
   (add-hook 'magit-process-find-password-functions
             'magit-process-password-auth-source)
   :init

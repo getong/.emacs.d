@@ -33,6 +33,8 @@
 
 (require 'init-magit)
 
+(require 'init-lua)
+
 (require 'init-lisp)
 
 (require 'init-font)

@@ -38,13 +38,13 @@
       :foreground "red"
       :weight bold))))
   (magit-section-highlight ((t (:background "gray20"))))
-  :config
-  ;;(setq auth-sources '("~/.authinfo"))
-  (add-hook 'magit-process-find-password-functions
-            'magit-process-password-auth-source)
+  ;; :config
+  ;; (add-hook 'magit-process-find-password-functions
+  ;;           'magit-process-password-auth-source)
   :init
-  (setq magit-process-extreme-logging t)
-  (setq magit-git-debug t)
+  ;; enable magit ask password prompt
+  (setenv "LANG" "en_US.UTF-8")
+  (set-locale-environment "en_US.UTF-8")
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
   ;; load theme after magit
   (add-hook 'magit-mode-hook
@@ -54,6 +54,21 @@
               ))
   ;; (add-hook 'magit-mode-hook 'my-inhibit-global-linum-mode)
   (remove-hook 'server-switch-hook 'magit-commit-diff))
+
+(use-package magit-process
+  :ensure magit
+  :after magit
+  :config
+  (setq magit-process-extreme-logging t)
+  )
+
+(use-package magit-git
+  :ensure magit
+  :after magit
+  :config
+  (setq magit-git-debug t)
+  )
+
 
 (use-package magit-gitflow
   :after magit)
@@ -80,7 +95,8 @@
 
 ;; Access Git forges from Magit
 (use-package forge
-  :ensure magit
+  :ensure t
+  :after magit
   :demand t
   :defines (forge-database-connector forge-topic-list-columns)
   :custom-face
@@ -95,7 +111,14 @@
         '(("#" 5 forge-topic-list-sort-by-number (:right-align t) number nil)
           ("Title" 60 t nil title  nil)
           ("State" 6 t nil state nil)
-          ("Updated" 10 t nil updated nil))))
+          ("Updated" 10 t nil updated nil)))
+  :config
+  (setq auth-sources '("~/.authinfo"))
+  (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-authored-pullreqs nil 'append)
+  (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-requested-reviews nil 'append)
+  (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-assigned-issues nil 'append)
+  (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-authored-issues nil 'append)
+  )
 
 (provide 'init-magit)
 ;;; init-magit ends here

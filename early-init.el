@@ -5,13 +5,13 @@
 
 ;; 设置软件源
 (setq package-archives '(
-                         ("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
-                         ("org" . "http://mirrors.ustc.edu.cn/elpa/org/")
-                         ("stable-melpa" . "http://mirrors.ustc.edu.cn/elpa/stable-melpa/")
-                         ("gnu" . "http://mirrors.ustc.edu.cn/elpa/gnu/")
-                         ("gnu-devel" . "http://mirrors.ustc.edu.cn/elpa/gnu-devel/")
-                         ("nongnu" . "http://mirrors.ustc.edu.cn/elpa/nongnu/")
-                         ("nongnu-devel" . "http://mirrors.ustc.edu.cn/elpa/nongnu-devel/")
+                         ("melpa" . "https://mirrors.ustc.edu.cn/elpa/melpa/")
+                         ("org" . "https://mirrors.ustc.edu.cn/elpa/org/")
+                         ("stable-melpa" . "https://mirrors.ustc.edu.cn/elpa/stable-melpa/")
+                         ("gnu" . "https://mirrors.ustc.edu.cn/elpa/gnu/")
+                         ("gnu-devel" . "https://mirrors.ustc.edu.cn/elpa/gnu-devel/")
+                         ("nongnu" . "https://mirrors.ustc.edu.cn/elpa/nongnu/")
+                         ("nongnu-devel" . "https://mirrors.ustc.edu.cn/elpa/nongnu-devel/")
                          ;; ("marmalade" . "http://mirrors.cloud.tencent.com/elpa/marmalade/")
                          ;; ("melpa" . "http://mirrors.cloud.tencent.com/elpa/melpa/")
                          ;; ("org" . "http://mirrors.cloud.tencent.com/elpa/org/")

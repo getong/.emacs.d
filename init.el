@@ -15,9 +15,11 @@
 
 ;;(require 'init-company)
 
+(require 'init-config-packages)
+
 (require 'init-corfu)
 
-(require 'init-config-packages)
+(require 'init-rust)
 
 (require 'init-org)
 

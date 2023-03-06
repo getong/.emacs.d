@@ -1,7 +1,4 @@
 ;;; -*- coding: utf-8; lexical-binding: t -*-
-(use-package org
-  :ensure t
-  :pin gnu-devel)
 
 (use-package org-tree-slide
   :ensure t

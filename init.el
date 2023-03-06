@@ -35,6 +35,8 @@
 
 (require 'init-lua)
 
+(require 'init-cpp)
+
 (require 'init-lisp)
 
 (require 'init-font)

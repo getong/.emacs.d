@@ -2735,38 +2735,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (shell-pop-shell-type '("vterm" "*vterm*" (lambda () (vterm))))
   (shell-pop-full-span t))
 
-;; C/C++
-(use-package cc-mode
-  :hook
-  (c-mode . lsp)
-  (c++-mode . lsp)
-  ;; TODO: open these hooks.
-  ;; Sadly I work with a dirty team, i will change the whole code base if
-  ;; uncommend config below.
-  ;; (before-save-hook . lsp-format-buffer)
-  ;; (before-save-hook . lsp-organize-imports)
-  :config
-  (define-key c-mode-base-map (kbd "M-/") 'ff-find-related-file)
-  ;; Open a header file in C++ mode by defaults
-  ;;(add-auto-mode 'c++-mode "\\.h\\'")
-  )
-
-(use-package cmake-mode
-  :init
-  :mode (("CMakeLists\\.txt\\'" . cmake-mode)
-         ("\\.cmake\\'" . cmake-mode)))
-
-
-;; C++20 highlighting
-(use-package modern-cpp-font-lock
-  :diminish nil
-  :hook
-  (c++-mode . modern-c++-font-lock-mode)
-  (modern-c++-font-lock-mode . (lambda () (diminish
-                                           'modern-c++-font-lock-mode))))
-
-
-
 ;; google style, but with 4 space indent.
 ;; (defun google-set-c-style-with-4-indent ()
 ;;   "Set current buffer to google style, but with 4 space indent."

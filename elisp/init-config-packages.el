@@ -538,7 +538,7 @@
    inhibit-compacting-font-caches t  ;; don’t compact font caches during GC.
    max-specpdl-size 10000
    max-lisp-eval-depth 10000
-   gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
+   ;; gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
    inhibit-startup-screen t
    visible-bell t;;关闭出错时的提示声
    show-paren-style 'parenthesis

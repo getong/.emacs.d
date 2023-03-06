@@ -2,8 +2,6 @@
 
 ;; 这两段一定要在 init.el 的最上方
 (require 'package)
-;; 初始化包管理器
-(package-initialize)
 
 ;; 设置软件源
 (setq package-archives '(
@@ -34,6 +32,8 @@
                                    ("nongnu"    . 1)
                                    ("nongnu-devel" . 1)))
 
+;; 初始化包管理器
+(package-initialize)
 
 ;; fetch the list of packages available
 (unless package-archive-contents

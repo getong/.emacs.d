@@ -1415,7 +1415,6 @@ Version: 2018-08-02 2022-05-18"
 (with-eval-after-load 'nxml-mode
   (define-key nxml-mode-map (kbd "C-c C-f") 'xml-format-buffer))
 
-
 ;; Incremental code parsing for better syntax highlighting
 (use-package tree-sitter
   :ensure t
@@ -1878,60 +1877,9 @@ Get it from:  <http://hasseg.org/trash/>"
 ;; Protobuf
 (use-package protobuf-mode)
 
-(use-package flycheck-rust
-  :ensure t
-  :after flycheck
-  :commands flycheck-rust-setup
-  :config
-  :init (add-hook 'flycheck-mode-hook 'flycheck-rust-setup))
 
-;; Flycheck is a general syntax highlighting framework which other packages hook into. It's an improvment on the built in flymake.
-;; Setup is pretty simple - we just enable globally and turn on a custom eslint function, and also add a custom checker for proselint.
-(use-package flycheck
-  :ensure t
-  :diminish flycheck-mode
-  :init
-  (setq flycheck-indication-mode 'right-fringe)
-  ;; only check on save
-  (setq flycheck-check-syntax-automatically '(mode-enabled save))
-  :config
-  (add-hook 'after-init-hook 'global-flycheck-mode)
-  (add-to-list 'flycheck-checkers 'proselint)
-  (setq-default flycheck-highlighting-mode 'lines)
-  ;; Define fringe indicator / warning levels
-  (define-fringe-bitmap 'flycheck-fringe-bitmap-ball
-    (vector #b00000000
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00011100
-            #b00111110
-            #b00111110
-            #b00111110
-            #b00011100
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00000000))
-  (flycheck-define-error-level 'error
-    :severity 2
-    :overlay-category 'flycheck-error-overlay
-    :fringe-bitmap 'flycheck-fringe-bitmap-ball
-    :fringe-face 'flycheck-fringe-error)
-  (flycheck-define-error-level 'warning
-    :severity 1
-    :overlay-category 'flycheck-warning-overlay
-    :fringe-bitmap 'flycheck-fringe-bitmap-ball
-    :fringe-face 'flycheck-fringe-warning)
-  (flycheck-define-error-level 'info
-    :severity 0
-    :overlay-category 'flycheck-info-overlay
-    :fringe-bitmap 'flycheck-fringe-bitmap-ball
-    :fringe-face 'flycheck-fringe-info))
+
+
 
 (use-package rustic
   :ensure
@@ -2433,7 +2381,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package consult-flyspell
   :commands consult-flyspell)
 
-(use-package consult-flycheck)
+
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
@@ -2542,10 +2490,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
       buf))
   (advice-add #'deadgrep--buffer :around #'my/deadgrep-fix-buffer-advice))
 
-(use-package flycheck-package
-  :after flycheck
-  :config
-  (flycheck-package-setup))
+
 
 (use-package dashboard
   :ensure t
@@ -2870,10 +2815,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :ensure t
   :hook (c-mode . irony-mode))
 
-;; Add flycheck support.
-(use-package flycheck-irony
-  :ensure t
-  :hook (flycheck-mode . flycheck-irony-setup))
+
 
 ;; Web mode handles html/css/js.
 (use-package web-mode
@@ -2991,16 +2933,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   (modern-c++-font-lock-mode . (lambda () (diminish
                                            'modern-c++-font-lock-mode))))
 
-;; google cpplint
-(use-package flycheck-google-cpplint
-  :config
-  (with-eval-after-load 'flycheck
-    '(progn
-       (require 'flycheck-google-cpplint)
-       ;; Add Google C++ Style checker.
-       ;; In default, syntax checked by Clang and Cppcheck.
-       (flycheck-add-next-checker 'c/c++-cppcheck
-                                  '(warning . c/c++-googlelint)))))
+
 
 ;; google style, but with 4 space indent.
 ;; (defun google-set-c-style-with-4-indent ()
@@ -3329,13 +3262,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 ;; ;; [h]ighlight all relevant references to the symbol under point
 ;; (bind-key "C-c h" 'lsp-symbol-highlight))))
 
-(use-package flycheck-phpstan
-  :ensure t
-  :hook ((php-mode) . flycheck-mode)
-  :commands (flycheck-mode)
-  :config
-  (setq-default phpstan-executable 'docker)
-  )
+
 
 
 (use-package edebug-x
@@ -4863,31 +4790,12 @@ Install the doc if it's not installed."
   (sh-indent-after-continuation 'always))
 
 
-
 ;; 诸如软回车这样的空白符号转换成一条水平线
 (use-package page-break-lines
   :ensure t
   :diminish
   :init (global-page-break-lines-mode))
 
-(use-package flycheck-posframe
-  :custom-face
-  (flycheck-posframe-face ((t (:foreground ,(face-foreground 'success)))))
-  (flycheck-posframe-info-face ((t (:foreground ,(face-foreground 'success)))))
-  :hook (flycheck-mode . flycheck-posframe-mode)
-  :custom
-  (flycheck-posframe-position 'window-bottom-left-corner)
-  (flycheck-posframe-border-width 3)
-  ;; (flycheck-posframe-inhibit-functions '((lambda (&rest _) (bound-and-true-p company-backend))))
-  )
-
-(use-package flycheck-pos-tip
-  :defines flycheck-pos-tip-timeout
-  :hook (flycheck-mode . flycheck-pos-tip-mode)
-  :custom (flycheck-pos-tip-timeout 30))
-
-(use-package flycheck-popup-tip
-  :hook (flycheck-mode . flycheck-popup-tip-mode))
 
 (use-package quickrun
   :custom

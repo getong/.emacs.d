@@ -21,6 +21,8 @@
 
 (require 'init-org)
 
+(require 'init-flycheck)
+
 (require 'init-latex)
 
 (require 'init-lsp)

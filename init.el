@@ -19,6 +19,14 @@
 
 (require 'init-config-packages)
 
+(require 'init-org)
+
+(require 'init-latex)
+
+(require 'init-lsp)
+
+(require 'init-flutter)
+
 (require 'init-magit)
 
 (require 'init-lisp)

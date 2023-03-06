@@ -4606,23 +4606,6 @@ Install the doc if it's not installed."
    ("C-c e" . quickrun)
    ("C-c C-e" . quickrun-shell)))
 
-;; A git blame plugin for emacs
-(use-package blamer
-  :ensure t
-  :bind (("C-c s" . blamer-show-commit-info)
-         ("C-c i" . blamer-show-posframe-commit-info))
-  :defer 20
-  :custom
-  (blamer-idle-time 0.3)
-  (blamer-min-offset 70)
-  :custom-face
-  (blamer-face ((t :foreground "#7a88cf"
-                   :background nil
-                   :height 140
-                   :italic t)))
-  :config
-  (global-blamer-mode 1))
-
 (use-package apheleia
   :ensure t
   :hook

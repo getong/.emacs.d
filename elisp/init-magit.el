@@ -120,5 +120,22 @@
   (magit-add-section-hook 'magit-status-sections-hook 'forge-insert-authored-issues nil 'append)
   )
 
+;; A git blame plugin for emacs
+(use-package blamer
+  :ensure t
+  :bind (("C-c s" . blamer-show-commit-info)
+         ("C-c i" . blamer-show-posframe-commit-info))
+  :defer 20
+  :custom
+  (blamer-idle-time 0.3)
+  (blamer-min-offset 70)
+  :custom-face
+  (blamer-face ((t :foreground "#7a88cf"
+                   :background nil
+                   :height 140
+                   :italic t)))
+  :config
+  (global-blamer-mode 1))
+
 (provide 'init-magit)
 ;;; init-magit ends here

@@ -4687,6 +4687,20 @@ Install the doc if it's not installed."
   ;;(setq minimap-update-delay 0)
   (light-minimap))
 
+(use-package profiler
+  ;; :init
+  ;; (evilified-state-evilify profiler-report-mode profiler-report-mode-map)
+  :config
+  (progn
+    ;; 定义列的宽度
+    (setq profiler-report-cpu-line-format
+          '((75 left)
+            (24 right ((19 right) (5 right)))))
+    (setq profiler-report-memory-line-format
+          '((75 left)
+            (19 right ((14 right profiler-format-number)
+                       (5 right)))))
+    ))
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

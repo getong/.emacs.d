@@ -2,6 +2,7 @@
 
 ;; Configure Org and turn on minor modes for org-mode.
 (use-package org
+  :ensure t
   :mode
   ("\\.org\\'" . org-mode)
 
@@ -140,7 +141,6 @@
    ("C-c d a" . douo/org-gtd-archive)
    )
   )
-
 
 (provide 'init-org)
 ;;; init-org ends here

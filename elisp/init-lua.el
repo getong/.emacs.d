@@ -67,4 +67,4 @@
 
 
 (provide 'init-lua)
-;;; init-lua ends here
+;;; init-lua.el ends here

@@ -10,4 +10,4 @@
   (kotlin-mode . lsp))
 
 (provide 'init-kotlin)
-;;; init-kotlin ends here
+;;; init-kotlin.el ends here

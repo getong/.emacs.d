@@ -138,4 +138,4 @@
   (global-blamer-mode 1))
 
 (provide 'init-magit)
-;;; init-magit ends here
+;;; init-magit.el ends here

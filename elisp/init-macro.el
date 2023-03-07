@@ -33,3 +33,4 @@ Optional argument BODY runs with the message suffix."
     ,@body))
 
 (provide 'init-macro)
+;;; init-macro.el ends here

@@ -245,3 +245,4 @@ default lsp-passthrough."
   :commands tmux-capf)
 
 (provide 'init-corfu)
+;;; init-corfu.el ends here

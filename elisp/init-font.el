@@ -49,3 +49,4 @@
 
 
 (provide 'init-font)
+;;; init-font.el ends here

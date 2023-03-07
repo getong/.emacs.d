@@ -749,7 +749,7 @@ Activate this advice with:
     (when newline-and-indent
       (indent-according-to-mode)))
 
-  (global-set-key (kbd "C-o") 'open-next-line)
+  (global-set-key (kbd "C-c o") 'open-next-line)
   (global-set-key (kbd "C-c z") 'toggle-frame-fullscreen)
 
   ;; Behave like vi's O command
@@ -761,7 +761,7 @@ Activate this advice with:
     (open-line arg)
     (when newline-and-indent
       (indent-according-to-mode)))
-  (global-set-key (kbd "M-o") 'open-previous-line)
+  (global-set-key (kbd "C-c O") 'open-previous-line)
 
   (defun split-window-4()
     "Splite window into 4 sub-window"
@@ -2443,14 +2443,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package elisp-autofmt
   :commands (elisp-autofmt-mode elisp-autofmt-buffer)
   :hook (emacs-lisp-mode . elisp-autofmt-mode))
-
-;;; plantuml
-;; https://github.com/skuro/plantuml-mode
-(use-package plantuml-mode
-  :init
-  ;; (setq plantuml-jar-path "d:/plantuml/plantuml.jar")
-  (setq plantuml-default-exec-mode 'jar)
-  )
 
 ;; Will automated download images for the first time
 (use-package emojify
@@ -4781,4 +4773,4 @@ Install the doc if it's not installed."
   :ensure t)
 
 (provide 'init-config-packages)
-;;; init-config-packages ends here
+;;; init-config-packages.el ends here

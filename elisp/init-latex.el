@@ -10,4 +10,4 @@
   :defer t)
 
 (provide 'init-latex)
-;;; init-latex ends here
+;;; init-latex.el ends here

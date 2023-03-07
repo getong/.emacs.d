@@ -350,4 +350,4 @@
   )
 
 (provide 'init-lsp)
-;;; init-lsp ends here
+;;; init-lsp.el ends here

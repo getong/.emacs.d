@@ -61,4 +61,4 @@
   )
 
 (provide 'init-swift)
-;;; init-swift ends here
+;;; init-swift.el ends here

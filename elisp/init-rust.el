@@ -93,4 +93,4 @@
   :hook (rust-mode . cargo-minor-mode))
 
 (provide 'init-rust)
-;;; init-rust ends here
+;;; init-rust.el ends here

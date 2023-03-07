@@ -47,6 +47,8 @@
 
 (require 'init-swift)
 
+(require 'init-uml)
+
 ;; (require 'init-misc)
 
 ;; (setq debug-on-quit t)

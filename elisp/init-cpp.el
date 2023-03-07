@@ -51,4 +51,4 @@
     (advice-add #'lsp-execute-command :override #'my-lsp-execute-command)))
 
 (provide 'init-cpp)
-;;; init-cpp ends here
+;;; init-cpp.el ends here

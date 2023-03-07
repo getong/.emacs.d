@@ -160,4 +160,4 @@
   )
 
 (provide 'init-org)
-;;; init-org ends here
+;;; init-org.el ends here

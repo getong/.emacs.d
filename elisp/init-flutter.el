@@ -65,4 +65,4 @@
   )
 
 (provide 'init-flutter)
-;;; init-flutter ends here
+;;; init-flutter.el ends here

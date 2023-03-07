@@ -10,3 +10,4 @@
   (add-hook 'ielm-mode-hook #'rainbow-delimiters-mode))
 
 (provide 'init-lisp)
+;;; init-lisp.el ends here

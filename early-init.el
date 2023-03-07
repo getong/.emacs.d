@@ -110,3 +110,6 @@
 
 ;; copy from https://www.reddit.com/r/emacs/comments/siuvpu/isnt_there_a_better_way_to_set_utf8/
 (set-locale-environment "zh_CN.UTF-8")
+
+(provide 'early-init)
+;;; early-init.el ends here

@@ -142,5 +142,22 @@
    )
   )
 
+
+(use-package org-pomodoro
+  :ensure t
+  :custom
+  (alert-user-configuration (quote ((((:category . "org-pomodoro")) libnotify nil))))
+  (org-pomodoro-format " %s")
+  (org-pomodoro-start-sound-p t)
+  :config
+  (setq org-pomodoro-ask-upon-killing nil)
+  :custom-face
+  (org-pomodoro-mode-line ((t (:inherit warning))))
+  (org-pomodoro-mode-line-overtime ((t (:inherit error))))
+  (org-pomodoro-mode-line-break ((t (:inherit success))))
+  :bind (:map org-mode-map
+              ("C-c C-x m" . org-pomodoro))
+  )
+
 (provide 'init-org)
 ;;; init-org ends here

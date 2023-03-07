@@ -2377,23 +2377,39 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 (use-package super-save
   :ensure t
   :defer 1
+  :hook (after-init . super-save-mode)
   :diminish super-save-mode
   :config
-  (super-save-mode +1)
-  (setq super-save-auto-save-when-idle t)
+  ;; (super-save-mode +1)
+ ;; Emacs空闲是否自动保存，这里不设置
+  (setq super-save-auto-save-when-idle nil)
   ;; add integration with ace-window
+  ;; 切换窗口自动保存
   (add-to-list 'super-save-triggers 'ace-window)
   ;; save on find-file
+  ;; 查找文件时自动保存
   (add-to-list 'super-save-hook-triggers 'find-file-hook)
+  ;; 远程文件编辑不自动保存
+  (setq super-save-remote-files nil)
   ;;  exclude specific files from super-save, not save gpg files
+  ;; 特定后缀名的文件不自动保存
   (setq super-save-exclude '(".gpg"))
   ;; predicates must not take arguments and return nil, when current buffer shouldn't save.
   (add-to-list 'super-save-predicates
                (lambda ()
                  (not (eq major-mode 'markdown-mode))))
+  ;; 自动保存时，保存所有缓冲区
+  (defun super-save/save-all-buffers ()
+    (save-excursion
+      (dolist (buf (buffer-list))
+        (set-buffer buf)
+        (when (and buffer-file-name
+                   (buffer-modified-p (current-buffer))
+                   (file-writable-p buffer-file-name)
+                   (if (file-remote-p buffer-file-name) super-save-remote-files t))
+          (save-buffer)))))
+  (advice-add 'super-save-command :override 'super-save/save-all-buffers)
   )
-
-
 
 
 (use-package doom-themes
@@ -3282,14 +3298,129 @@ deletion, or > if it is flagged for displaying."
   ("C-x C-p" . consult-projectile))
 
 ;; 可视范围内跳转
+;; avy 是一个光标移动插件，能快速将光标移动到屏幕上的任意位置，非常强大！
+;; copy from https://remacs.cc/posts/%E9%9D%A2%E5%90%91%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84emacs%E6%95%99%E7%A8%8B10.-emacs%E7%BC%96%E8%BE%91%E8%BF%9B%E9%98%B6/
 (use-package avy
+  :ensure t
   :bind (("C-'" . avy-goto-char-timer) ;; Control + 单引号
          ;; 复用上一次搜索
-         ("C-c C-j" . avy-resume))
+         ("C-c C-j" . avy-resume)
+         :map isearch-mode-map
+         ("C-'" . avy-isearch)
+         )
   :config
   (setq avy-background t ;; 打关键字时给匹配结果加一个灰背景，更醒目
         avy-all-windows t ;; 搜索所有 window，即所有「可视范围」
-        avy-timeout-seconds 0.3)) ;; 「关键字输入完毕」信号的触发时间
+        avy-timeout-seconds 0.3) ;; 「关键字输入完毕」信号的触发时间
+  ;; Make `avy-goto-char-timer' support pinyin, refer to:
+  ;; https://emacs-china.org/t/avy-avy-goto-char-timer/20900/2
+  (defun my/avy-goto-char-timer (&optional arg)
+    "Make avy-goto-char-timer support pinyin"
+    (interactive "P")
+    (let ((avy-all-windows (if arg
+                               (not avy-all-windows)
+                             avy-all-windows)))
+      (avy-with avy-goto-char-timer
+        (setq avy--old-cands (avy--read-candidates
+                              'pinyinlib-build-regexp-string))
+        (avy-process avy--old-cands))))
+
+  (defun avy-action-kill-whole-line (pt)
+    "avy action: kill the whole line where avy selection is"
+    (save-excursion
+      (goto-char pt)
+      (kill-whole-line))
+    (select-window
+     (cdr
+      (ring-ref avy-ring 0)))
+    t)
+
+  (defun avy-action-copy-whole-line (pt)
+    "avy action: copy the whole line where avy selection is"
+    (save-excursion
+      (goto-char pt)
+      (cl-destructuring-bind (start . end)
+          (bounds-of-thing-at-point 'line)
+        (copy-region-as-kill start end)))
+    (select-window
+     (cdr
+      (ring-ref avy-ring 0)))
+    t)
+
+  (defun avy-action-yank-whole-line (pt)
+    "avy action: copy the line where avy selection is and paste to current point"
+    (avy-action-copy-whole-line pt)
+    (save-excursion (yank))
+    t)
+
+  (defun avy-action-teleport-whole-line (pt)
+    "avy action: kill the line where avy selection is and paste to current point"
+    (avy-action-kill-whole-line pt)
+    (save-excursion (yank)) t)
+
+  (defun avy-action-helpful (pt)
+    "avy action: get helpful information at point"
+    (save-excursion
+      (goto-char pt)
+      (helpful-at-point))
+    t)
+
+  (defun avy-action-mark-to-char (pt)
+    "avy action: mark from current point to avy selection"
+    (activate-mark)
+    (goto-char pt))
+
+  (defun avy-action-flyspell (pt)
+    "avy action: flyspell the word where avy selection is"
+    (save-excursion
+      (goto-char pt)
+      (when (require 'flyspell nil t)
+        (flyspell-correct-wrapper))))
+
+  (defun avy-action-define (pt)
+    "avy action: define the word in dictionary where avy selection is"
+    (save-excursion
+      (goto-char pt)
+      (fanyi-dwim2)))
+
+  (defun avy-action-embark (pt)
+    "avy action: embark where avy selection is"
+    (unwind-protect
+        (save-excursion
+          (goto-char pt)
+          (embark-act))
+      (select-window
+       (cdr (ring-ref avy-ring 0))))
+    t)
+
+  (defun avy-action-google (pt)
+    "avy action: google the avy selection when it is a word or browse it when it is a link"
+    (save-excursion
+      (goto-char pt)
+      (my/search-or-browse)))
+
+  (setf (alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
+        (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
+        (alist-get ?w avy-dispatch-alist) 'avy-action-copy
+        (alist-get ?W avy-dispatch-alist) 'avy-action-copy-whole-line
+        (alist-get ?y avy-dispatch-alist) 'avy-action-yank
+        (alist-get ?Y avy-dispatch-alist) 'avy-action-yank-whole-line
+        (alist-get ?t avy-dispatch-alist) 'avy-action-teleport
+        (alist-get ?T avy-dispatch-alist) 'avy-action-teleport-whole-line
+        (alist-get ?H avy-dispatch-alist) 'avy-action-helpful
+        (alist-get ?  avy-dispatch-alist) 'avy-action-mark-to-char
+        (alist-get ?\; avy-dispatch-alist) 'avy-action-flyspell
+        (alist-get ?= avy-dispatch-alist) 'avy-action-define
+        (alist-get ?o avy-dispatch-alist) 'avy-action-embark
+        (alist-get ?G avy-dispatch-alist) 'avy-action-google
+        )
+
+  :custom
+  (avy-timeout-seconds 1.0)
+  (avy-all-windows t)
+  (avy-background t)
+  (avy-keys '(?a ?s ?d ?f ?g ?h ?j ?l ?q ?e ?r ?u ?i ?p ?n))
+  )
 
 ;; buffer 内正则替换
 ;; 渐进式可视化
@@ -4643,6 +4774,11 @@ Install the doc if it's not installed."
             (19 right ((14 right profiler-format-number)
                        (5 right)))))
     ))
+
+;; support Pinyin first character match for orderless, avy etc.
+;; orderless 支持中文的首字母匹配
+(use-package pinyinlib
+  :ensure t)
 
 (provide 'init-config-packages)
 ;;; init-config-packages ends here

@@ -43,6 +43,10 @@
 
 (require 'init-macro)
 
+(require 'init-kotlin)
+
+(require 'init-swift)
+
 ;; (require 'init-misc)
 
 ;; (setq debug-on-quit t)

@@ -32,6 +32,7 @@
 
 ;; C/C++/Objective-C
 (use-package ccls
+  :disabled t
   :defines projectile-project-root-files-top-down-recurring
   :hook ((c-mode c++-mode objc-mode cuda-mode) . (lambda () (require 'ccls)))
   :config

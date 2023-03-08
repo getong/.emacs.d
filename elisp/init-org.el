@@ -342,7 +342,7 @@ Optional for Org-mode file: `LINK'."
   :bind
   (("C-c c" . org-gtd-capture)
    ("C-c e" . org-gtd-engage)
-   ("C-c p" . org-gtd-process-inbox)
+   ;; ("C-c p" . org-gtd-process-inbox)
    ("C-c n" . org-gtd-show-all-next)
    ("C-c s" . org-gtd-show-stuck-projects)
    :map org-gtd-process-map

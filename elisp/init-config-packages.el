@@ -416,6 +416,9 @@
     (turn-off-smartparens-strict-mode)
     (turn-off-smartparens-mode)
     (load-theme 'moe-dark t)
+    (corfu-echo-mode -1)
+    (corfu-history-mode -1)
+    (corfu-popupinfo-mode -1)
     )
   :hook
   (vterm-mode . turn-off-chrome)
@@ -508,6 +511,8 @@
   ;; (setq custom-file (make-temp-file "")) ; use a temp file as a placeholder
   ;; (setq custom-safe-themes t)            ; mark all themes as safe, since we can't persist now
   (setq enable-local-variables :all)     ; fix =defvar= warnings
+  ;; 禁止自动缩放窗口先
+  (setq frame-inhibit-implied-resize t)
 
   ;; less noise when compiling elisp
   (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local))

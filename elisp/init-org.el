@@ -160,5 +160,12 @@
               ("C-c C-x m" . org-pomodoro))
   )
 
+(use-package org-auto-tangle
+  :ensure t
+  :hook (org-mode . org-auto-tangle-mode)
+  :config
+  (setq org-auto-tangle-default t)
+  )
+
 (provide 'init-org)
 ;;; init-org.el ends here

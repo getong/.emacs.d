@@ -1435,10 +1435,10 @@ Get it from:  <http://hasseg.org/trash/>"
   (after-init . dirvish-override-dired-mode)
   :custom
   (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
-   '(("h" "~/"                          "Home")
-     ("d" "~/Downloads/"                "Downloads")
-     ;; ("o" "~/Syncthings/org/"           "Org")
-     ;; ("r" "~/Syncthings/org/roam/"      "Roam")
+   '(("a" "~/"             "Home")
+     ("b" "~/Downloads/"   "Downloads")
+     ("c" "~/vbox_share/"  "vbox_share")
+     ("d" "~/other_project/"  "other_project")
      ))
   :after (diredfl all-the-icons)
   :config
@@ -3764,7 +3764,7 @@ FACE defaults to inheriting from default and highlight."
   (auto-revert-verbose nil)
   (echo-keystrokes 0.1)
   (shift-select-mode nil)
-  (fill-column 80)
+  (fill-column 240)
   (blink-matching-paren t)
   (history-length 1000)
   (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))

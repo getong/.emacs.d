@@ -122,13 +122,14 @@
   :demand t
   :init
   (setq org-gtd-update-ack "2.1.0")
-  (defun douo/org-gtd-archive ()
-    "Process GTD inbox item as a reference item without jump to inbox."
-    (interactive)
-    (with-org-gtd-context (org-archive-subtree))
-    )
-  :custom
-  (org-gtd-directory douo/gtd-home)
+  ;; :custom
+  ;; (org-gtd-directory douo/gtd-home)
+  ;; :config
+  ;; (defun douo/org-gtd-archive ()
+  ;;   "Process GTD inbox item as a reference item without jump to inbox."
+  ;;   (interactive)
+  ;;   (with-org-gtd-context (org-archive-subtree))
+  ;;   )
   :bind
   (("C-c c" . org-gtd-capture)
    ("C-c e" . org-gtd-engage)
@@ -137,8 +138,8 @@
    ("C-c s" . org-gtd-show-stuck-projects)
    :map org-gtd-process-map
    ("C-c C" . org-gtd-choose)
-   :map org-mode-map
-   ("C-c d a" . douo/org-gtd-archive)
+   ;; :map org-mode-map
+   ;; ("C-c D" . douo/org-gtd-archive)
    )
   )
 

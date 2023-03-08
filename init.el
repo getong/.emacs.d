@@ -49,6 +49,10 @@
 
 (require 'init-uml)
 
+(require 'init-ox)
+
+(require 'init-dired)
+
 ;; (require 'init-misc)
 
 ;; (setq debug-on-quit t)

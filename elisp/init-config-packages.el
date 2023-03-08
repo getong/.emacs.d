@@ -2478,7 +2478,18 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :ensure t
   :init
   (which-key-mode 1)
+  :custom
+  (which-key-idle-delay 0.7)
+  (which-key-add-column-padding 1)
   :config
+  (which-key-add-key-based-replacements
+    "C-c !" "flycheck"
+    "C-c @" "hideshow"
+    "C-c i" "ispell"
+    "C-c t" "hl-todo"
+    "C-x a" "abbrev"
+    "C-x n" "narrow"
+    "C-x t" "tab")
   (which-key-setup-side-window-right-bottom)
   (setq which-key-sort-order 'which-key-key-order-alpha
         which-key-side-window-max-width 0.33
@@ -3551,6 +3562,10 @@ deletion, or > if it is flagged for displaying."
    ("Helpful"
     (("f" helpful-callable "callable")
      ("v" helpful-variable "variable")
+     ("s" helpful-symbol "symbol")
+     ("S" describe-syntax "syntax")
+     ("m" describe-mode "mode")
+     ("F" describe-face "face")
      ("k" helpful-key "key")
      ("c" helpful-command "command")
      ("d" helpful-at-point "thing at point"))))

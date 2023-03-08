@@ -1174,24 +1174,24 @@ Version: 2018-08-02 2022-05-18"
 
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; 默认的 mode-line 不是很好看，用 doom-modeline 好一些。
-(use-package all-the-icons
-  :if (display-graphic-p)
-  ;; (set-fontset-font t 'symbol "Apple Color Emoji")
-  ;; (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
-  ;; (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
-  ;; (set-fontset-font t 'symbol "Symbola" nil 'append)
-  :config
-  (when (string-equal system-type "gnu/linux");
-    (setq all-the-icons-fonts-subdirectory (no-littering-expand-var-file-name "all-the-icons")))
-  ;;(unless (file-exists-p all-the-icons-fonts-subdirectory)
-  ;;    (call-interactively #'all-the-icons-install-fonts))
-  )
+;; (use-package all-the-icons
+;;   :if (display-graphic-p)
+;;   ;; (set-fontset-font t 'symbol "Apple Color Emoji")
+;;   ;; (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
+;;   ;; (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
+;;   ;; (set-fontset-font t 'symbol "Symbola" nil 'append)
+;;   :config
+;;   (when (string-equal system-type "gnu/linux");
+;;     (setq all-the-icons-fonts-subdirectory (no-littering-expand-var-file-name "all-the-icons")))
+;;   ;;(unless (file-exists-p all-the-icons-fonts-subdirectory)
+;;   ;;    (call-interactively #'all-the-icons-install-fonts))
+;;   )
 
-(use-package all-the-icons-completion
-  :after (marginalia all-the-icons)
-  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init
-  (all-the-icons-completion-mode))
+;; (use-package all-the-icons-completion
+;;   :after (marginalia all-the-icons)
+;;   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+;;   :init
+;;   (all-the-icons-completion-mode))
 
 
 ;; https://www.emacswiki.org/emacs/KeyCast
@@ -1324,198 +1324,198 @@ Version: 2018-08-02 2022-05-18"
   (beacon-mode 1))
 
 
-(use-package diredfl
-  :ensure t
-  :commands diredfl-global-mode
-  :hook
-  ((dired-mode . diredfl-mode)
-   ;; highlight parent and preview as well
-   (dirvish-directory-view-mode . diredfl-mode))
-  :init
-  (diredfl-global-mode)
-  (put 'diredp-tagged-autofile-name 'face-alias 'diredfl-tagged-autofile-name)
-  (put 'diredp-autofile-name 'face-alias 'diredfl-autofile-name)
-  (put 'diredp-ignored-file-name 'face-alias 'diredfl-ignored-file-name)
-  (put 'diredp-symlink 'face-alias 'diredfl-symlink)
-  (put 'diredp-compressed-file-name 'face-alias 'diredfl-compressed-file-name)
-  (put 'diredp-file-suffix 'face-alias 'diredfl-file-suffix)
-  (put 'diredp-compressed-extensions 'face-alias 'diredfl-compressed-extensions)
-  (put 'diredp-deletion 'face-alias 'diredfl-deletion)
-  (put 'diredp-deletion-file-name 'face-alias 'diredfl-deletion-file-name)
-  (put 'diredp-flag-mark-line 'face-alias 'diredfl-flag-mark-line)
-  (put 'diredp-rare-priv 'face-alias 'diredfl-rare-priv)
-  (put 'diredp-number 'face-alias 'diredfl-number)
-  (put 'diredp-exec-priv 'face-alias 'diredfl-exec-priv)
-  (put 'diredp-file-name 'face-alias 'diredfl-file-name)
-  (put 'diredp-dir-heading 'face-alias 'diredfl-dir-heading)
-  (put 'diredp-compressed-file-suffix 'face-alias 'diredfl-compressed-file-suffix)
-  (put 'diredp-flag-mark 'face-alias 'diredfl-flag-mark)
-  (put 'diredp-mode-set-explicitly 'face-alias 'diredfl-mode-set-explicitly)
-  (put 'diredp-executable-tag 'face-alias 'diredfl-executable-tag)
-  (put 'diredp-global-mode-hook 'face-alias 'diredfl-global-mode-hook)
-  (put 'diredp-ignore-compressed-flag 'face-alias 'diredfl-ignore-compressed-flag)
-  (put 'diredp-dir-priv 'face-alias 'diredfl-dir-priv)
-  (put 'diredp-date-time 'face-alias 'diredfl-date-time)
-  (put 'diredp-other-priv 'face-alias 'diredfl-other-priv)
-  (put 'diredp-no-priv 'face-alias 'diredfl-no-priv)
-  (put 'diredp-link-priv 'face-alias 'diredfl-link-priv)
-  (put 'diredp-write-priv 'face-alias 'diredfl-write-priv)
-  (put 'diredp-global-mode-buffers 'face-alias 'diredfl-global-mode-buffers)
-  (put 'dired-directory 'face-alias 'diredfl-dir-name)
-  (put 'diredp-read-priv 'face-alias 'diredfl-read-priv))
+;; (use-package diredfl
+;;   :ensure t
+;;   :commands diredfl-global-mode
+;;   :hook
+;;   ((dired-mode . diredfl-mode)
+;;    ;; highlight parent and preview as well
+;;    (dirvish-directory-view-mode . diredfl-mode))
+;;   :init
+;;   (diredfl-global-mode)
+;;   (put 'diredp-tagged-autofile-name 'face-alias 'diredfl-tagged-autofile-name)
+;;   (put 'diredp-autofile-name 'face-alias 'diredfl-autofile-name)
+;;   (put 'diredp-ignored-file-name 'face-alias 'diredfl-ignored-file-name)
+;;   (put 'diredp-symlink 'face-alias 'diredfl-symlink)
+;;   (put 'diredp-compressed-file-name 'face-alias 'diredfl-compressed-file-name)
+;;   (put 'diredp-file-suffix 'face-alias 'diredfl-file-suffix)
+;;   (put 'diredp-compressed-extensions 'face-alias 'diredfl-compressed-extensions)
+;;   (put 'diredp-deletion 'face-alias 'diredfl-deletion)
+;;   (put 'diredp-deletion-file-name 'face-alias 'diredfl-deletion-file-name)
+;;   (put 'diredp-flag-mark-line 'face-alias 'diredfl-flag-mark-line)
+;;   (put 'diredp-rare-priv 'face-alias 'diredfl-rare-priv)
+;;   (put 'diredp-number 'face-alias 'diredfl-number)
+;;   (put 'diredp-exec-priv 'face-alias 'diredfl-exec-priv)
+;;   (put 'diredp-file-name 'face-alias 'diredfl-file-name)
+;;   (put 'diredp-dir-heading 'face-alias 'diredfl-dir-heading)
+;;   (put 'diredp-compressed-file-suffix 'face-alias 'diredfl-compressed-file-suffix)
+;;   (put 'diredp-flag-mark 'face-alias 'diredfl-flag-mark)
+;;   (put 'diredp-mode-set-explicitly 'face-alias 'diredfl-mode-set-explicitly)
+;;   (put 'diredp-executable-tag 'face-alias 'diredfl-executable-tag)
+;;   (put 'diredp-global-mode-hook 'face-alias 'diredfl-global-mode-hook)
+;;   (put 'diredp-ignore-compressed-flag 'face-alias 'diredfl-ignore-compressed-flag)
+;;   (put 'diredp-dir-priv 'face-alias 'diredfl-dir-priv)
+;;   (put 'diredp-date-time 'face-alias 'diredfl-date-time)
+;;   (put 'diredp-other-priv 'face-alias 'diredfl-other-priv)
+;;   (put 'diredp-no-priv 'face-alias 'diredfl-no-priv)
+;;   (put 'diredp-link-priv 'face-alias 'diredfl-link-priv)
+;;   (put 'diredp-write-priv 'face-alias 'diredfl-write-priv)
+;;   (put 'diredp-global-mode-buffers 'face-alias 'diredfl-global-mode-buffers)
+;;   (put 'dired-directory 'face-alias 'diredfl-dir-name)
+;;   (put 'diredp-read-priv 'face-alias 'diredfl-read-priv))
 
-;; RET 后仅保留一个 dired buffer
-;; For Emacs 28
-(use-package dired
-  :ensure nil
-  :custom
-  (dired-kill-when-opening-new-dired-buffer t)
-  :config
-  (when (string= system-type "darwin")
-    (setq dired-use-ls-dired nil))
-  (put 'dired-find-alternate-file 'disabled nil)
-  (setq
-   ;; Copy and move files netween dired buffers
-   ;; C short for copy, R short for rename/move
-   dired-dwim-target t
-   dired-clean-up-buffers-too t
-   dired-recursive-copies 'always
-   dired-recursive-deletes 'top
-   ;; dired-listing-switches "lhvA"
-   dired-omit-verbose nil
-   dired-hide-details-hide-symlink-targets nil)
+;; ;; RET 后仅保留一个 dired buffer
+;; ;; For Emacs 28
+;; (use-package dired
+;;   :ensure nil
+;;   :custom
+;;   (dired-kill-when-opening-new-dired-buffer t)
+;;   :config
+;;   (when (string= system-type "darwin")
+;;     (setq dired-use-ls-dired nil))
+;;   (put 'dired-find-alternate-file 'disabled nil)
+;;   (setq
+;;    ;; Copy and move files netween dired buffers
+;;    ;; C short for copy, R short for rename/move
+;;    dired-dwim-target t
+;;    dired-clean-up-buffers-too t
+;;    dired-recursive-copies 'always
+;;    dired-recursive-deletes 'top
+;;    ;; dired-listing-switches "lhvA"
+;;    dired-omit-verbose nil
+;;    dired-hide-details-hide-symlink-targets nil)
 
-  (autoload 'dired-omit-mode "dired-x")
+;;   (autoload 'dired-omit-mode "dired-x")
 
-  (add-hook 'dired-load-hook
-            (lambda ()
-              (interactive)
-              (dired-collapse)))
+;;   (add-hook 'dired-load-hook
+;;             (lambda ()
+;;               (interactive)
+;;               (dired-collapse)))
 
-  (add-hook 'dired-mode-hook
-            (lambda ()
-              (interactive)
-              ;; (dired-omit-mode 1)
-              (dired-hide-details-mode 1)
-              (hl-line-mode 1)))
-  ;; Auto-refresh dired on file change
-  (add-hook 'dired-mode-hook 'auto-revert-mode)
-  (cond
-   ((string-equal system-type "windows-nt") ; Microsoft Windows
-    (progn
-      (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
-      ))
-   ((string-equal system-type "darwin") ; Mac OS X
-    (progn
-      (setq trash-directory (expand-file-name "~/.local/share/Trash"))  ;; fallback for `move-file-to-trash'
-      ))
-   ((string-equal system-type "gnu/linux") ; linux
-    (progn
-      (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
-      )))
-  (when (memq window-system '(mac ns))
-    (defun system-move-file-to-trash (path)
-      "Moves file at PATH to the macOS Trash according to `move-file-to-trash' convention.
-Relies on the command-line utility 'trash' to be installed.
-Get it from:  <http://hasseg.org/trash/>"
-      (shell-command (concat "trash -vF \"" path "\""
-                             "| sed -e 's/^/Trashed: /'")
-                     nil ;; Name of output buffer
-                     "*Trash Error Buffer*")))
-  ;; copy from https://github.com/d12frosted/homebrew-emacs-plus/issues/383
-  (when (eq system-type 'darwin)
-    (setq insert-directory-program "/usr/local/bin/gls"))
-  ;; (setq insert-directory-program "gls" dired-use-ls-dired t)
-  (setq dired-listing-switches "-al --group-directories-first")
-  )
+;;   (add-hook 'dired-mode-hook
+;;             (lambda ()
+;;               (interactive)
+;;               ;; (dired-omit-mode 1)
+;;               (dired-hide-details-mode 1)
+;;               (hl-line-mode 1)))
+;;   ;; Auto-refresh dired on file change
+;;   (add-hook 'dired-mode-hook 'auto-revert-mode)
+;;   (cond
+;;    ((string-equal system-type "windows-nt") ; Microsoft Windows
+;;     (progn
+;;       (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
+;;       ))
+;;    ((string-equal system-type "darwin") ; Mac OS X
+;;     (progn
+;;       (setq trash-directory (expand-file-name "~/.local/share/Trash"))  ;; fallback for `move-file-to-trash'
+;;       ))
+;;    ((string-equal system-type "gnu/linux") ; linux
+;;     (progn
+;;       (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
+;;       )))
+;;   (when (memq window-system '(mac ns))
+;;     (defun system-move-file-to-trash (path)
+;;       "Moves file at PATH to the macOS Trash according to `move-file-to-trash' convention.
+;; Relies on the command-line utility 'trash' to be installed.
+;; Get it from:  <http://hasseg.org/trash/>"
+;;       (shell-command (concat "trash -vF \"" path "\""
+;;                              "| sed -e 's/^/Trashed: /'")
+;;                      nil ;; Name of output buffer
+;;                      "*Trash Error Buffer*")))
+;;   ;; copy from https://github.com/d12frosted/homebrew-emacs-plus/issues/383
+;;   (when (eq system-type 'darwin)
+;;     (setq insert-directory-program "/usr/local/bin/gls"))
+;;   ;; (setq insert-directory-program "gls" dired-use-ls-dired t)
+;;   (setq dired-listing-switches "-al --group-directories-first")
+;;   )
 
 ;; macOS
 ;; brew install coreutils fd poppler ffmpegthumbnailer mediainfo imagemagick
 ;; Arch-based
 ;; pacman -S fd poppler ffmpegthumbnailer mediainfo imagemagick tar unzip
 ;; 基于 Dired 的极简、一站式文件管理器
-(use-package dirvish
-  :hook
-  ;; Let Dirvish take over Dired globally
-  (after-init . dirvish-override-dired-mode)
-  :custom
-  (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
-   '(("a" "~/"             "Home")
-     ("b" "~/Downloads/"   "Downloads")
-     ("c" "~/vbox_share/"  "vbox_share")
-     ("d" "~/other_project/"  "other_project")
-     ))
-  :after (diredfl all-the-icons)
-  :config
-  (dirvish-define-preview exa (file)
-    "Use `exa' to generate directory preview."
-    :require ("exa") ; tell Dirvish to check if we have the executable
-    (when (file-directory-p file) ; we only interest in directories here
-      `(shell . ("exa" "-al" "--color=always" "--icons"
-                 "--group-directories-first" ,file))))
+;; (use-package dirvish
+;;   :hook
+;;   ;; Let Dirvish take over Dired globally
+;;   (after-init . dirvish-override-dired-mode)
+;;   :custom
+;;   (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
+;;    '(("a" "~/"             "Home")
+;;      ("b" "~/Downloads/"   "Downloads")
+;;      ("c" "~/vbox_share/"  "vbox_share")
+;;      ("d" "~/other_project/"  "other_project")
+;;      ))
+;;   :after (diredfl all-the-icons)
+;;   :config
+;;   (dirvish-define-preview exa (file)
+;;     "Use `exa' to generate directory preview."
+;;     :require ("exa") ; tell Dirvish to check if we have the executable
+;;     (when (file-directory-p file) ; we only interest in directories here
+;;       `(shell . ("exa" "-al" "--color=always" "--icons"
+;;                  "--group-directories-first" ,file))))
 
-  (add-to-list 'dirvish-preview-dispatchers 'exa)
+;;   (add-to-list 'dirvish-preview-dispatchers 'exa)
 
-  (when (eq system-type 'darwin)
-    (setq insert-directory-program "gls"))
-  ;; 不预览epub文件
-  (setq dirvish-preview-dispatchers (remove 'epub dirvish-preview-dispatchers))
-  ;; 异步读取含 10000 个以上文件的文件夹
-  (setq dirvish-async-listing-threshold 10000
-        dirvish-cache-dir (no-littering-expand-var-file-name "dirvish" )
-        ;; 高亮当前文件
-        dirvish-hide-cursor t
-        dired-filter-revert 'always
-        dirvish-reuse-session t
-        dirvish-depth 0
-        dirvish-header-line-format
-        '(:left (path) :right (free-space))
-        ;; hide the parent directory
-        ;; dirvish-default-layout '(0 0.4 0.6)
-        dirvish-mode-line-format
-        '(:left (sort file-time " " file-size symlink) :right (omit yank index))
-        dirvish-attributes '(all-the-icons collapse file-time file-size subtree-state vc-state git-msg)
-        delete-by-moving-to-trash t
-        dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group"
-        dirvish-subtree-always-show-state t
-        dirvish-side-width 25
-        ;; make header line span all panes
-        dirvish-use-header-line 'global
-        dirvish-side-window-parameters nil
-        dired-recursive-copies 'always
-        dired-recursive-deletes 'always
-        ;; don't hide any files
-        dired-omit-files nil
-        )
-  (set-face-attribute 'dirvish-hl-line nil
-                      :foreground (face-attribute 'diredfl-flag-mark :foreground)
-                      :background (face-attribute 'diredfl-flag-mark :background))
-  :bind ; Bind `dirvish|dirvish-side|dirvish-dwim' as you see fit
-  (("C-c f" . dirvish-fd)
-   ("C-x d" . dirvish)
-   :map dirvish-mode-map ; Dirvish inherits `dired-mode-map'
-   ("a"   . dirvish-quick-access)
-   ("f"   . dirvish-file-info-menu)
-   ("y"   . dirvish-yank-menu)
-   ("N"   . dirvish-narrow)
-   ("^"   . dirvish-history-last)
-   ("-"   . dired-jump)
-   ("h"   . dirvish-history-jump) ; remapped `describe-mode'
-   ("s"   . dirvish-quicksort)    ; remapped `dired-sort-toggle-or-edit'
-   ("v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
-   ("TAB" . dirvish-subtree-toggle)
-   ("M-f" . dirvish-history-go-forward)
-   ("M-b" . dirvish-history-go-backward)
-   ("M-l" . dirvish-ls-switches-menu)
-   ("M-m" . dirvish-mark-menu)
-   ("M-t" . dirvish-layout-toggle)
-   ("M-s" . dirvish-setup-menu)
-   ("M-e" . dirvish-emerge-menu)
-   ("M-j" . dirvish-fd-jump)))
+;;   (when (eq system-type 'darwin)
+;;     (setq insert-directory-program "gls"))
+;;   ;; 不预览epub文件
+;;   (setq dirvish-preview-dispatchers (remove 'epub dirvish-preview-dispatchers))
+;;   ;; 异步读取含 10000 个以上文件的文件夹
+;;   (setq dirvish-async-listing-threshold 10000
+;;         dirvish-cache-dir (no-littering-expand-var-file-name "dirvish" )
+;;         ;; 高亮当前文件
+;;         dirvish-hide-cursor t
+;;         dired-filter-revert 'always
+;;         dirvish-reuse-session t
+;;         dirvish-depth 0
+;;         dirvish-header-line-format
+;;         '(:left (path) :right (free-space))
+;;         ;; hide the parent directory
+;;         ;; dirvish-default-layout '(0 0.4 0.6)
+;;         dirvish-mode-line-format
+;;         '(:left (sort file-time " " file-size symlink) :right (omit yank index))
+;;         dirvish-attributes '(all-the-icons collapse file-time file-size subtree-state vc-state git-msg)
+;;         delete-by-moving-to-trash t
+;;         dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group"
+;;         dirvish-subtree-always-show-state t
+;;         dirvish-side-width 25
+;;         ;; make header line span all panes
+;;         dirvish-use-header-line 'global
+;;         dirvish-side-window-parameters nil
+;;         dired-recursive-copies 'always
+;;         dired-recursive-deletes 'always
+;;         ;; don't hide any files
+;;         dired-omit-files nil
+;;         )
+;;   (set-face-attribute 'dirvish-hl-line nil
+;;                       :foreground (face-attribute 'diredfl-flag-mark :foreground)
+;;                       :background (face-attribute 'diredfl-flag-mark :background))
+;;   :bind ; Bind `dirvish|dirvish-side|dirvish-dwim' as you see fit
+;;   (("C-c f" . dirvish-fd)
+;;    ("C-x d" . dirvish)
+;;    :map dirvish-mode-map ; Dirvish inherits `dired-mode-map'
+;;    ("a"   . dirvish-quick-access)
+;;    ("f"   . dirvish-file-info-menu)
+;;    ("y"   . dirvish-yank-menu)
+;;    ("N"   . dirvish-narrow)
+;;    ("^"   . dirvish-history-last)
+;;    ("-"   . dired-jump)
+;;    ("h"   . dirvish-history-jump) ; remapped `describe-mode'
+;;    ("s"   . dirvish-quicksort)    ; remapped `dired-sort-toggle-or-edit'
+;;    ("v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
+;;    ("TAB" . dirvish-subtree-toggle)
+;;    ("M-f" . dirvish-history-go-forward)
+;;    ("M-b" . dirvish-history-go-backward)
+;;    ("M-l" . dirvish-ls-switches-menu)
+;;    ("M-m" . dirvish-mark-menu)
+;;    ("M-t" . dirvish-layout-toggle)
+;;    ("M-s" . dirvish-setup-menu)
+;;    ("M-e" . dirvish-emerge-menu)
+;;    ("M-j" . dirvish-fd-jump)))
 
-(use-package dirvish-side :ensure dirvish :after dirvish)
-(use-package dirvish-vc :ensure dirvish :after (magit dirvish))
-(use-package dirvish-extras :ensure dirvish :after dirvish)
+;; (use-package dirvish-side :ensure dirvish :after dirvish)
+;; (use-package dirvish-vc :ensure dirvish :after (magit dirvish))
+;; (use-package dirvish-extras :ensure dirvish :after dirvish)
 
 
 ;; C-x C-f /method:user@host:path/to/file
@@ -1618,7 +1618,7 @@ Get it from:  <http://hasseg.org/trash/>"
   :hook (after-init . winner-mode))
 
 ;; 它也可以应用在 ediff 上，恢复由 ediff 导致的窗体变动。
-(use-package ediff
+(use-package eiff
   :ensure nil
   :hook (ediff-quit . winner-undo))
 
@@ -2008,30 +2008,30 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
        (marginalia-annotate-binding cand)
        (marginalia--documentation (marginalia--function-doc sym))))))
 
-(use-package embark
-  :ensure t
+;; (use-package embark
+;;   :ensure t
 
-  :bind
-  (:map minibuffer-mode-map
-        ("M-o" . embark-export)
-        ("M-." . embark-act)
-        )
-  (("C-." . embark-act)         ;; pick some comfortable binding
-   ("C-;" . embark-dwim)        ;; good alternative: M-.
-   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+;;   :bind
+;;   (:map minibuffer-mode-map
+;;         ("M-o" . embark-export)
+;;         ("M-." . embark-act)
+;;         )
+;;   (("C-." . embark-act)         ;; pick some comfortable binding
+;;    ("C-;" . embark-dwim)        ;; good alternative: M-.
+;;    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
 
-  :init
+;;   :init
 
-  ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
+;;   ;; Optionally replace the key help with a completing-read interface
+;;   (setq prefix-help-command #'embark-prefix-help-command)
 
-  :config
+;;   :config
 
-  ;; Hide the mode line of the Embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
+;;   ;; Hide the mode line of the Embark live/completions buffers
+;;   (add-to-list 'display-buffer-alist
+;;                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+;;                  nil
+;;                  (window-parameters (mode-line-format . none)))))
 
 
 (use-package consult
@@ -2163,16 +2163,16 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 
 ;; Consult users will also want the embark-consult package.
-(use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
-  ;; :after (embark consult)
-  :demand t ; only necessary if you have the hook below
-  ;; if you want to have consult previews as you move around an
-  ;; auto-updating embark collect buffer
-  :hook
-  ;; (embark-collect-mode . consult-preview-at-point-mode)
-  (embark-collect-mode . embark-consult-preview-minor-mode)
-  )
+;; (use-package embark-consult
+;;   :ensure t ; only need to install it, embark loads it after consult if found
+;;   ;; :after (embark consult)
+;;   :demand t ; only necessary if you have the hook below
+;;   ;; if you want to have consult previews as you move around an
+;;   ;; auto-updating embark collect buffer
+;;   :hook
+;;   ;; (embark-collect-mode . consult-preview-at-point-mode)
+;;   (embark-collect-mode . embark-consult-preview-minor-mode)
+;;   )
 
 ;; 保存光标历史，记住上个命令
 ;; copy from https://book.emacs-china.org/#orga142e60

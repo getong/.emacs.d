@@ -6,6 +6,8 @@
               ("W" . dired-copy-path)
               )
   :config
+  (when (eq system-type 'darwin)
+    (setq insert-directory-program "gls"))
   ;; Enable the disabled dired commands
   (put 'dired-find-alternate-file 'disabled nil)
 
@@ -189,13 +191,13 @@ Version 2019-11-04"
   (setq dirvish-hide-details t)
   ;; open mp4 file via external program which is mpv here.
   (add-to-list 'mailcap-mime-extensions '(".mp4" . "video/mp4"))
-  (add-to-list 'dirvish-open-with-programs '(
-                                             (("html") . ("open" "%f"))
-                                             (("xlsx") . ("open" "%f"))
-                                             (("pptx") . ("open" "%f"))
-                                             (("docx") . ("open" "%f"))
-                                             (("md")   . ("open" "%f"))
-                                             ))
+  ;; (add-to-list 'dirvish-open-with-programs '(
+  ;;                                            (("html") . ("open" "%f"))
+  ;;                                            (("xlsx") . ("open" "%f"))
+  ;;                                            (("pptx") . ("open" "%f"))
+  ;;                                            (("docx") . ("open" "%f"))
+  ;;                                            (("md")   . ("open" "%f"))
+  ;;                                            ))
   :custom
   (dirvish-menu-bookmarks '(("h" "~/"             "Home")
                             ("d" "~/Downloads/"   "Downloads")

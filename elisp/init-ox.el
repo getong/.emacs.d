@@ -148,7 +148,8 @@
   :custom
   ;; special extensions for markdown_github output
   (org-pandoc-format-extensions '(markdown_github+pipe_tables+raw_html))
-  (org-pandoc-command "/usr/local/bin/pandoc")
+  ;; (org-pandoc-command "/usr/bin/pandoc")
+  (org-pandoc-command (string-trim (shell-command-to-string "which pandoc")))
   )
 
 (use-package ox-publish

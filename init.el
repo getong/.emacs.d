@@ -53,6 +53,10 @@
 
 (require 'init-dired)
 
+(require 'init-julia)
+
+(require 'init-php)
+
 ;; (require 'init-misc)
 
 ;; (setq debug-on-quit t)

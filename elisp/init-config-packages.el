@@ -2386,7 +2386,7 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :diminish super-save-mode
   :config
   ;; (super-save-mode +1)
- ;; Emacs空闲是否自动保存，这里不设置
+  ;; Emacs空闲是否自动保存，这里不设置
   (setq super-save-auto-save-when-idle nil)
   ;; add integration with ace-window
   ;; 切换窗口自动保存
@@ -4791,6 +4791,27 @@ Install the doc if it's not installed."
 ;; orderless 支持中文的首字母匹配
 (use-package pinyinlib
   :ensure t)
+
+;; string-inflection is a cool little plugin that allows you to
+;; cycle a string through an array of standard naming conventions, such as “camelCase”, “UPCASE”, “snake_case”, and more.
+(use-package string-inflection
+  :ensure t
+  :bind (:map prog-mode-map
+              ("C-M-j" . my-string-inflection-cycle-auto))
+  :init
+  (defun my-string-inflection-cycle-auto ()
+	  "switching by major-mode"
+	  (interactive)
+	  (cond
+	   ((eq major-mode 'emacs-lisp-mode)
+      (string-inflection-all-cycle))
+	   ((eq major-mode 'python-mode)
+      (string-inflection-python-style-cycle))
+	   ((eq major-mode 'go-mode) ;; golang use java style
+      (string-inflection-java-style-cycle))
+	   (t (string-inflection-all-cycle))))  ;; default
+  )
+
 
 (provide 'init-config-packages)
 ;;; init-config-packages.el ends here

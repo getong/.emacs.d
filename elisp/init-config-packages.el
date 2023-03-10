@@ -21,6 +21,15 @@
   ;; To use MELPA Stable use ":pin melpa-stable",
   :pin melpa)
 
+(use-package shell-pop
+  :straight t
+  :bind (("<C-M-return>" . shell-pop))
+  ;; :config
+  ;; (progn
+  ;;   (global-set-key (kbd "<C-M-return>") 'shell-pop)
+  ;;   )
+  )
+
 (use-package exec-path-from-shell
   :ensure
   :init (exec-path-from-shell-initialize))
@@ -1323,47 +1332,6 @@ Version: 2018-08-02 2022-05-18"
   (add-hook 'after-init-hook 'beacon-mode)
   (beacon-mode 1))
 
-
-;; (use-package diredfl
-;;   :ensure t
-;;   :commands diredfl-global-mode
-;;   :hook
-;;   ((dired-mode . diredfl-mode)
-;;    ;; highlight parent and preview as well
-;;    (dirvish-directory-view-mode . diredfl-mode))
-;;   :init
-;;   (diredfl-global-mode)
-;;   (put 'diredp-tagged-autofile-name 'face-alias 'diredfl-tagged-autofile-name)
-;;   (put 'diredp-autofile-name 'face-alias 'diredfl-autofile-name)
-;;   (put 'diredp-ignored-file-name 'face-alias 'diredfl-ignored-file-name)
-;;   (put 'diredp-symlink 'face-alias 'diredfl-symlink)
-;;   (put 'diredp-compressed-file-name 'face-alias 'diredfl-compressed-file-name)
-;;   (put 'diredp-file-suffix 'face-alias 'diredfl-file-suffix)
-;;   (put 'diredp-compressed-extensions 'face-alias 'diredfl-compressed-extensions)
-;;   (put 'diredp-deletion 'face-alias 'diredfl-deletion)
-;;   (put 'diredp-deletion-file-name 'face-alias 'diredfl-deletion-file-name)
-;;   (put 'diredp-flag-mark-line 'face-alias 'diredfl-flag-mark-line)
-;;   (put 'diredp-rare-priv 'face-alias 'diredfl-rare-priv)
-;;   (put 'diredp-number 'face-alias 'diredfl-number)
-;;   (put 'diredp-exec-priv 'face-alias 'diredfl-exec-priv)
-;;   (put 'diredp-file-name 'face-alias 'diredfl-file-name)
-;;   (put 'diredp-dir-heading 'face-alias 'diredfl-dir-heading)
-;;   (put 'diredp-compressed-file-suffix 'face-alias 'diredfl-compressed-file-suffix)
-;;   (put 'diredp-flag-mark 'face-alias 'diredfl-flag-mark)
-;;   (put 'diredp-mode-set-explicitly 'face-alias 'diredfl-mode-set-explicitly)
-;;   (put 'diredp-executable-tag 'face-alias 'diredfl-executable-tag)
-;;   (put 'diredp-global-mode-hook 'face-alias 'diredfl-global-mode-hook)
-;;   (put 'diredp-ignore-compressed-flag 'face-alias 'diredfl-ignore-compressed-flag)
-;;   (put 'diredp-dir-priv 'face-alias 'diredfl-dir-priv)
-;;   (put 'diredp-date-time 'face-alias 'diredfl-date-time)
-;;   (put 'diredp-other-priv 'face-alias 'diredfl-other-priv)
-;;   (put 'diredp-no-priv 'face-alias 'diredfl-no-priv)
-;;   (put 'diredp-link-priv 'face-alias 'diredfl-link-priv)
-;;   (put 'diredp-write-priv 'face-alias 'diredfl-write-priv)
-;;   (put 'diredp-global-mode-buffers 'face-alias 'diredfl-global-mode-buffers)
-;;   (put 'dired-directory 'face-alias 'diredfl-dir-name)
-;;   (put 'diredp-read-priv 'face-alias 'diredfl-read-priv))
-
 ;; ;; RET 后仅保留一个 dired buffer
 ;; ;; For Emacs 28
 ;; (use-package dired
@@ -1428,94 +1396,6 @@ Version: 2018-08-02 2022-05-18"
 ;;   ;; (setq insert-directory-program "gls" dired-use-ls-dired t)
 ;;   (setq dired-listing-switches "-al --group-directories-first")
 ;;   )
-
-;; macOS
-;; brew install coreutils fd poppler ffmpegthumbnailer mediainfo imagemagick
-;; Arch-based
-;; pacman -S fd poppler ffmpegthumbnailer mediainfo imagemagick tar unzip
-;; 基于 Dired 的极简、一站式文件管理器
-;; (use-package dirvish
-;;   :hook
-;;   ;; Let Dirvish take over Dired globally
-;;   (after-init . dirvish-override-dired-mode)
-;;   :custom
-;;   (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
-;;    '(("a" "~/"             "Home")
-;;      ("b" "~/Downloads/"   "Downloads")
-;;      ("c" "~/vbox_share/"  "vbox_share")
-;;      ("d" "~/other_project/"  "other_project")
-;;      ))
-;;   :after (diredfl all-the-icons)
-;;   :config
-;;   (dirvish-define-preview exa (file)
-;;     "Use `exa' to generate directory preview."
-;;     :require ("exa") ; tell Dirvish to check if we have the executable
-;;     (when (file-directory-p file) ; we only interest in directories here
-;;       `(shell . ("exa" "-al" "--color=always" "--icons"
-;;                  "--group-directories-first" ,file))))
-
-;;   (add-to-list 'dirvish-preview-dispatchers 'exa)
-
-;;   (when (eq system-type 'darwin)
-;;     (setq insert-directory-program "gls"))
-;;   ;; 不预览epub文件
-;;   (setq dirvish-preview-dispatchers (remove 'epub dirvish-preview-dispatchers))
-;;   ;; 异步读取含 10000 个以上文件的文件夹
-;;   (setq dirvish-async-listing-threshold 10000
-;;         dirvish-cache-dir (no-littering-expand-var-file-name "dirvish" )
-;;         ;; 高亮当前文件
-;;         dirvish-hide-cursor t
-;;         dired-filter-revert 'always
-;;         dirvish-reuse-session t
-;;         dirvish-depth 0
-;;         dirvish-header-line-format
-;;         '(:left (path) :right (free-space))
-;;         ;; hide the parent directory
-;;         ;; dirvish-default-layout '(0 0.4 0.6)
-;;         dirvish-mode-line-format
-;;         '(:left (sort file-time " " file-size symlink) :right (omit yank index))
-;;         dirvish-attributes '(all-the-icons collapse file-time file-size subtree-state vc-state git-msg)
-;;         delete-by-moving-to-trash t
-;;         dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group"
-;;         dirvish-subtree-always-show-state t
-;;         dirvish-side-width 25
-;;         ;; make header line span all panes
-;;         dirvish-use-header-line 'global
-;;         dirvish-side-window-parameters nil
-;;         dired-recursive-copies 'always
-;;         dired-recursive-deletes 'always
-;;         ;; don't hide any files
-;;         dired-omit-files nil
-;;         )
-;;   (set-face-attribute 'dirvish-hl-line nil
-;;                       :foreground (face-attribute 'diredfl-flag-mark :foreground)
-;;                       :background (face-attribute 'diredfl-flag-mark :background))
-;;   :bind ; Bind `dirvish|dirvish-side|dirvish-dwim' as you see fit
-;;   (("C-c f" . dirvish-fd)
-;;    ("C-x d" . dirvish)
-;;    :map dirvish-mode-map ; Dirvish inherits `dired-mode-map'
-;;    ("a"   . dirvish-quick-access)
-;;    ("f"   . dirvish-file-info-menu)
-;;    ("y"   . dirvish-yank-menu)
-;;    ("N"   . dirvish-narrow)
-;;    ("^"   . dirvish-history-last)
-;;    ("-"   . dired-jump)
-;;    ("h"   . dirvish-history-jump) ; remapped `describe-mode'
-;;    ("s"   . dirvish-quicksort)    ; remapped `dired-sort-toggle-or-edit'
-;;    ("v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
-;;    ("TAB" . dirvish-subtree-toggle)
-;;    ("M-f" . dirvish-history-go-forward)
-;;    ("M-b" . dirvish-history-go-backward)
-;;    ("M-l" . dirvish-ls-switches-menu)
-;;    ("M-m" . dirvish-mark-menu)
-;;    ("M-t" . dirvish-layout-toggle)
-;;    ("M-s" . dirvish-setup-menu)
-;;    ("M-e" . dirvish-emerge-menu)
-;;    ("M-j" . dirvish-fd-jump)))
-
-;; (use-package dirvish-side :ensure dirvish :after dirvish)
-;; (use-package dirvish-vc :ensure dirvish :after (magit dirvish))
-;; (use-package dirvish-extras :ensure dirvish :after dirvish)
 
 
 ;; C-x C-f /method:user@host:path/to/file
@@ -2008,32 +1888,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
        (marginalia-annotate-binding cand)
        (marginalia--documentation (marginalia--function-doc sym))))))
 
-;; (use-package embark
-;;   :ensure t
-
-;;   :bind
-;;   (:map minibuffer-mode-map
-;;         ("M-o" . embark-export)
-;;         ("M-." . embark-act)
-;;         )
-;;   (("C-." . embark-act)         ;; pick some comfortable binding
-;;    ("C-;" . embark-dwim)        ;; good alternative: M-.
-;;    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-
-;;   :init
-
-;;   ;; Optionally replace the key help with a completing-read interface
-;;   (setq prefix-help-command #'embark-prefix-help-command)
-
-;;   :config
-
-;;   ;; Hide the mode line of the Embark live/completions buffers
-;;   (add-to-list 'display-buffer-alist
-;;                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-;;                  nil
-;;                  (window-parameters (mode-line-format . none)))))
-
-
 (use-package consult
   :straight (consult :type git :host github :repo "minad/consult")
   ;; :demand
@@ -2159,8 +2013,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :init (setq consult-tramp-method "sshx"))
 (use-package consult-flyspell
   :commands consult-flyspell)
-
-
 
 ;; Consult users will also want the embark-consult package.
 ;; (use-package embark-consult

@@ -21,15 +21,6 @@
   ;; To use MELPA Stable use ":pin melpa-stable",
   :pin melpa)
 
-(use-package shell-pop
-  :straight t
-  :bind (("<C-M-return>" . shell-pop))
-  ;; :config
-  ;; (progn
-  ;;   (global-set-key (kbd "<C-M-return>") 'shell-pop)
-  ;;   )
-  )
-
 (use-package exec-path-from-shell
   :ensure
   :init (exec-path-from-shell-initialize))
@@ -2460,12 +2451,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 ;; Disk Usage
 (use-package disk-usage
   :ensure t)
-
-(use-package shell-pop
-  :ensure t
-  :custom
-  (shell-pop-shell-type '("vterm" "*vterm*" (lambda () (vterm))))
-  (shell-pop-full-span t))
 
 ;; google style, but with 4 space indent.
 ;; (defun google-set-c-style-with-4-indent ()

@@ -561,6 +561,13 @@
   ;; Hide commands in M-x which don't work in the current mode
   (setq read-extended-command-predicate #'command-completion-default-include-p)
   :config
+  (defun highlight-all-buffers (keyword)
+    "Highlight KEYWORD in all open buffers and remove previous highlights."
+    (interactive "sKeyword: ")
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (unhighlight-regexp t)
+        (highlight-regexp keyword))))
   ;; disable menu bar, tool-bar
   (push '(menu-bar-lines . 0)   default-frame-alist)
   (push '(tool-bar-lines . 0)   default-frame-alist)

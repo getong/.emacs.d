@@ -1332,72 +1332,6 @@ Version: 2018-08-02 2022-05-18"
   (add-hook 'after-init-hook 'beacon-mode)
   (beacon-mode 1))
 
-;; ;; RET 后仅保留一个 dired buffer
-;; ;; For Emacs 28
-;; (use-package dired
-;;   :ensure nil
-;;   :custom
-;;   (dired-kill-when-opening-new-dired-buffer t)
-;;   :config
-;;   (when (string= system-type "darwin")
-;;     (setq dired-use-ls-dired nil))
-;;   (put 'dired-find-alternate-file 'disabled nil)
-;;   (setq
-;;    ;; Copy and move files netween dired buffers
-;;    ;; C short for copy, R short for rename/move
-;;    dired-dwim-target t
-;;    dired-clean-up-buffers-too t
-;;    dired-recursive-copies 'always
-;;    dired-recursive-deletes 'top
-;;    ;; dired-listing-switches "lhvA"
-;;    dired-omit-verbose nil
-;;    dired-hide-details-hide-symlink-targets nil)
-
-;;   (autoload 'dired-omit-mode "dired-x")
-
-;;   (add-hook 'dired-load-hook
-;;             (lambda ()
-;;               (interactive)
-;;               (dired-collapse)))
-
-;;   (add-hook 'dired-mode-hook
-;;             (lambda ()
-;;               (interactive)
-;;               ;; (dired-omit-mode 1)
-;;               (dired-hide-details-mode 1)
-;;               (hl-line-mode 1)))
-;;   ;; Auto-refresh dired on file change
-;;   (add-hook 'dired-mode-hook 'auto-revert-mode)
-;;   (cond
-;;    ((string-equal system-type "windows-nt") ; Microsoft Windows
-;;     (progn
-;;       (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
-;;       ))
-;;    ((string-equal system-type "darwin") ; Mac OS X
-;;     (progn
-;;       (setq trash-directory (expand-file-name "~/.local/share/Trash"))  ;; fallback for `move-file-to-trash'
-;;       ))
-;;    ((string-equal system-type "gnu/linux") ; linux
-;;     (progn
-;;       (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
-;;       )))
-;;   (when (memq window-system '(mac ns))
-;;     (defun system-move-file-to-trash (path)
-;;       "Moves file at PATH to the macOS Trash according to `move-file-to-trash' convention.
-;; Relies on the command-line utility 'trash' to be installed.
-;; Get it from:  <http://hasseg.org/trash/>"
-;;       (shell-command (concat "trash -vF \"" path "\""
-;;                              "| sed -e 's/^/Trashed: /'")
-;;                      nil ;; Name of output buffer
-;;                      "*Trash Error Buffer*")))
-;;   ;; copy from https://github.com/d12frosted/homebrew-emacs-plus/issues/383
-;;   (when (eq system-type 'darwin)
-;;     (setq insert-directory-program "/usr/local/bin/gls"))
-;;   ;; (setq insert-directory-program "gls" dired-use-ls-dired t)
-;;   (setq dired-listing-switches "-al --group-directories-first")
-;;   )
-
-
 ;; C-x C-f /method:user@host:path/to/file
 ;; /sshx:vagrant@192.168.31.92:/etc/hosts
 ;; C-x C-f /sshx:bird@bastion|ssh:admin@production:/path
@@ -2013,18 +1947,6 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :init (setq consult-tramp-method "sshx"))
 (use-package consult-flyspell
   :commands consult-flyspell)
-
-;; Consult users will also want the embark-consult package.
-;; (use-package embark-consult
-;;   :ensure t ; only need to install it, embark loads it after consult if found
-;;   ;; :after (embark consult)
-;;   :demand t ; only necessary if you have the hook below
-;;   ;; if you want to have consult previews as you move around an
-;;   ;; auto-updating embark collect buffer
-;;   :hook
-;;   ;; (embark-collect-mode . consult-preview-at-point-mode)
-;;   (embark-collect-mode . embark-consult-preview-minor-mode)
-;;   )
 
 ;; 保存光标历史，记住上个命令
 ;; copy from https://book.emacs-china.org/#orga142e60

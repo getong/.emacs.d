@@ -6,6 +6,43 @@
               ("W" . dired-copy-path)
               )
   :config
+  (autoload 'dired-omit-mode "dired-x")
+
+  (add-hook 'dired-load-hook
+            (lambda ()
+              (interactive)
+              (dired-collapse)))
+
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (interactive)
+              ;; (dired-omit-mode 1)
+              (dired-hide-details-mode 1)
+              (hl-line-mode 1)))
+  ;; Auto-refresh dired on file change
+  (add-hook 'dired-mode-hook 'auto-revert-mode)
+  (cond
+   ((string-equal system-type "windows-nt") ; Microsoft Windows
+    (progn
+      (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
+      ))
+   ((string-equal system-type "darwin") ; Mac OS X
+    (progn
+      (setq trash-directory (expand-file-name "~/.local/share/Trash"))  ;; fallback for `move-file-to-trash'
+      ))
+   ((string-equal system-type "gnu/linux") ; linux
+    (progn
+      (setq trash-directory "/backup/.Trash-1000/files")  ;; fallback for `move-file-to-trash'
+      )))
+  (when (memq window-system '(mac ns))
+    (defun system-move-file-to-trash (path)
+      "Moves file at PATH to the macOS Trash according to `move-file-to-trash' convention.
+  Relies on the command-line utility 'trash' to be installed.
+  Get it from:  <http://hasseg.org/trash/>"
+      (shell-command (concat "trash -vF \"" path "\""
+                             "| sed -e 's/^/Trashed: /'")
+                     nil ;; Name of output buffer
+                     "*Trash Error Buffer*")))
   (when (eq system-type 'darwin)
     (setq insert-directory-program "gls"))
   ;; Enable the disabled dired commands
@@ -83,20 +120,15 @@ Version 2019-11-04"
            (lambda ($fpath) (let ((process-connection-type nil))
                               (start-process "" nil "xdg-open" $fpath))) $file-list))))))
   :custom
-  (dired-recursive-deletes 'always)
-  (delete-by-moving-to-trash t)
   (dired-dwim-target t)
   (dired-bind-vm nil)
   (dired-bind-man nil)
   (dired-bind-info nil)
   (dired-clean-up-buffers-too t)
-  (dired-recursive-copies 'always)
-  (dired-omit-verbose nil)
-  (dired-hide-details-hide-symlink-targets nil)
   (dired-auto-revert-buffer t)
   (dired-hide-details-hide-symlink-targets nil)
   (dired-kill-when-opening-new-dired-buffer t)
-  (dired-listing-switches "-AFhlv"))
+  )
 
 (use-package dired-aux
   :ensure nil
@@ -382,7 +414,11 @@ Version 2019-11-04"
 
 (use-package embark-consult
   :ensure t
-  :hook (embark-collect-mode . consult-preview-at-point-mode))
+  :demand t ; only necessary if you have the hook below
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode)
+  (embark-collect-mode . embark-consult-preview-minor-mode)
+  )
 
 (provide 'init-dired)
 ;;; init-dired.el ends here

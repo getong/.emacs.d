@@ -57,6 +57,7 @@
 
 (require 'init-php)
 
+(require 'init-leetcode)
 ;; (require 'init-misc)
 
 ;; (setq debug-on-quit t)
@@ -75,3 +76,4 @@
 
 (provide 'init)
 ;;; init.el ends here
+(put 'erase-buffer 'disabled nil)

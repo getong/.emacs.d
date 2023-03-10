@@ -504,7 +504,7 @@
 
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; escape quits everything
   (global-unset-key (kbd "C-SPC")) ;; 输入法快捷键冲突
-  (global-set-key (kbd "C-x SPC") 'set-mark-command)
+  (global-set-key (kbd "M-SPC") 'set-mark-command)
   (global-unset-key (kbd "C-z"))      ; 关闭 "C-z" 最小化
 
   ;; Don't persist a custom file

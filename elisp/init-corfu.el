@@ -244,5 +244,10 @@ default lsp-passthrough."
   :after cape
   :commands tmux-capf)
 
+(use-package tempel-collection
+  :ensure t
+  :after tempel
+  )
+
 (provide 'init-corfu)
 ;;; init-corfu.el ends here

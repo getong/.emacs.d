@@ -1,4 +1,9 @@
-;;; init.el -*- lexical-binding: t; -*-
+;;; init-dired.el --- Summary init dired -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; init dired
+
+;;; Code:
 (use-package dired
   :ensure nil
   :bind (:map dired-mode-map

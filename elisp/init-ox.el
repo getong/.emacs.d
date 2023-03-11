@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-ox.el --- Summary ox file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; ox files
+
+;;; Code:
 
 (use-package ox
   :ensure nil

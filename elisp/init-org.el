@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-org.el --- Summary org file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; org files
+
+;;; Code:
 
 ;; Configure Org and turn on minor modes for org-mode.
 (use-package org

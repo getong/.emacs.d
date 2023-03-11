@@ -1,4 +1,9 @@
-;; -*- coding: utf-8; lexical-binding: t -*-
+;;; early-init.el --- Summary early init file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; early init
+
+;;; Code:
 
 ;; 这两段一定要在 init.el 的最上方
 (require 'package)

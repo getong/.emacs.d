@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-lua.el --- Summary lua file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; lua
+
+;;; Code:
 
 (use-package lua-mode
   :ensure t
@@ -64,6 +69,16 @@
                  "f:close()"
                  "end") "\n"))
   )
+
+;; copy from [launch love2d app from Emacs](https://gist.github.com/legumbre/38ef323645f17a3c8033)
+(defvar love2d-program "/usr/local/bin/love")
+
+(defun love2d-launch-current ()
+  (interactive)
+  (let ((app-root (locate-dominating-file (buffer-file-name) "main.lua")))
+    (if app-root
+        (shell-command (format "%s %s &" love2d-program app-root))
+      (error "main.lua not found"))))
 
 
 (provide 'init-lua)

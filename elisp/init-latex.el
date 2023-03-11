@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-latex.el --- Summary latex file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; latex
+
+;;; Code:
 
 ;; latex
 (use-package auctex

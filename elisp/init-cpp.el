@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-cpp.el --- Summary init cpp -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; init cpp
+
+;;; Code:
 
 ;; C/C++
 (use-package cc-mode

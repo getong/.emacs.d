@@ -1,3 +1,9 @@
+;;; init-magit.el --- Summary magit file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; magit
+
+;;; Code:
 ;; https://github.com/Abuelodelanada/pepe-emacs-config/blob/301a42b030f4774f831de30657215ba2b489d823/use-package.el
 (use-package magit
   ;;:straight '(magit :type git :host github :repo "magit/magit")

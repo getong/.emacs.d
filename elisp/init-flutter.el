@@ -1,4 +1,10 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-flutter.el --- Summary init flutter -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; init flutter
+
+;;; Code:
+
 ;; copy from https://devbins.github.io/post/emacs_flutter/
 ;; 编写好代码之后按下 M-x 输入 flutter-run 或 flutter-run-or-hot-reload 运行项目
 ;; 也可以使用快捷键 C-M-x 来启动项目。

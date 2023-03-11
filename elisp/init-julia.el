@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-julia.el --- Summary julia -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; julia language
+
+;;; Code:
 
 ;; julia
 (use-package julia-mode)

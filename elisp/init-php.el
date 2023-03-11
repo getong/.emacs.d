@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-php.el --- Summary php file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; php
+
+;;; Code:
 
 (use-package php-mode
   ;; (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))

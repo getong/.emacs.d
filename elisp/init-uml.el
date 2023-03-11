@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-uml.el --- Summary uml file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; uml
+
+;;; Code:
 
 ;;; plantuml
 ;; https://github.com/skuro/plantuml-mode

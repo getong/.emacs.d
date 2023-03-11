@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-flycheck.el --- Summary init flycheck -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; init flycheck
+
+;;; Code:
 
 ;; Flycheck is a general syntax highlighting framework which other packages hook into. It's an improvment on the built in flymake.
 ;; Setup is pretty simple - we just enable globally and turn on a custom eslint function, and also add a custom checker for proselint.

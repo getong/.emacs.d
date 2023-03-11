@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-lsp.el --- Summary lsp file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; lsp
+
+;;; Code:
 
 (use-package lsp-lua
   :ensure lsp-mode

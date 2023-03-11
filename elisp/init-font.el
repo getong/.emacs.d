@@ -1,4 +1,9 @@
-;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-font.el --- Summary init font -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; init font
+
+;;; Code:
 
 ;; copy from https://quant67.com/post/emcas/init-config.html
 ;; default

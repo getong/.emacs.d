@@ -1,4 +1,9 @@
-;;  -*- lexical-binding: t; -*-
+;;; init-corfu.el --- Summary init corfu -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; init corfu
+
+;;; Code:
 
 (use-package corfu
   :ensure t

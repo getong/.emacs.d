@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-swift.el --- Summary swift file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; swift
+
+;;; Code:
 
 ;; Copy from https://www.danielde.dev/blog/emacs-for-swift-development
 (use-package swift-mode
@@ -48,15 +53,29 @@
      "open keysmith://run-shortcut/796BB627-5433-48E4-BB54-1AA6C54A14E8"))
   (global-set-key (kbd "C-c p o") 'xcode-open-current-file)
 
-  ;; copy from [launch love2d app from Emacs](https://gist.github.com/legumbre/38ef323645f17a3c8033)
-  (defvar love2d-program "/usr/local/bin/love")
-
-  (defun love2d-launch-current ()
+  ;; copy from https://xenodium.com/emacs-create-a-swift-packageproject/
+  (defun ar/swift-package-init ()
+    "Execute `swift package init', with optional name and completing type."
     (interactive)
-    (let ((app-root (locate-dominating-file (buffer-file-name) "main.lua")))
-      (if app-root
-          (shell-command (format "%s %s &" love2d-program app-root))
-        (error "main.lua not found"))))
+    (let* ((name (read-string "name (default): "))
+           (type (completing-read
+                  "project type: "
+                  ;; Splits "--type empty|library|executable|system-module|manifest"
+                  (split-string
+                   (nth 1 (split-string
+                           (string-trim
+                            (seq-find
+                             (lambda (line)
+                               (string-match "--type" line))
+                             (process-lines "swift" "package" "init" "--help")))
+                           "   "))
+                   "|")))
+           (command (format "swift package init --type %s" type)))
+      (unless (string-empty-p name)
+        (append command "--name " name))
+      (shell-command command))
+    (dired default-directory)
+    (revert-buffer))
 
   )
 

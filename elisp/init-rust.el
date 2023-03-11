@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-rust.el --- Summary rust file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; rust
+
+;;; Code:
 
 (use-package rustic
   :ensure

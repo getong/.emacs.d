@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-leetcode.el --- Summary leetcode -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; leetcode
+
+;;; Code:
 
 (use-package leetcode
   :defer t

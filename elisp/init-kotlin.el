@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-kotlin.el --- Summary kotlin file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; kotlin
+
+;;; Code:
 
 (use-package kotlin-mode
   :after (lsp-mode dap-mode)

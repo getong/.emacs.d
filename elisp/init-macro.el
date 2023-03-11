@@ -1,4 +1,9 @@
-;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-macro.el --- Summary macro file -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; macro
+
+;;; Code:
 
 ;; M-x kmacro-start-macro-or-insert-counter (f3)
 ;; M-x kmacro-end-or-call-macro (f4)

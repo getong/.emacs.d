@@ -1,4 +1,9 @@
-;;; -*- coding: utf-8; lexical-binding: t -*-
+;;; init-config-packages.el --- Summary config files -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; config packages
+
+;;; Code:
 
 ;;auto-compile
 (use-package auto-compile

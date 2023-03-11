@@ -64,6 +64,8 @@
 
 (require 'init-vterm)
 
+(require 'init-python)
+
 (require 'init-leetcode)
 ;; (require 'init-misc)
 

@@ -561,6 +561,7 @@
   ;; Hide commands in M-x which don't work in the current mode
   (setq read-extended-command-predicate #'command-completion-default-include-p)
   :config
+  (call-interactively  #'toggle-frame-fullscreen)
   (defun highlight-all-buffers (keyword)
     "Highlight KEYWORD in all open buffers and remove previous highlights."
     (interactive "sKeyword: ")

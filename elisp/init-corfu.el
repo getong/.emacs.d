@@ -215,21 +215,36 @@ default lsp-passthrough."
   :custom
   ;; (tempel-path "~/.dotfiles/Emacs/templates")
   (tempel-path (no-littering-expand-var-file-name "templ-templates"))
-  :hook ((prog-mode text-mode) . tempel-setup-capf)
-  :bind (("M-+" . tempel-insert) ;; Alternative tempel-expand
-         :map tempel-map
-         ([remap keyboard-escape-quit] . tempel-done)
-         ("TAB" . tempel-next)
-         ("<backtab>" . tempel-previous)
-         :map corfu-map
-         ("C-M-i" . tempel-expand))
+  :hook
+  ((prog-mode text-mode) . tempel-setup-capf)
+  (prog-mode-hook . tempel-abbrev-mode)
+  :config
+  (setq tempel-trigger-prefix "<")
+  (global-tempel-abbrev-mode)
+  (defun vd/tab-indent-or-complete ()
+    (interactive)
+    (message (minibufferp))
+    (if (minibufferp)
+        (minibuffer-complete)
+      (tempel-expand)
+      (indent-for-tab-command)))
+  :bind
+  (("M-+" . tempel-complete) ;; Alternative tempel-expand
+   ("M-*" . tempel-insert)
+   ("<tab>" . vd/tab-indent-or-complete)
+   :map tempel-map
+   ([remap keyboard-escape-quit] . tempel-done)
+   ("TAB" . tempel-next)
+   ("<backtab>" . tempel-previous)
+   :map corfu-map
+   ("C-M-i" . tempel-expand))
   ;; :map tempel-map
   ;; ("M-]" . tempel-next)
   ;; ("M-[" . tempel-previous))
   :init
   (defun tempel-setup-capf ()
     (setq-local completion-at-point-functions
-                (cons #'tempel-complete
+                (cons #'tempel-expand
                       completion-at-point-functions))))
 
 ;; Use Dabbrev with Corfu!

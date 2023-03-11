@@ -1,4 +1,9 @@
-;;; init.el -*- lexical-binding: t; -*-
+;;; init.el --- Summary Emacs Startup File -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; Emacs Startup File
+
+;;; Code:
 
 (setq use-package-compute-statistics t)
 (add-to-list 'load-path (expand-file-name "elisp" user-emacs-directory))
@@ -72,8 +77,9 @@
 ;;(unless (file-exists-p (expand-file-name "straight/repos/emacs-application-framework/app/pdf-viewer" user-emacs-directory))
 ;;  (eaf-install-and-update))
 
+;; (put 'erase-buffer 'disabled nil)
+
 (message (emacs-init-time))
 
 (provide 'init)
 ;;; init.el ends here
-(put 'erase-buffer 'disabled nil)

@@ -3978,11 +3978,6 @@ Fallback to `xref-go-back'."
 (use-package hover
   :ensure t)
 
-
-
-
-
-
 (use-package marqueeo
   :ensure t
   ;; if you use straight
@@ -4495,6 +4490,9 @@ Install the doc if it's not installed."
   ("C-x M-k" . windmove-delete-down)
   ("C-x M-j" . windmove-delete-left)
   ("C-x M-l" . windmove-delete-right))
+
+(use-package speedrect
+  :straight (speedrect :type git :host github :repo "jdtsmith/speedrect"))
 
 (provide 'init-config-packages)
 ;;; init-config-packages.el ends here

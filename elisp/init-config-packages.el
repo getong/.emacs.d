@@ -1200,6 +1200,12 @@ Version: 2018-08-02 2022-05-18"
     go-mode
     emacs-lisp-mode
     lisp-interaction-mode
+    dart-mode
+    lua-mode
+    julia-mode
+    kotlin-mode
+    swift-mode
+    php-mode
     lisp-mode) . tree-sitter-mode)
 
   ((tree-sitter-after-on
@@ -1219,6 +1225,12 @@ Version: 2018-08-02 2022-05-18"
     go-mode
     emacs-lisp-mode
     lisp-interaction-mode
+    dart-mode
+    lua-mode
+    julia-mode
+    kotlin-mode
+    swift-mode
+    php-mode
     lisp-mode) . tree-sitter-hl-mode)
 
   :config

@@ -370,6 +370,7 @@ Version 2019-11-04"
   :ensure t
   :bind (([remap describe-bindings] . embark-bindings)
          ("C-'" . embark-act)
+         ("C-c w" . embark-toggle-highlight) ;; hight current word
          :map minibuffer-local-map
          :map minibuffer-local-completion-map
          ("TAB" . minibuffer-force-complete)

@@ -3608,17 +3608,17 @@ FACE defaults to inheriting from default and highlight."
          (org-mode . which-function-mode))
   :init
   (setq which-func-unknown "")
-  (add-hook 'which-function-mode-hook
-            #'(lambda ()
-                (add-to-list 'which-func-functions
-                             #'(lambda ()
-                                 (when (eq major-mode 'org-mode)
-                                   (mapconcat 'identity (org-get-outline-path t)
-                                              " > "))))))
-  (add-hook 'prog-mode-hook #'(lambda () (setq header-line-format
-                                               '((which-func-mode ("" which-func-format))))))
-  (add-hook 'org-mode-hook #'(lambda () (setq header-line-format
-                                              '((which-func-mode ("" which-func-format))))))
+  ;; (add-hook 'which-function-mode-hook
+  ;;           #'(lambda ()
+  ;;               (add-to-list 'which-func-functions
+  ;;                            #'(lambda ()
+  ;;                                (when (eq major-mode 'org-mode)
+  ;;                                  (mapconcat 'identity (org-get-outline-path t)
+  ;;                                             " > "))))))
+  ;; (add-hook 'prog-mode-hook #'(lambda () (setq header-line-format
+  ;;                                              '((which-func-mode ("" which-func-format))))))
+  ;; (add-hook 'org-mode-hook #'(lambda () (setq header-line-format
+  ;;                                             '((which-func-mode ("" which-func-format))))))
   )
 
 

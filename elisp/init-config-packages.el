@@ -4387,5 +4387,24 @@ Install the doc if it's not installed."
 (use-package session-async
   :ensure t)
 
+;; Show info about the block at the end of the block
+(use-package scopeline
+  :straight (scopeline :type git :host github :repo "meain/scopeline.el")
+  :after tree-sitter
+  :config (add-hook 'tree-sitter-mode-hook #'scopeline-mode))
+
+(use-package vertico-directory
+  :after vertico
+  :ensure vertico
+  ;; More convenient directory navigation commands
+  :bind (:map vertico-map
+	      ;; left/right arrows for changing directory:
+              ("<right>"   . vertico-directory-enter)
+              ("<left>"    . vertico-directory-delete-word)
+              ("M-<left>"  . vertico-directory-delete-char))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
+  )
+
 (provide 'init-config-packages)
 ;;; init-config-packages.el ends here

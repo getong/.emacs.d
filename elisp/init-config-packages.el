@@ -914,14 +914,14 @@ Version: 2018-08-02 2022-05-18"
   )
 
 
-(use-package highlight-thing
-  :config
-  (global-highlight-thing-mode)
-  (setq highlight-thing-what-thing 'symbol)
-  (setq highlight-thing-delay-seconds 0.1)
-  (setq highlight-thing-limit-to-defun t)
-  (setq highlight-thing-case-sensitive-p t)
-  )
+;; (use-package highlight-thing
+;;   :config
+;;   (global-highlight-thing-mode)
+;;   (setq highlight-thing-what-thing 'symbol)
+;;   (setq highlight-thing-delay-seconds 0.1)
+;;   (setq highlight-thing-limit-to-defun t)
+;;   (setq highlight-thing-case-sensitive-p t)
+;;   )
 
 
 (use-package fennel-mode
@@ -2517,9 +2517,9 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
 
 
 ;; 高亮当前字符
-(use-package idle-highlight-mode
-  :pin melpa
-  :ensure t)
+;; (use-package idle-highlight-mode
+;;   :pin melpa
+;;   :ensure t)
 
 (use-package keychain-environment
   :config (keychain-refresh-environment))
@@ -4288,9 +4288,9 @@ Install the doc if it's not installed."
   (setf (alist-get 'python-mode apheleia-mode-alist)
         '(isort black)))
 
-(use-package volatile-highlights
-  :diminish
-  :hook (after-init . volatile-highlights-mode))
+;; (use-package volatile-highlights
+;;   :diminish
+;;   :hook (after-init . volatile-highlights-mode))
 
 (use-package fill-column-indicator
   :ensure t
@@ -4446,12 +4446,24 @@ Install the doc if it's not installed."
   :ensure vertico
   ;; More convenient directory navigation commands
   :bind (:map vertico-map
-	      ;; left/right arrows for changing directory:
+	            ;; left/right arrows for changing directory:
               ("<right>"   . vertico-directory-enter)
               ("<left>"    . vertico-directory-delete-word)
               ("M-<left>"  . vertico-directory-delete-char))
   ;; Tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
+  )
+
+(use-package combobulate
+  :straight (combobulate
+             :type git
+             :host github
+             :repo "mickeynp/combobulate"
+             ;; :branch "development"
+             )
+  :hook
+  ((rust-mode
+    rustic-mode) . combobulate-mode)
   )
 
 (provide 'init-config-packages)

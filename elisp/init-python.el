@@ -47,8 +47,10 @@
 (use-package jedi
   :ensure t)
 
-(use-package eval-in-repl-python
+(use-package eval-in-repl
   :ensure t)
+(use-package eval-in-repl-python
+  :ensure eval-in-repl)
 
 (use-package ansible
   :ensure t

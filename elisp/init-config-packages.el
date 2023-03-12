@@ -1045,7 +1045,9 @@ Version: 2018-08-02 2022-05-18"
   :ensure t
   :config
   (setq auto-package-update-delete-old-versions t
-        auto-package-update-interval 4)
+        auto-package-update-interval 4
+        auto-package-update-hide-results t
+        )
   (auto-package-update-maybe))
 
 
@@ -4368,12 +4370,13 @@ Install the doc if it's not installed."
 ;; git clone https://github.com/browse-kill-ring/browse-kill-ring.git
 ;; Installs `M-y' binding to run `browse-kill-ring' command.
 (use-package browse-kill-ring
-   :init
-   (setq browse-kill-ring-show-preview nil
-         browse-kill-ring-highlight-current-entry t
-         browse-kill-ring-highlight-inserted-item t)
-   :config
-   (browse-kill-ring-default-keybindings))
+  :ensure t
+  :init
+  (setq browse-kill-ring-show-preview nil
+        browse-kill-ring-highlight-current-entry t
+        browse-kill-ring-highlight-inserted-item t)
+  :config
+  (browse-kill-ring-default-keybindings))
 
 (provide 'init-config-packages)
 ;;; init-config-packages.el ends here

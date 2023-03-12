@@ -231,7 +231,7 @@ default lsp-passthrough."
   :bind
   (("M-+" . tempel-complete) ;; Alternative tempel-expand
    ("M-*" . tempel-insert)
-   ("<tab>" . vd/tab-indent-or-complete)
+   ;; ("<tab>" . vd/tab-indent-or-complete)
    :map tempel-map
    ([remap keyboard-escape-quit] . tempel-done)
    ("TAB" . tempel-next)

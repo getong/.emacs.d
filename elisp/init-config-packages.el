@@ -1185,6 +1185,7 @@ Version: 2018-08-02 2022-05-18"
   :ensure t
   :hook
   (tree-sitter-after-on . tree-sitter-hl-mode)
+  (rust-mode . tree-sitter-mode)
   :config
   (require 'tree-sitter-langs)
   (global-tree-sitter-mode))
@@ -4390,8 +4391,11 @@ Install the doc if it's not installed."
 ;; Show info about the block at the end of the block
 (use-package scopeline
   :straight (scopeline :type git :host github :repo "meain/scopeline.el")
+  :hook
+  (rust-mode . scopeline-mode)
+  (tree-sitter-mode . scopeline-mode)
   :after tree-sitter
-  :config (add-hook 'tree-sitter-mode-hook #'scopeline-mode))
+  )
 
 (use-package vertico-directory
   :after vertico

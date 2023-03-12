@@ -1184,10 +1184,52 @@ Version: 2018-08-02 2022-05-18"
 (use-package tree-sitter
   :ensure t
   :hook
-  (tree-sitter-after-on . tree-sitter-hl-mode)
-  (rust-mode . tree-sitter-mode)
+  ((rust-mode
+    rustic-mode
+    python-mode
+    typescript-mode
+    javascript-mode
+    json-mode
+    js2-mode
+    c-mode
+    c++-mode
+    sh-mode
+    css-mode
+    html-mode
+    mhtml-mode
+    go-mode
+    emacs-lisp-mode
+    lisp-interaction-mode
+    lisp-mode) . tree-sitter-mode)
+
+  ((tree-sitter-after-on
+    rust-mode
+    rustic-mode
+    python-mode
+    typescript-mode
+    javascript-mode
+    json-mode
+    js2-mode
+    c-mode
+    c++-mode
+    sh-mode
+    css-mode
+    html-mode
+    mhtml-mode
+    go-mode
+    emacs-lisp-mode
+    lisp-interaction-mode
+    lisp-mode) . tree-sitter-hl-mode)
+
   :config
   (require 'tree-sitter-langs)
+  (dolist (item '((emacs-lisp-mode . elisp)
+                  (lisp-mode . elisp)
+                  (lisp-interaction-mode . elisp)))
+    (add-to-list
+     'tree-sitter-major-mode-language-alist
+     item)
+    )
   (global-tree-sitter-mode))
 
 (use-package tree-sitter-langs
@@ -4395,6 +4437,8 @@ Install the doc if it's not installed."
   (rust-mode . scopeline-mode)
   (tree-sitter-mode . scopeline-mode)
   :after tree-sitter
+  :config
+  (setq scopeline-overlay-prefix " ~")
   )
 
 (use-package vertico-directory

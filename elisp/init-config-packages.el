@@ -1124,7 +1124,8 @@ Version: 2018-08-02 2022-05-18"
   (setq doom-modeline-env-enable-python nil)
   (setq doom-modeline-height 15)
   (setq doom-modeline-project-detection 'projectile)
-  (setq doom-modeline-buffer-file-name-style 'auto)
+  ;; see https://github.com/seagle0128/.emacs.d/blob/91dd2ecafd2bd955a697861c948a5219927dc0f9/lisp/init-ui.el#L181
+  (setq doom-modeline-buffer-file-name-style 'file-name)
   :config
   (setq doom-modeline-battery nil)
   ;; (doom-modeline-mode 1)

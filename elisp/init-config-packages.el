@@ -430,7 +430,7 @@
   ;; Hide commands in M-x which don't work in the current mode
   (setq read-extended-command-predicate #'command-completion-default-include-p)
   :config
-  (call-interactively  #'toggle-frame-fullscreen)
+  ;; (call-interactively  #'toggle-frame-fullscreen)
   (defun highlight-all-buffers (keyword)
     "Highlight KEYWORD in all open buffers and remove previous highlights."
     (interactive "sKeyword: ")
@@ -457,13 +457,18 @@
 
   ;; copy from https://emacsredux.com/blog/2020/12/04/maximize-the-emacs-frame-on-startup/
   ;; start the initial frame maximized
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   ;; start every frame maximized
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
   (remove-hook 'text-mode-hook #'visual-line-mode)
   (add-hook 'text-mode-hook #'auto-fill-mode)
-  (add-hook 'window-setup-hook #'toggle-frame-fullscreen)
+  ;; copy from https://emacsredux.com/blog/2020/12/04/maximize-the-emacs-frame-on-startup/
+  ;; (add-hook 'window-setup-hook #'toggle-frame-fullscreen)
+  ;; the t parameter apends to the hook, instead of prepending
+  ;; this means it'd be run after other hooks that might fiddle
+  ;; with the frame size
+  (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
   ;; Dark and transparent title bar in macOS
   (when (memq window-system '(mac ns))

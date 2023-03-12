@@ -1206,6 +1206,8 @@ Version: 2018-08-02 2022-05-18"
     kotlin-mode
     swift-mode
     php-mode
+    erlang-mode
+    elixir-mode
     lisp-mode) . tree-sitter-mode)
 
   ((tree-sitter-after-on
@@ -1231,10 +1233,12 @@ Version: 2018-08-02 2022-05-18"
     kotlin-mode
     swift-mode
     php-mode
+    erlang-mode
+    elixir-mode
     lisp-mode) . tree-sitter-hl-mode)
-
+  :after tree-sitter-langs
   :config
-  (require 'tree-sitter-langs)
+  ;; (require 'tree-sitter-langs)
   (dolist (item '((emacs-lisp-mode . elisp)
                   (lisp-mode . elisp)
                   (lisp-interaction-mode . elisp)))
@@ -4466,17 +4470,17 @@ Install the doc if it's not installed."
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
   )
 
-(use-package combobulate
-  :straight (combobulate
-             :type git
-             :host github
-             :repo "mickeynp/combobulate"
-             ;; :branch "development"
-             )
-  :hook
-  ((rust-mode
-    rustic-mode) . combobulate-mode)
-  )
+;; (use-package combobulate
+;;   :straight (combobulate
+;;              :type git
+;;              :host github
+;;              :repo "mickeynp/combobulate"
+;;              ;; :branch "development"
+;;              )
+;;   :hook
+;;   ((rust-mode
+;;     rustic-mode) . combobulate-mode)
+;;   )
 
 (provide 'init-config-packages)
 ;;; init-config-packages.el ends here

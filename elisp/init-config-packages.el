@@ -4378,5 +4378,9 @@ Install the doc if it's not installed."
   :config
   (browse-kill-ring-default-keybindings))
 
+;; Package for doing asynchronous processing in Emacs, just like async.el
+(use-package session-async
+  :ensure t)
+
 (provide 'init-config-packages)
 ;;; init-config-packages.el ends here

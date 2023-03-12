@@ -221,13 +221,13 @@ default lsp-passthrough."
   :config
   (setq tempel-trigger-prefix "<")
   (global-tempel-abbrev-mode)
-  (defun vd/tab-indent-or-complete ()
-    (interactive)
-    (message (minibufferp))
-    (if (minibufferp)
-        (minibuffer-complete)
-      (tempel-expand)
-      (indent-for-tab-command)))
+  ;; (defun vd/tab-indent-or-complete ()
+  ;;   (interactive)
+  ;;   (message (minibufferp))
+  ;;   (if (minibufferp)
+  ;;       (minibuffer-complete)
+  ;;     (tempel-expand)
+  ;;     (indent-for-tab-command)))
   :bind
   (("M-+" . tempel-complete) ;; Alternative tempel-expand
    ("M-*" . tempel-insert)

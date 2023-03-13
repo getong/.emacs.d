@@ -2309,19 +2309,10 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
   :ensure t
   :commands color-identifiers-mode)
 
-;; elixir
-(use-package elixir-mode
-  :ensure t)
-
-;; disable company
-;; (use-package alchemist
-;; :ensure t)
-
 ;; Emacs has a great built in C/C++ mode, but we can improve on it with irony-mode for code completion via libclang.
 (use-package irony
   :ensure t
   :hook (c-mode . irony-mode))
-
 
 
 ;; Web mode handles html/css/js.
@@ -3010,6 +3001,22 @@ deletion, or > if it is flagged for displaying."
     (save-excursion
       (goto-char pt)
       (my/search-or-browse)))
+
+(defun avy-extend-command (repeat-arg)
+  "Runs a specific avy command based on what the last-repeatable-command was"
+  (interactive "P")
+  (cond
+   ((eq 'next-line last-repeatable-command)
+    (avy-goto-line-below))
+   ((eq 'previous-line last-repeatable-command)
+    (avy-goto-line-above))
+   ((or (eq 'forward-word last-repeatable-command) (eq 'forward-char last-repeatable-command))
+    (avy-goto-word-0-below-in-line))
+   ((or (eq 'backward-word last-repeatable-command) (eq 'backward-char last-repeatable-command))
+    (avy-goto-word-0-above-in-line))
+   (t (message "%s does not have a related avy-extend-command" last-repeatable-command))))
+
+(global-set-key (kbd "C-M-j") #'avy-extend-command)
 
   (setf (alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
         (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
@@ -4131,15 +4138,6 @@ Install the doc if it's not installed."
 
     ;; Lookup the symbol at point
     (devdocs-lookup nil (thing-at-point 'symbol t))))
-
-(use-package erlang
-  :if (executable-find "erl")
-  :mode (("\\.erl\\'" . erlang-mode))
-  :defer
-
-  :hook
-  (erlang-mode . lsp)
-  )
 
 ;; use for terminal theme
 (use-package moe-theme

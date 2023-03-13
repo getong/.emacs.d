@@ -341,7 +341,8 @@
 (use-package lsp-erlang
   :ensure lsp-mode
   :config
-  (setq lsp-erlang-server-path (no-littering-expand-var-file-name "erlang_ls/bin/erlang_ls"))
+  ;; (setq lsp-erlang-server-path (no-littering-expand-var-file-name "erlang_ls/bin/erlang_ls"))
+  (setq lsp-erlang-server-path (string-trim (shell-command-to-string "which erlang_ls")))
   )
 
 (use-package lsp-bash

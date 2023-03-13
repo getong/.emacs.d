@@ -66,6 +66,8 @@
 
 (require 'init-python)
 
+(require 'init-erlang)
+
 (require 'init-leetcode)
 ;; (require 'init-misc)
 

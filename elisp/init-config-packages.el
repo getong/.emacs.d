@@ -4456,25 +4456,50 @@ Install the doc if it's not installed."
 (use-package scopeline
   :straight (scopeline :type git :host github :repo "meain/scopeline.el")
   :hook
-  (rust-mode . scopeline-mode)
-  (tree-sitter-mode . scopeline-mode)
+  ((tree-sitter-after-on
+    rust-mode
+    rustic-mode
+    python-mode
+    typescript-mode
+    javascript-mode
+    json-mode
+    js2-mode
+    c-mode
+    c++-mode
+    sh-mode
+    css-mode
+    html-mode
+    mhtml-mode
+    go-mode
+    emacs-lisp-mode
+    lisp-interaction-mode
+    dart-mode
+    lua-mode
+    julia-mode
+    kotlin-mode
+    swift-mode
+    php-mode
+    erlang-mode
+    elixir-mode
+    tree-sitter-mode
+    lisp-mode) . scopeline-mode)
   :after tree-sitter
   :config
   (setq scopeline-overlay-prefix " ~")
   )
 
-(use-package vertico-directory
-  :after vertico
-  :ensure vertico
-  ;; More convenient directory navigation commands
-  :bind (:map vertico-map
-	            ;; left/right arrows for changing directory:
-              ("<right>"   . vertico-directory-enter)
-              ("<left>"    . vertico-directory-delete-word)
-              ("M-<left>"  . vertico-directory-delete-char))
-  ;; Tidy shadowed file names
-  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
-  )
+  (use-package vertico-directory
+    :after vertico
+    :ensure vertico
+    ;; More convenient directory navigation commands
+    :bind (:map vertico-map
+	              ;; left/right arrows for changing directory:
+                ("<right>"   . vertico-directory-enter)
+                ("<left>"    . vertico-directory-delete-word)
+                ("M-<left>"  . vertico-directory-delete-char))
+    ;; Tidy shadowed file names
+    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
+    )
 
 ;; (use-package combobulate
 ;;   :straight (combobulate

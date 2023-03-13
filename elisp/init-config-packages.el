@@ -506,8 +506,10 @@ Activate this advice with:
 
   (defun my-reload-emacs-configuration ()
     (interactive)
-    (load-file (expand-file-name "early-init.el" user-emacs-directory))
-    (load-file (expand-file-name "init.el" user-emacs-directory))
+    (load early-init-file nil 'nomessage)
+    (load user-init-file nil 'nomessage)
+    ;; (load-file (expand-file-name "early-init.el" user-emacs-directory))
+    ;; (load-file (expand-file-name "init.el" user-emacs-directory))
     )
   ;; By default emacs will not delete selection text when typing on it, let's fix it
   (delete-selection-mode t)
@@ -4512,6 +4514,43 @@ Install the doc if it's not installed."
 ;;   ((rust-mode
 ;;     rustic-mode) . combobulate-mode)
 ;;   )
+
+;; Write documentation comment in an easy way
+;; 在单独的缓冲区编辑注释、docstring 或其中的代码块
+(use-package separedit
+  :ensure t
+  :bind (:map prog-mode-map
+         ("C-c '" . separedit))
+  :custom
+  (separedit-default-mode 'markdown-mode)
+  (separedit-remove-trailing-spaces-in-comment t)
+  (separedit-continue-fill-column t)
+  (separedit-buffer-creation-hook #'auto-fill-mode))
+
+(use-package prism
+  :straight (prism :host github :repo "alphapapa/prism.el")
+  :hook
+  ((json-mode
+    dhall-mode
+    nix-mode) . prism-mode))
+
+;;; Navigation & Editing
+(use-package common-lisp-modes
+  :ensure nil
+  :delight common-lisp-modes-mode
+  :preface
+  (defun indent-sexp-or-fill ()
+    "Indent an s-expression or fill string/comment."
+    (interactive)
+    (let ((ppss (syntax-ppss)))
+      (if (or (nth 3 ppss)
+              (nth 4 ppss))
+          (fill-paragraph)
+        (save-excursion
+          (mark-sexp)
+          (indent-region (point) (mark))))))
+  :bind ( :map common-lisp-modes-mode-map
+          ("M-q" . indent-sexp-or-fill)))
 
 (provide 'init-config-packages)
 ;;; init-config-packages.el ends here

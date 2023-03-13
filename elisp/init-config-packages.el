@@ -67,6 +67,13 @@
                                 "^.*(\\(pretty-hydra-define\\) \\([a-zA-Z-]+\\)"
                                 2))))
   :init
+  (setq centaur-icon t)                          ; Display icons or not: t or nil
+  (defun icon-displayable-p ()
+    "Return non-nil if icons are displayable."
+    (and centaur-icon
+         (or (display-graphic-p) (daemonp))
+         (or (featurep 'all-the-icons)
+             (require 'all-the-icons nil t))))
   (cl-defun pretty-hydra-title (title &optional icon-type icon-name
                                       &key face height v-adjust)
     "Add an icon in the hydra title."

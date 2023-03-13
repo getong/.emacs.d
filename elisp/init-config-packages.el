@@ -2914,11 +2914,15 @@ deletion, or > if it is flagged for displaying."
 ;; copy from https://remacs.cc/posts/%E9%9D%A2%E5%90%91%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%9A%84emacs%E6%95%99%E7%A8%8B10.-emacs%E7%BC%96%E8%BE%91%E8%BF%9B%E9%98%B6/
 (use-package avy
   :ensure t
-  :bind (("C-'" . avy-goto-char-timer) ;; Control + 单引号
+  :bind (
+         ("C-z c" . avy-goto-char-timer)
+         ("C-z l" . avy-goto-line)
+         ("M-g w" . avy-goto-word-1)
          ;; 复用上一次搜索
          ("C-c C-j" . avy-resume)
          :map isearch-mode-map
          ("C-'" . avy-isearch)
+         ("C-:"   . avy-goto-char)
          )
   :config
   (setq avy-background t ;; 打关键字时给匹配结果加一个灰背景，更醒目
